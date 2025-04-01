@@ -17,21 +17,26 @@ def fasta_df(file_name):
     with open(file_name) as f:
         lines = f.readlines()
         for num, line in enumerate(lines):
-            if line[0] != ">": # If it's not a header
-                if lines[num - 1].strip() not in headers: # And it's not a header we've seen before
-                    header = lines[num - 1][1:].strip() # Remove the ">"
+            # print(line)
+            if line[0] == ">": # If it's a header
+                if line[1:].strip() not in headers: # And the previous line is not a header we've seen before
+                    header = line[1:].strip() # Remove the ">"
+                    # print(header)
+                    split_header = header.split("|")
+                    # print(split_header)
                     headers.append(header) 
-                    isolate_ids.append(header.split("|")[0])
-                    isolate_names.append(header.split("|")[1]) # We'll need to extract data from this too
-                    subtypes.append(header.split("|")[2])
-                    segments.append(header.split("|")[3])
-                    if header.split("|")[4] == "2024-01-01":
+                    isolate_ids.append(split_header[0])
+                    isolate_names.append(split_header[1]) # We'll need to extract data from this too
+                    subtypes.append(split_header[2])
+                    segments.append(split_header[3])
+                    if split_header[4] == "2024-01-01":
                         collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
-                    elif header.split("|")[4] == "2025-01-01":
+                    elif split_header[4] == "2025-01-01":
                         collection_dates.append("2025")
                     else: 
-                        collection_dates.append(header.split("|")[4])
-                    sequences.append(line.strip())
+                        collection_dates.append(split_header[4])
+                    if num != len(lines): # If we're not at the last line
+                        sequences.append(lines[num+1].strip()) # Add next line to sequences
         f.close()
 
     # Create columns for data frame 
