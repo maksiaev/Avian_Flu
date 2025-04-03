@@ -27,7 +27,8 @@ def fasta_df(file_name):
                     headers.append(header) 
                     isolate_ids.append(split_header[0])
                     isolate_names.append(split_header[1]) # We'll need to extract data from this too
-                    subtypes.append(split_header[2])
+                    # print(split_header[2].split("_")[-1])
+                    subtypes.append(split_header[2].split("_")[-1])  # Get only H5N1
                     segments.append(split_header[3])
                     if split_header[4] == "2024-01-01":
                         collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
