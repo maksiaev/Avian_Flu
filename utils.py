@@ -3,6 +3,8 @@ import os
 import glob 
 import pandas as pd
 
+### GISAID functions ###
+
 # Function to convert fasta file to dataframe 
 def fasta_df(file_name):
 
@@ -157,3 +159,49 @@ def separate_fasta_by_seg(metadata, fasta, animals_df): #, b313_fasta, d11_fasta
             segment_fastas.append(fasta_seg)
 
     return segment_fastas, unique_segments
+
+
+
+### Anderson Lab functions ###
+
+# Rename host type
+
+def sort_animals_anderson(metadata):
+    host_names = metadata["Host"]
+    animal_list = []
+    for name in host_names.values:
+        animal_low = name.lower()
+        animal = animal_low.replace(" ", "_") # replace spaces with underscores
+        animal_list.append(animal)
+
+    unique_animals = list(set(animal_list))
+
+    # Save the animals to a file so we can sort them
+    return unique_animals
+
+# Fix animals
+
+def fix_animals_anderson(metadata, animals_ref):
+
+    # If the animal is in a specific column of animals_ref, label host type as column name
+    animal_list = [] # Find animals first
+    for name in metadata["Host"].values:
+        name = name.lower()
+        animal_list.append(name)
+
+    animal_types = []
+    for animal in animal_list: # Label each animal as a type
+        # print(animal)
+        if animal in animals_ref["avian"].values:
+            animal_types.append("avian")
+        elif animal in animals_ref["cattle"].values:
+            animal_types.append("cattle")
+        elif animal in animals_ref["feline"].values:
+            animal_types.append("feline")
+        elif animal in animals_ref["other_mammal"].values:
+            animal_types.append("other_mammal")
+        else: # If other
+            animal_types.append("other")
+
+    metadata["Host_Type"] = animal_types
+
