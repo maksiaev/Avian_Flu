@@ -94,6 +94,7 @@ def fix_animals(fasta, animals_ref):
     animal_list = [] # Find animals first
     for name in fasta["Isolate_Name"].values:
         animal = name.split("/")[1]
+        animal = animal.lower()
         animal_list.append(animal)
 
     animal_types = []
@@ -124,7 +125,6 @@ def separate_fasta_by_seg(metadata, fasta, animals_df): #, b313_fasta, d11_fasta
     unique_segments = list(set(fasta["Segment"]))
     genotypes = ["B3.13", "D1.1"]
     # genotype_fastas = {"B3.13": b313_fasta, "D1.1": d11_fasta}
-    # print(unique_segments)
 
     # “>Isolate_name|subtype|collection_date|host_type|genotype”
 
@@ -132,7 +132,9 @@ def separate_fasta_by_seg(metadata, fasta, animals_df): #, b313_fasta, d11_fasta
     for fasta_gen in genotypes: # .keys():
         for seg in unique_segments:
 
-            xls = metadata[metadata["Genotype"] == fasta_gen]
+            xls = metadata[metadata["Genotype"].apply(lambda x: x.split(" ")[0]) == fasta_gen]
+
+            # print("XLS: ", metadata["Genotype"])
 
             # print(d11_xls)
 
