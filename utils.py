@@ -57,7 +57,8 @@ def sort_animals(fasta):
     animal_list = []
     for name in isolate_names.values:
         animal = name.split("/")[1]
-        animal_list.append(animal)
+        animal_low = animal.lower()
+        animal_list.append(animal_low)
 
     unique_animals = list(set(animal_list))
 
@@ -114,8 +115,8 @@ def fix_animals(fasta, animals_ref):
 
 def separate_fasta_by_seg(metadata, fasta, animals_df): #, b313_fasta, d11_fasta):
 
-    # Dummy host type -- we'll actually add this in later
     fix_animals(fasta, animals_df)
+    # Dummy host type -- we'll actually add this in later
     # b313_fasta["Host_Type"] = "other"
     # d11_fasta["Host_Type"] = "other"
 
