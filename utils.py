@@ -162,11 +162,11 @@ def separate_fasta_by_seg(metadata, fasta, animals_df): #, b313_fasta, d11_fasta
 
 
 
-### Anderson Lab functions ###
+### Andersen Lab functions ###
 
 # Rename host type
 
-def sort_animals_anderson(metadata):
+def sort_animals_andersen(metadata):
     host_names = metadata["Host"]
     animal_list = []
     for name in host_names.values:
@@ -181,12 +181,13 @@ def sort_animals_anderson(metadata):
 
 # Fix animals
 
-def fix_animals_anderson(metadata, animals_ref):
+def fix_animals_andersen(metadata, animals_ref):
 
     # If the animal is in a specific column of animals_ref, label host type as column name
     animal_list = [] # Find animals first
     for name in metadata["Host"].values:
         name = name.lower()
+        name = name.replace(" ", "_")
         animal_list.append(name)
 
     animal_types = []
