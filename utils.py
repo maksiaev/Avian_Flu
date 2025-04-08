@@ -154,8 +154,8 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
             entries.remove(entry)
 
     # While there are >10k sequences, add each set of 10k to a list
-    # 1 string ~= 40 sequences
-    thresh = 10000//40
+    # 1 string ~= 8 sequences
+    thresh = 10000 # //10
     ten_thousands = []
     # entries = entries[thresh:]
 
@@ -240,17 +240,19 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
         download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
         ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()   
 
-        time.sleep(sleep_time * 10)
+        time.sleep(sleep_time)
 
         go_back = driver.find_element(By.XPATH, "//button[contains(text(), 'Go back')]")
         ActionChains(driver).move_to_element(go_back).pause(1).click(go_back).perform()   
 
-        driver.switch_to.default_content()
-
         time.sleep(sleep_time)
 
+        driver.switch_to.default_content()
+
+        time.sleep(sleep_time * 10)
+
         # Press the select button
-        select_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Select')]")
+        select_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Select')]")
         ActionChains(driver).move_to_element(select_button).pause(1).click(select_button).perform()
 
         time.sleep(sleep_time)  
