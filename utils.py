@@ -2,8 +2,268 @@
 import os
 import glob 
 import pandas as pd
+import re
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+import time 
 
 ### GISAID functions ###
+
+# Function to download data from GISAID
+# Opening and downloading from the website
+
+def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
+
+    if browser=="Firefox":
+        # If you want to open Firefox
+        driver = webdriver.Firefox()
+    elif browser=="Chrome": # if Chrome...
+        driver = webdriver.Chrome()
+    else: # Edge, probably
+        driver = webdriver.Edge()
+
+    # How many seconds should pass between tasks
+    sleep_time = int(sleep_time)
+
+    # Requested URL
+    driver.get("https://www.epicov.org/epi3/frontend#")
+
+    # Wait for it to load, otherwise it won't work
+    # driver.implicitly_wait(20)
+    # username_field = wait.until(EC.element_to_be_clickable((By.NAME, 'login')))
+    # password_field = wait.until(EC.element_to_be_clickable((By.NAME, 'password')))
+
+    time.sleep(sleep_time)
+
+    # Input username and password
+    username_field = driver.find_element(By.NAME, "login")
+    password_field = driver.find_element(By.NAME, "password")
+    submit_button = driver.find_element(By.CLASS_NAME, "form_button_submit")
+    username_field.send_keys(username)
+    password_field.send_keys(password)
+
+
+    # Wait for it to load
+    time.sleep(sleep_time)
+    # submit_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'form_button_submit')))
+    submit_button.click()
+
+    # Wait for it to load again
+    time.sleep(sleep_time)
+
+    # Find the correct tab
+    epiflu_link = driver.find_element(By.XPATH, "//*[contains(text(), 'EpiFlu™')]")
+    # epiflu_link = wait.until(EC.visibility_of_element_located((By.XPATH, "//*[contains(text(), 'EpiFlu™')]")))
+    epiflu_link.click()
+
+    time.sleep(sleep_time)
+
+    # Search tab 
+    search_link = driver.find_element(By.XPATH, "//*[contains(text(), 'Search')]")
+    search_link.click()
+
+    time.sleep(sleep_time)
+
+    # Type: A
+    # Gives "internal server error" without action chains
+    type_a = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')]//option[@value='A']")
+    ActionChains(driver).move_to_element(type_a).pause(1).click(type_a).perform() 
+
+    time.sleep(sleep_time)
+
+    # H: 5
+    h_5 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')]//option[@value='5']") # The second multi-select
+    ActionChains(driver).move_to_element(h_5).pause(1).click(h_5).perform() 
+
+    time.sleep(sleep_time)
+
+    # Find the ID for N
+
+    # N: 1
+    n_1 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')][3]//option[@value='1']") # The third multi-select
+    ActionChains(driver).move_to_element(n_1).pause(1).click(n_1).perform() 
+
+    time.sleep(sleep_time)
+    
+    # Location: North America
+    location_northa = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='6440']")
+    # location_northa = location_northa_1.location_once_scrolled_into_view
+    driver.execute_script("arguments[0].scrollIntoView();", location_northa)
+    ActionChains(driver).move_to_element(location_northa).pause(1).click(location_northa).perform()
+    # location_northa.click()
+
+    time.sleep(sleep_time)
+
+    # Segments: PB2, PB1, PA, HA, NP, NA, MP, NS (all EXCEPT HE, P3)
+    segment_list = ['PB2', 'PB1', 'PA', 'HA', 'NP', 'NA', 'MP', 'NS']
+    for segment in segment_list:
+        xpath = "//*[contains(@class, 'sys-form-fi-cb sys-fi-mark')]//input[@value='" + segment + "']"
+        pb2 = driver.find_element(By.XPATH, xpath)
+        ActionChains(driver).move_to_element(pb2).pause(1).click(pb2).perform()
+
+    # Start submission: 2023-03-18
+    # End submission: 2025-03-31
+
+    # Insert dates
+    first_date = driver.find_element(By.XPATH, "//*[contains(text(),'Submission date from')]/ancestor::td/following-sibling::td//input[@class='sys-event-hook sys-fi-mark hasDatepicker']") # First date
+    first_date.send_keys(start_date)
+
+    last_date = driver.find_element(By.XPATH, "//*[contains(text(),'Submission date from')]/ancestor::td/following-sibling::td[3]//input[@class='sys-event-hook sys-fi-mark hasDatepicker']") # Second date
+    last_date.send_keys(end_date)
+
+    time.sleep(sleep_time)
+
+    # Split search into batches by date if >= 10k sequences
+
+    # Search
+
+    search_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[@accesskey='g']")
+    # search_button.click()
+    ActionChains(driver).move_to_element(search_button).pause(1).click(search_button).perform() 
+
+    # Choose all files -- unless the number of sequences is >10k, then do it in batches
+    time.sleep(sleep_time)
+
+    # # Double the sleep time to load
+    # time.sleep(sleep_time)
+
+    # Select all (at first)
+    select_checkbox = driver.find_element(By.XPATH, "//*[contains(@class, 'yui-dt-first yui-dt-last')]//input[@type='checkbox']")
+    select_checkbox.click()
+
+    # Press the select button and select up to 10,000 entries. If there's more afterwards, download the first 10k and continue until we've reached the end.
+
+    # Press the select button
+    select_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Select')]")
+    ActionChains(driver).move_to_element(select_button).pause(1).click(select_button).perform()    
+
+    time.sleep(sleep_time)
+
+    # Get all the entries
+    iframe = driver.find_element(By.NAME, "wjob")
+    driver.switch_to.frame(iframe)
+    entry_text = driver.find_element(By.XPATH, "//textarea")
+    time.sleep(sleep_time)
+    full_text = entry_text.text
+    entries = re.split(r"[,\n]", full_text)
+
+    # Get rid of empty strings
+    for entry in entries:
+        if entry == '':
+            entries.remove(entry)
+
+    # While there are >10k sequences, add each set of 10k to a list
+    # 1 string ~= 40 sequences
+    thresh = 10000//40
+    ten_thousands = []
+    # entries = entries[thresh:]
+
+    while len(entries) > thresh: 
+        ten_k = entries[:thresh]
+        ten_thousands.append(ten_k)
+        entries = entries[thresh:]
+        # print(len(entries))
+
+    ten_thousands.append(entries) # if less than thresh to begin with, appends full batch. Else appends last batch. 
+
+    # for t in ten_thousands:
+    #     print(len(t))
+
+    # print(len(ten_thousands))
+
+    # Go back and select the nth 10k from the entries frame
+
+    # Clear the iframe
+    entry_text.clear()
+
+    for text in ten_thousands:
+        for t in text:
+            entry_text.send_keys(t)
+        # Press OK
+        ok_button = driver.find_element(By.XPATH, "//button[contains(text(), 'OK')]")
+        ok_button.click()
+
+        time.sleep(sleep_time)
+        # Press OK again
+        ok_button2 = driver.find_element(By.XPATH, "//*[contains(@class, 'yui-panel-container shadow')]//button[contains(text(), 'OK')]")
+        ok_button2.click()
+
+        time.sleep(sleep_time)
+
+        #Press download
+        driver.switch_to.default_content()
+        download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Download')]")
+        ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
+
+        time.sleep(sleep_time) 
+
+        # Download metadata as XLS
+        iframe_download = driver.find_element(By.NAME, "downl")
+        driver.switch_to.frame(iframe_download)
+        time.sleep(sleep_time)
+        download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
+        ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()   
+        # download_button.click()
+
+        time.sleep(sleep_time * 10) # Downloads can take a while
+
+        #Press download
+        driver.switch_to.default_content()
+        download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Download')]")
+        ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
+
+        time.sleep(sleep_time)
+
+        # Download segment sequences as DNA FASTA file
+        iframe_download = driver.find_element(By.NAME, "downl")
+        driver.switch_to.frame(iframe_download)
+        time.sleep(sleep_time)
+        dna = driver.find_element(By.XPATH, "//input[@value='dna']")
+        ActionChains(driver).move_to_element(dna).pause(1).click(dna).perform()    
+
+        time.sleep(sleep_time)
+
+        # Rename
+        name_text = driver.find_element(By.XPATH, "//input[@type='text']")
+        name_text.clear()
+        t = "Isolate ID | Isolate name | Type | Segment | Collection date"
+        name_text.send_keys(t)
+        time.sleep(sleep_time)
+        # Segments: PB2, PB1, PA, HA, NP, NA, MP, NS (all EXCEPT HE, P3)
+        segment_list = ['PB2', 'PB1', 'PA', 'HA', 'NP', 'NA', 'MP', 'NS']
+        for segment in segment_list:
+            xpath = "//input[@value='" + segment + "']"
+            pb2 = driver.find_element(By.XPATH, xpath)
+            ActionChains(driver).move_to_element(pb2).pause(1).click(pb2).perform()
+        # Assume both checkboxes for spaces and underscores are already checked -- if not, come back to this
+        download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
+        ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()   
+
+        time.sleep(sleep_time * 10)
+
+        go_back = driver.find_element(By.XPATH, "//button[contains(text(), 'Go back')]")
+        ActionChains(driver).move_to_element(go_back).pause(1).click(go_back).perform()   
+
+        driver.switch_to.default_content()
+
+        time.sleep(sleep_time)
+
+        # Press the select button
+        select_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Select')]")
+        ActionChains(driver).move_to_element(select_button).pause(1).click(select_button).perform()
+
+        time.sleep(sleep_time)  
+
+        # Clear the iframe
+        iframe = driver.find_element(By.NAME, "wjob")
+        driver.switch_to.frame(iframe)
+        entry_text = driver.find_element(By.XPATH, "//textarea")
+        entry_text.clear()
+
+    # Close browser
+
+    driver.close()
 
 # Function to convert fasta file to dataframe 
 def fasta_df(file_name):
