@@ -249,7 +249,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
 
         driver.switch_to.default_content()
 
-        time.sleep(sleep_time * 10)
+        time.sleep(sleep_time * 60)
 
         # Press the select button
         select_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Select')]")
@@ -372,16 +372,20 @@ def fix_animals(fasta, animals_ref):
             animal_types.append("feline")
         elif animal in animals_ref["other_mammal"].values:
             animal_types.append("other_mammal")
+        elif animal in animals_ref["human"].values:
+            animal_types.append("human")
         else: # If other
             animal_types.append("other")
 
     fasta["Host_Type"] = animal_types
 
+    return fasta
+
 # Separate FASTA files into 8 different files based on segment
 
 def separate_fasta_by_seg(metadata, fasta, animals_df): #, b313_fasta, d11_fasta):
 
-    fix_animals(fasta, animals_df)
+    fasta = fix_animals(fasta, animals_df)
     # Dummy host type -- we'll actually add this in later
     # b313_fasta["Host_Type"] = "other"
     # d11_fasta["Host_Type"] = "other"
