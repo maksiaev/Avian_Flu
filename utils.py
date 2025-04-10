@@ -146,7 +146,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
     entry_text = driver.find_element(By.XPATH, "//textarea")
     time.sleep(sleep_time)
     full_text = entry_text.text
-    entries = re.split(r"[,\n]", full_text)
+    entries = re.split(r"[,]", full_text)
 
     # Get rid of empty strings
     for entry in entries:
@@ -155,7 +155,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
 
     # While there are >10k sequences, add each set of 10k to a list
     # 1 string ~= 8 sequences
-    thresh = 10000 # //10
+    thresh = 100 # //10
     ten_thousands = []
     # entries = entries[thresh:]
 
@@ -249,7 +249,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
 
         driver.switch_to.default_content()
 
-        time.sleep(sleep_time * 60)
+        time.sleep(sleep_time * 10)
 
         # Press the select button
         select_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Select')]")
