@@ -155,7 +155,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
 
     # While there are >10k sequences, add each set of 10k to a list
     # 1 string ~= 8 sequences
-    thresh = 100 # //10
+    thresh = 500 # //10
     ten_thousands = []
     # entries = entries[thresh:]
 
@@ -300,12 +300,16 @@ def fasta_df(file_name):
                         collection_dates.append("2025")
                     else: 
                         collection_dates.append(split_header[4])
-                    if num != len(lines): # If we're not at the last line
-                        for i, line in enumerate(lines[num + 1:]):
-                            sequence = ""
-                            while lines[i][0] != ">":
-                                sequence = sequence + lines[i].strip()
-                            sequences.append(sequence) # Add next line to sequences
+                    if num < len(lines): # If we're not at the last line
+                        # for i, l in enumerate(lines[num + 1:]):
+                        i = num
+                        sequence = ""
+                        # print(lines[i])
+                        # print(lines[i + 1])
+                        while i < len(lines) - 1 and lines[i + 1][0] != ">": # While the next line is part of a sequence
+                            sequence = sequence + lines[i + 1].strip()
+                            i += 1
+                        sequences.append(sequence) # Add next line to sequences
         f.close()
 
     # Create columns for data frame 
