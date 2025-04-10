@@ -170,7 +170,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
     # for t in ten_thousands:
     #     print(len(t))
 
-    # print(len(ten_thousands))
+    print(len(ten_thousands))
 
     # Go back and select the nth 10k from the entries frame
 
@@ -301,7 +301,11 @@ def fasta_df(file_name):
                     else: 
                         collection_dates.append(split_header[4])
                     if num != len(lines): # If we're not at the last line
-                        sequences.append(lines[num+1].strip()) # Add next line to sequences
+                        for i, line in enumerate(lines[num + 1:]):
+                            sequence = ""
+                            while lines[i][0] != ">":
+                                sequence = sequence + lines[i].strip()
+                            sequences.append(sequence) # Add next line to sequences
         f.close()
 
     # Create columns for data frame 
