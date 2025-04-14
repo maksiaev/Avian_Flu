@@ -329,9 +329,13 @@ def sort_animals(fasta):
     isolate_names = fasta["Isolate_Name"]
     animal_list = []
     for name in isolate_names.values:
-        animal = name.split("/")[1]
-        animal_low = animal.lower()
-        animal_list.append(animal_low)
+        # print(name)
+        try:
+            animal = name.split("/")[1]
+            animal_low = animal.lower()
+            animal_list.append(animal_low)
+        except:
+            continue
 
     unique_animals = list(set(animal_list))
 
@@ -365,9 +369,13 @@ def fix_animals(fasta, animals_ref):
     # If the animal is in a specific column of animals_ref, label host type as column name
     animal_list = [] # Find animals first
     for name in fasta["Isolate_Name"].values:
-        animal = name.split("/")[1]
-        animal = animal.lower()
-        animal_list.append(animal)
+        try:
+            animal = name.split("/")[1]
+            animal_low = animal.lower()
+        except:
+            animal_low = "unknown"
+        animal_list.append(animal_low)
+
 
     animal_types = []
     for animal in animal_list: # Label each animal as a type
