@@ -346,21 +346,21 @@ def sort_animals(fasta):
 
 # Separate B3.13 and D1.1 in both the Excel file and the FASTA file
 
-def separate_b313_d11_xls(metadata_raw, fasta):
-    # Excel
-    b313_xls = metadata_raw[metadata_raw["Genotype"] == "B3.13"]
-    d11_xls = metadata_raw[metadata_raw["Genotype"] == "D1.1"]
+# def separate_b313_d11_xls(metadata_raw, fasta):
+#     # Excel
+#     b313_xls = metadata_raw[metadata_raw["Genotype"] == "B3.13"]
+#     d11_xls = metadata_raw[metadata_raw["Genotype"] == "D1.1"]
 
-    # print(d11_xls)
+#     # print(d11_xls)
 
-    # FASTA
+#     # FASTA
 
-    b313_mask = fasta['Isolate_Id'].isin(b313_xls['Isolate_Id'])
-    d11_mask = fasta['Isolate_Id'].isin(d11_xls['Isolate_Id'])
+#     b313_mask = fasta['Isolate_Id'].isin(b313_xls['Isolate_Id'])
+#     d11_mask = fasta['Isolate_Id'].isin(d11_xls['Isolate_Id'])
 
-    b313_fasta = fasta[b313_mask]
-    d11_fasta = fasta[d11_mask]
-    return b313_fasta, d11_fasta
+#     b313_fasta = fasta[b313_mask]
+#     d11_fasta = fasta[d11_mask]
+#     return b313_fasta, d11_fasta
 
 # Fix animals in host type
 
@@ -399,7 +399,7 @@ def fix_animals(fasta, animals_ref):
 
 # Separate FASTA files into 8 different files based on segment
 
-def separate_fasta_by_seg(metadata, fasta, animals_df): #, b313_fasta, d11_fasta):
+def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
 
     fasta = fix_animals(fasta, animals_df)
     # Dummy host type -- we'll actually add this in later
@@ -407,7 +407,7 @@ def separate_fasta_by_seg(metadata, fasta, animals_df): #, b313_fasta, d11_fasta
     # d11_fasta["Host_Type"] = "other"
 
     unique_segments = list(set(fasta["Segment"]))
-    genotypes = ["B3.13", "D1.1"]
+    # genotypes = ["B3.13", "D1.1"]
     # genotype_fastas = {"B3.13": b313_fasta, "D1.1": d11_fasta}
 
     # “>Isolate_name|subtype|collection_date|host_type|genotype”
