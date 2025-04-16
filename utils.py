@@ -541,6 +541,54 @@ def search_collection_date(biosample, metadata_genbank):
 
         return collection_date
     
+def search_collection_date_nucid(nucid, metadata_genbank):
+
+    print(nucid)
+
+    try:
+
+        # Avoid spamming the server
+        time.sleep(2)
+    
+        base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+        # search_url = base_url + "esearch.fcgi?db=biosample&term=" + biosample +"&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        # # Get Biosample ID from search_url
+        # output = requests.get(search_url)
+        # xml = output.content
+        # root = ET.fromstring(xml)
+        # sample_id = root.find("./IdList/Id").text
+
+        # nuc_id = biosample
+
+        biosample_url = base_url + "elink.fcgi?dbfrom=nuccore&id=" + nucid + "&cmd=neighbor_history&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+        
+        # # Get Nucleotide ID from biosample_url
+        # output = requests.get(biosample_url)
+        # xml = output.content
+        # root = ET.fromstring(xml)
+        # query_key = root.find(".//QueryKey").text
+        # web_env = root.find(".//WebEnv").text
+
+        # nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        output = requests.get(biosample_url) 
+        xml = output.content
+        root = ET.fromstring(xml)
+
+        # Grab collection date at the end of the sub name
+        collection_date = root.find(".//SubName").text.split("|")[-1]
+
+        return collection_date
+    
+    except:
+        print("Unable to find collection date.")
+
+        row = metadata_genbank[metadata_genbank["id"] == nucid]
+        collection_date = row.loc[:, "genbank_name"].values[0].split("/")[4]
+
+        return collection_date
+    
 def create_dataframes(directory):
     dfs_gisaid = defaultdict(list)
     for dirpath, dirs, files in os.walk(directory): # Find the fasta file
