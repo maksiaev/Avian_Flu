@@ -3,6 +3,9 @@ import os
 import glob 
 import pandas as pd
 import re
+import requests
+import xml.etree.ElementTree as ET
+from collections import defaultdict 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
@@ -488,3 +491,104 @@ def fix_animals_andersen(metadata, animals_ref):
 
     metadata["Host_Type"] = animal_types
 
+# Get collection date from GenBank eutils 
+
+def search_collection_date(biosample, metadata_genbank):
+
+    print(biosample)
+
+    try:
+
+        # Avoid spamming the server
+        time.sleep(2)
+    
+        base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+        search_url = base_url + "esearch.fcgi?db=biosample&term=" + biosample +"&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        # Get Biosample ID from search_url
+        output = requests.get(search_url)
+        xml = output.content
+        root = ET.fromstring(xml)
+        sample_id = root.find("./IdList/Id").text
+
+        biosample_url = base_url + "elink.fcgi?dbfrom=biosample&db=nuccore&id=" + sample_id + "&cmd=neighbor_history&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+        
+        # Get Nucleotide ID from biosample_url
+        output = requests.get(biosample_url)
+        xml = output.content
+        root = ET.fromstring(xml)
+        query_key = root.find(".//QueryKey").text
+        web_env = root.find(".//WebEnv").text
+
+        nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        output = requests.get(nucleotide_url) 
+        xml = output.content
+        root = ET.fromstring(xml)
+
+        # Grab collection date at the end of the sub name
+        collection_date = root.find(".//SubName").text.split("|")[-1]
+
+        return collection_date
+    
+    except:
+        print("Unable to find collection date.")
+
+        if len(metadata_genbank[metadata_genbank["BioSample"] == biosample]["Collection_Date"]) > 0: # If a year exists
+            collection_date = metadata_genbank[metadata_genbank["BioSample"] == biosample]["Collection_Date"].values[0]
+        else:
+            collection_date = float('nan') 
+
+        return collection_date
+    
+def create_dataframes(directory):
+    dfs_gisaid = defaultdict(list)
+    for dirpath, dirs, files in os.walk(directory): # Find the fasta file
+        for file in files:
+            file_name = os.path.join(dirpath, file) # Get file name
+            # print(file_name)
+            gisaid_df = pd.DataFrame()
+            with open(file_name) as f:
+                lines = f.readlines()
+                isolate_partial = []
+                full_header = []
+                sequence = []
+                # Some lines start with 25_, others 25-. This shouldn't matter, but split on "_" first
+                for num, line in enumerate(lines):
+                    if line[0] == ">": # If it's a header
+                        full_header.append(line)
+                        full = line.split("/")[3] # Get the isolate
+                        partial = full.split("_")[-1] # If 25_, get the last bit
+                        digits = partial.split("-")
+                        isolate = ""
+                        other = ""
+                        for d in digits:
+                            # print(d)
+                            if len(d) == 6 and d.isnumeric(): # If it's just digits and not one of those weird isolates
+                                isolate = d + "-"
+                            elif len(d) == 3 and d.isnumeric():
+                                isolate = isolate + d
+                            elif d.isnumeric() == False: # If it's a weird isolate
+                                other = d + "-"
+                            else: 
+                                other = other + d
+                        # Now add to list to check in Andersen files without doing wild for loops
+                        if len(isolate) == 10: # If this is a correctly formatted isolate
+                            # isolates.append(isolate)
+                            # All headers are followed by sequences
+                            isolate_partial.append(isolate)
+                        else: # If this is some other isolate
+                            isolate_partial.append(other)
+                    elif line == "nan\n":
+                        print(directory) # Some headers in the Andersen files don't exist 
+                        isolate_partial.append(float('nan'))
+                        full_header.append(line) # Sorry :/
+                    else: # It's a sequence
+                        sequence.append(line)
+                    
+                gisaid_df["isolate_partial"] = isolate_partial
+                gisaid_df["full_header"] = full_header
+                # print(len(sequence))
+                gisaid_df["sequence"] = sequence
+                dfs_gisaid[file_name.split("/")[-1][:-6]].append(gisaid_df)
+    return dfs_gisaid
