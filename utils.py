@@ -590,12 +590,12 @@ def search_collection_date_nucid(nucid, metadata_genbank):
         return collection_date
     
 def create_dataframes(directory):
-    dfs_gisaid = defaultdict(list)
+    dfs = defaultdict(list)
     for dirpath, dirs, files in os.walk(directory): # Find the fasta file
         for file in files:
             file_name = os.path.join(dirpath, file) # Get file name
             # print(file_name)
-            gisaid_df = pd.DataFrame()
+            df = pd.DataFrame()
             with open(file_name) as f:
                 lines = f.readlines()
                 isolate_partial = []
@@ -634,9 +634,9 @@ def create_dataframes(directory):
                     else: # It's a sequence
                         sequence.append(line)
                     
-                gisaid_df["isolate_partial"] = isolate_partial
-                gisaid_df["full_header"] = full_header
+                df["isolate_partial"] = isolate_partial
+                df["full_header"] = full_header
                 # print(len(sequence))
-                gisaid_df["sequence"] = sequence
-                dfs_gisaid[file_name.split("/")[-1][:-6]].append(gisaid_df)
-    return dfs_gisaid
+                df["sequence"] = sequence
+                dfs[file_name.split("/")[-1][:-6]].append(df)
+    return dfs
