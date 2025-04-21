@@ -615,24 +615,24 @@ def create_dataframes(directory):
                         partial = full.split("_")[-1] # If 25_, get the last bit
                         digits = partial.split("-")
                         isolate = ""
-                        other = ""
+                        # other = ""
                         for d in digits:
                             # print(d)
                             if len(d) == 6 and d.isnumeric(): # If it's just digits and not one of those weird isolates
                                 isolate = d + "-"
                             elif len(d) == 3 and d.isnumeric():
                                 isolate = isolate + d
-                            elif d.isnumeric() == False: # If it's a weird isolate
-                                other = d + "-"
-                            else: 
-                                other = other + d
+                            # elif d.isnumeric() == False: # If it's a weird isolate
+                            #     other = d + "-"
+                            # else: # If it's a weird isolate
+                            #     other = other + d
                         # Now add to list to check in Andersen files without doing wild for loops
                         if len(isolate) == 10: # If this is a correctly formatted isolate
                             # isolates.append(isolate)
                             # All headers are followed by sequences
                             isolate_partial.append(isolate)
                         else: # If this is some other isolate
-                            isolate_partial.append(other)
+                            isolate_partial.append(full)
                     elif line == "nan\n":
                         print(directory) # Some headers in the Andersen files don't exist 
                         isolate_partial.append(float('nan'))
@@ -644,6 +644,8 @@ def create_dataframes(directory):
                 df["full_header"] = full_header
                 # print(len(sequence))
                 df["sequence"] = sequence
-                dfs[file_name.split("/")[-1][:-6]].append(df)
+                key_name = (file_name.split("/")[-1][:-6]).split("_")[0] + "_" + (file_name.split("/")[-1][:-6]).split("_")[1]
+                print(key_name)
+                dfs[key_name].append(df)
         break # Don't go into subdirectories 
     return dfs
