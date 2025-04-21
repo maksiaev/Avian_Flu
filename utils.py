@@ -498,9 +498,6 @@ def search_collection_date(biosample, metadata_genbank):
     print(biosample)
 
     try:
-
-        # Avoid spamming the server
-        time.sleep(2)
     
         base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
         search_url = base_url + "esearch.fcgi?db=biosample&term=" + biosample +"&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
@@ -529,6 +526,9 @@ def search_collection_date(biosample, metadata_genbank):
         # Grab collection date at the end of the sub name
         collection_date = root.find(".//SubName").text.split("|")[-1]
 
+        # Avoid spamming the server
+        time.sleep(2)
+
         return collection_date
     
     except:
@@ -539,6 +539,9 @@ def search_collection_date(biosample, metadata_genbank):
         else:
             collection_date = float('nan') 
 
+        # Avoid spamming the server
+        time.sleep(1)
+
         return collection_date
     
 def search_collection_date_nucid(nucid, metadata_genbank):
@@ -547,9 +550,6 @@ def search_collection_date_nucid(nucid, metadata_genbank):
 
     try:
 
-        # Avoid spamming the server
-        time.sleep(2)
-    
         base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
         # search_url = base_url + "esearch.fcgi?db=biosample&term=" + biosample +"&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
 
@@ -579,6 +579,9 @@ def search_collection_date_nucid(nucid, metadata_genbank):
         # Grab collection date at the end of the sub name
         collection_date = root.find(".//SubName").text.split("|")[-1]
 
+        # Avoid spamming the server
+        time.sleep(2)
+
         return collection_date
     
     except:
@@ -586,6 +589,9 @@ def search_collection_date_nucid(nucid, metadata_genbank):
 
         row = metadata_genbank[metadata_genbank["id"] == nucid]
         collection_date = row.loc[:, "genbank_name"].values[0].split("/")[4]
+
+        # Avoid spamming the server
+        time.sleep(1)
 
         return collection_date
     
@@ -639,4 +645,5 @@ def create_dataframes(directory):
                 # print(len(sequence))
                 df["sequence"] = sequence
                 dfs[file_name.split("/")[-1][:-6]].append(df)
+        break # Don't go into subdirectories 
     return dfs
