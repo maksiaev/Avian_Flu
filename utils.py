@@ -647,5 +647,69 @@ def create_dataframes(directory):
                 key_name = (file_name.split("/")[-1][:-6]).split("_")[0] + "_" + (file_name.split("/")[-1][:-6]).split("_")[1]
                 print(key_name)
                 dfs[key_name].append(df)
+            f.close()
         break # Don't go into subdirectories 
     return dfs
+
+def df_from_fasta(file_name):
+    df = pd.DataFrame()
+    with open(file_name) as f:
+        lines = f.readlines()
+        full_header = []
+        sequences = []
+        sequence = ""
+        for num, line in enumerate(lines):
+            if line[0] == ">": # If it's a header
+                full_header.append(line)
+                sequences.append(sequence)
+                sequence = "" # Erase sequence 
+            else: # Else it's a sequence
+                sequence += line
+            
+        df["full_header"] = full_header
+        df["sequence"] = sequences
+    f.close()
+    return df
+
+def df_to_fasta(fasta, file_name, output_path):
+
+    output_file = open(output_path + file_name, "w")
+
+    for index, row in fasta.iterrows():
+        name = fasta.loc[index, "full_header"]
+        sequence = fasta.loc[index, "sequence"]
+    # First is header, second is sequence
+        output_file.write(name)
+        output_file.write(sequence)
+    output_file.close()
+
+def relabel_animals(fasta, animals_ref):
+
+    names = []
+    for name in fasta["full_header"].values:
+        animal = name.split("/")[1]
+        animal = animal.lower()
+        host_type = name.split("|")[-2]
+
+        if animal in animals_ref["avian"].values:
+            new_name = name.replace(host_type, "avian")
+            names.append(new_name)
+        elif animal in animals_ref["cattle"].values:
+            new_name = name.replace(host_type, "cattle")
+            names.append(new_name)
+        elif animal in animals_ref["feline"].values:
+            new_name = name.replace(host_type, "feline")
+            names.append(new_name)
+        elif animal in animals_ref["other_mammal"].values:
+            new_name = name.replace(host_type, "other_mammal")
+            names.append(new_name)
+        elif animal in animals_ref["human"].values:
+            new_name = name.replace(host_type, "human")
+            names.append(new_name)
+        else: # If other
+            new_name = name.replace(host_type, "other")
+            names.append(new_name)
+
+    fasta["full_header"] = names
+
+    return fasta
