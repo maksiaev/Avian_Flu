@@ -659,12 +659,16 @@ def df_from_fasta(file_name):
         sequences = []
         sequence = ""
         for num, line in enumerate(lines):
-            if line[0] == ">": # If it's a header
+            if line[0] == ">" and num < 1: # If it's the first header
+                full_header.append(line)
+            elif line[0] == ">" and num >= 1: # If it's a subsequent header
                 full_header.append(line)
                 sequences.append(sequence)
                 sequence = "" # Erase sequence 
             else: # Else it's a sequence
                 sequence += line
+            if num == len(lines) - 1: # If it's the last part of the last sequence
+                sequences.append(sequence)
             
         df["full_header"] = full_header
         df["sequence"] = sequences
