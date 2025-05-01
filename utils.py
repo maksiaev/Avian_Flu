@@ -158,7 +158,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
 
     # While there are >10k sequences, add each set of 10k to a list
     # 1 string ~= 8 sequences
-    thresh = 500 # //10
+    thresh = 200 # //10
     ten_thousands = []
     # entries = entries[thresh:]
 
@@ -252,7 +252,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
 
         driver.switch_to.default_content()
 
-        time.sleep(sleep_time * 10)
+        time.sleep(sleep_time * 20)
 
         # Press the select button
         select_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Select')]")
