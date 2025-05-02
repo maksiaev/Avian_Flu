@@ -180,7 +180,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
     # Clear the iframe
     entry_text.clear()
 
-    for text in ten_thousands:
+    for text in ten_thousands: # IMPORTANT: If it failed, pick up from wherever it failed
         for t in text:
             entry_text.send_keys(t)
         # Press OK
