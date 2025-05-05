@@ -89,7 +89,10 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
 
     time.sleep(sleep_time)
     
-    # Location: North America
+    # Location
+    # North America: 6440
+    # South America: 10053
+    # Antarctica: 1945
     location_northa = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='6440']")
     # location_northa = location_northa_1.location_once_scrolled_into_view
     driver.execute_script("arguments[0].scrollIntoView();", location_northa)
