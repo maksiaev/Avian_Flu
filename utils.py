@@ -686,8 +686,8 @@ def df_to_fasta(fasta, file_name, output_path):
         name = fasta.loc[index, "full_header"]
         sequence = fasta.loc[index, "sequence"]
     # First is header, second is sequence
-        output_file.write(name)
-        output_file.write(sequence)
+        output_file.write(name + "\n")
+        output_file.write(sequence + "\n")
     output_file.close()
 
 def relabel_animals(fasta, animals_ref):
