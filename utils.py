@@ -9,6 +9,8 @@ from collections import defaultdict
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
+
 import time 
 
 ### GISAID functions ###
@@ -96,7 +98,24 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
     location_northa = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='6440']")
     # location_northa = location_northa_1.location_once_scrolled_into_view
     driver.execute_script("arguments[0].scrollIntoView();", location_northa)
-    ActionChains(driver).move_to_element(location_northa).pause(1).click(location_northa).perform()
+    ActionChains(driver).move_to_element(location_northa).pause(1).key_down(Keys.CONTROL).click(location_northa).key_up(Keys.CONTROL).perform()
+    # .click(location_northa).perform()
+    # location_northa.click()
+
+    time.sleep(sleep_time)
+
+    location_southa = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='10053']")
+    # location_northa = location_northa_1.location_once_scrolled_into_view
+    driver.execute_script("arguments[0].scrollIntoView();", location_southa)
+    ActionChains(driver).move_to_element(location_southa).pause(1).key_down(Keys.CONTROL).click(location_southa).key_up(Keys.CONTROL).perform()
+    # location_northa.click()
+
+    time.sleep(sleep_time)
+
+    location_ant = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='1945']")
+    # location_northa = location_northa_1.location_once_scrolled_into_view
+    driver.execute_script("arguments[0].scrollIntoView();", location_ant)
+    ActionChains(driver).move_to_element(location_ant).pause(1).key_down(Keys.CONTROL).click(location_ant).key_up(Keys.CONTROL).perform()
     # location_northa.click()
 
     time.sleep(sleep_time)
