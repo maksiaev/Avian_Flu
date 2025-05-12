@@ -568,14 +568,19 @@ def search_collection_date(biosample, metadata_genbank):
 
         return collection_date
     
-def search_collection_date_nucid(nucid, metadata_genbank):
+def search_collection_date_term(term, metadata_genbank):
 
-    print(nucid)
+    print(term)
 
     try:
 
         base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-        # search_url = base_url + "esearch.fcgi?db=biosample&term=" + biosample +"&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        search_url = base_url + "esearch.fcgi?db=nuccore&term=" + term +"&idtype=acc&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        # search_url = base_url + "egquery.fcgi?term=" + term # + "&usehistory=y"
+
+        # print(search_url) 
 
         # # Get Biosample ID from search_url
         # output = requests.get(search_url)
@@ -583,20 +588,24 @@ def search_collection_date_nucid(nucid, metadata_genbank):
         # root = ET.fromstring(xml)
         # sample_id = root.find("./IdList/Id").text
 
-        # nuc_id = biosample
+        # nuc_id = biosample        
 
-        biosample_url = base_url + "elink.fcgi?dbfrom=nuccore&id=" + nucid + "&cmd=neighbor_history&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
-        
-        # # Get Nucleotide ID from biosample_url
-        # output = requests.get(biosample_url)
-        # xml = output.content
-        # root = ET.fromstring(xml)
-        # query_key = root.find(".//QueryKey").text
-        # web_env = root.find(".//WebEnv").text
+        # biosample_url = base_url + "elink.fcgi?dbfrom=biosample&db=nuccore&id=" + term + "&cmd=neighbor_history&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
 
-        # nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+        # print(biosample_url)
 
-        output = requests.get(biosample_url) 
+        # Get Nucleotide ID from biosample_url
+        output = requests.get(search_url)
+        xml = output.content
+        root = ET.fromstring(xml)
+        query_key = root.find(".//QueryKey").text
+        web_env = root.find(".//WebEnv").text
+
+        nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        # print(nucleotide_url)
+
+        output = requests.get(nucleotide_url) 
         xml = output.content
         root = ET.fromstring(xml)
 
@@ -611,7 +620,7 @@ def search_collection_date_nucid(nucid, metadata_genbank):
     except:
         print("Unable to find collection date.")
 
-        row = metadata_genbank[metadata_genbank["id"] == nucid]
+        row = metadata_genbank[metadata_genbank["genbank_acc"] == term]
         collection_date = row.loc[:, "genbank_name"].values[0].split("/")[4]
 
         # Avoid spamming the server
