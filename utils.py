@@ -517,7 +517,7 @@ def fix_animals_andersen(metadata, animals_ref):
 
 def search_collection_date(biosample, metadata_genbank):
 
-    print(biosample)
+    # print(biosample)
 
     try:
     
@@ -547,6 +547,8 @@ def search_collection_date(biosample, metadata_genbank):
 
         # Grab collection date at the end of the sub name
         collection_date = root.find(".//SubName").text.split("|")[-1]
+
+        print(collection_date)
 
         # Avoid spamming the server
         time.sleep(2)
