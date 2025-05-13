@@ -343,6 +343,7 @@ def fasta_df(file_name):
     fasta["Isolate_Name"] = isolate_names
     fasta["Subtype"] = subtypes
     fasta["Segment"] = segments
+    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: x.split("/")[2])
     fasta["Collection_Date"] = collection_dates
     fasta["Sequence"] = sequences
     
@@ -541,6 +542,8 @@ def search_collection_date(biosample, metadata_genbank):
 
         nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
 
+        print(nucleotide_url)
+
         output = requests.get(nucleotide_url) 
         xml = output.content
         root = ET.fromstring(xml)
@@ -548,12 +551,18 @@ def search_collection_date(biosample, metadata_genbank):
         # Grab collection date at the end of the sub name
         collection_date = root.find(".//SubName").text.split("|")[-1]
 
+        # Grab geo_location as well
+        geo_location = root.find(".//SubName").text.split("/")[2]
+
+        # If there's a state associated, re-format
+        geo_location = geo_location.replace(": ", "-")
+
         print(collection_date)
 
         # Avoid spamming the server
         time.sleep(2)
 
-        return collection_date
+        return geo_location + "|" + collection_date
     
     except:
         print("Unable to find collection date.")
@@ -603,7 +612,7 @@ def search_collection_date_term(term, metadata_genbank):
 
         nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
 
-        # print(nucleotide_url)
+        print(nucleotide_url)
 
         output = requests.get(nucleotide_url) 
         xml = output.content
@@ -612,10 +621,18 @@ def search_collection_date_term(term, metadata_genbank):
         # Grab collection date at the end of the sub name
         collection_date = root.find(".//SubName").text.split("|")[-1]
 
+        # Grab geo_location as well
+        geo_location = root.find(".//SubName").text.split("/")[2] 
+
+        # If there's a state associated, re-format
+        geo_location = geo_location.replace(": ", "-")
+
+        print(collection_date)
+
         # Avoid spamming the server
         time.sleep(2)
 
-        return collection_date
+        return geo_location + "|" + collection_date
     
     except:
         print("Unable to find collection date.")
