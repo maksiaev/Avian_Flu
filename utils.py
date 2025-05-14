@@ -18,7 +18,7 @@ import time
 # Function to download data from GISAID
 # Opening and downloading from the website
 
-def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
+def open_gisaid(username, password, browser, sleep_time, start_date, end_date, continent):
 
     if browser=="Firefox":
         # If you want to open Firefox
@@ -94,31 +94,42 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date):
     # Location
     # North America: 6440
     # South America: 10053
+    # Africa: 1001
+    # Asia: 1952
+    # Europe: 3069
+    # Oceania: 9990
     # Antarctica: 1945
-    location_northa = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='6440']")
-    # location_northa = location_northa_1.location_once_scrolled_into_view
-    driver.execute_script("arguments[0].scrollIntoView();", location_northa)
-    ActionChains(driver).move_to_element(location_northa).pause(1).key_down(Keys.CONTROL).click(location_northa).key_up(Keys.CONTROL).perform()
-    # .click(location_northa).perform()
-    # location_northa.click()
 
-    time.sleep(sleep_time)
+    continents = {"North America": '6440', "South America": '10053', "Africa": '1001', "Asia": '1952', "Europe": '3069', "Oceania": '9990', "Antarctica": '1945'}
 
-    location_southa = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='10053']")
-    # location_northa = location_northa_1.location_once_scrolled_into_view
-    driver.execute_script("arguments[0].scrollIntoView();", location_southa)
-    ActionChains(driver).move_to_element(location_southa).pause(1).key_down(Keys.CONTROL).click(location_southa).key_up(Keys.CONTROL).perform()
-    # location_northa.click()
+    locations = continent.split(",")
 
-    time.sleep(sleep_time)
+    for location in locations:
+        location_code = continents[location]
+        location_choice = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value=" + location_code + "]")
+        # location_northa = location_northa_1.location_once_scrolled_into_view
+        driver.execute_script("arguments[0].scrollIntoView();", location_choice)
+        ActionChains(driver).move_to_element(location_choice).pause(1).key_down(Keys.CONTROL).click(location_choice).key_up(Keys.CONTROL).perform()
+        # .click(location_northa).perform()
+        # location_northa.click()
 
-    location_ant = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='1945']")
-    # location_northa = location_northa_1.location_once_scrolled_into_view
-    driver.execute_script("arguments[0].scrollIntoView();", location_ant)
-    ActionChains(driver).move_to_element(location_ant).pause(1).key_down(Keys.CONTROL).click(location_ant).key_up(Keys.CONTROL).perform()
-    # location_northa.click()
+        time.sleep(sleep_time)
 
-    time.sleep(sleep_time)
+    # location_southa = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='10053']")
+    # # location_northa = location_northa_1.location_once_scrolled_into_view
+    # driver.execute_script("arguments[0].scrollIntoView();", location_southa)
+    # ActionChains(driver).move_to_element(location_southa).pause(1).key_down(Keys.CONTROL).click(location_southa).key_up(Keys.CONTROL).perform()
+    # # location_northa.click()
+
+    # time.sleep(sleep_time)
+
+    # location_ant = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='1945']")
+    # # location_northa = location_northa_1.location_once_scrolled_into_view
+    # driver.execute_script("arguments[0].scrollIntoView();", location_ant)
+    # ActionChains(driver).move_to_element(location_ant).pause(1).key_down(Keys.CONTROL).click(location_ant).key_up(Keys.CONTROL).perform()
+    # # location_northa.click()
+
+    # time.sleep(sleep_time)
 
     # Segments: PB2, PB1, PA, HA, NP, NA, MP, NS (all EXCEPT HE, P3)
     segment_list = ['PB2', 'PB1', 'PA', 'HA', 'NP', 'NA', 'MP', 'NS']
