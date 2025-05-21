@@ -563,17 +563,18 @@ def search_collection_date(biosample, metadata_genbank):
         collection_date = root.find(".//SubName").text.split("|")[-1]
 
         # Grab geo_location as well
-        geo_location = root.find(".//SubName").text.split("/")[2]
+        # geo_location = root.find(".//SubName").text.split("/")[2]
 
-        # If there's a state associated, re-format
-        geo_location = geo_location.replace(": ", "-")
+        # # If there's a state associated, re-format
+        # geo_location = geo_location.replace(": ", "-")
 
         print(collection_date)
 
         # Avoid spamming the server
         time.sleep(2)
 
-        return geo_location + "|" + collection_date
+        # return geo_location + "|" + collection_date
+        return collection_date
     
     except:
         print("Unable to find collection date.")
