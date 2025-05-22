@@ -506,9 +506,12 @@ def fix_animals_andersen(metadata, animals_ref):
     # If the animal is in a specific column of animals_ref, label host type as column name
     animal_list = [] # Find animals first
     for name in metadata["Host"].values:
-        name = name.lower()
-        # name = name.replace(" ", "_")
-        animal_list.append(name)
+        try:
+            name = name.lower()
+            # name = name.replace(" ", "_")
+            animal_list.append(name)
+        except:
+            animal_list.append("unknown")
 
     animal_types = []
     for animal in animal_list: # Label each animal as a type
