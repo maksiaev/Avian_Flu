@@ -1,58 +1,71 @@
-State,Abbreviation,Division,Region
-Alabama,AL,East South Central,South
-Alaska,AK,Pacific,West
-Arizona,AZ,Mountain,West
-Arkansas,AR,West South Central,South
-American Samoa,AS,Other,Other
-California,CA,Pacific,West
-Colorado,CO,Mountain,West
-Connecticut,CT,New England,Northeast
-Delaware,DE,South Atlantic,South
-District of Columbia,DC,South Atlantic,South
-Florida,FL,South Atlantic,South
-Georgia,GA,South Atlantic,South
-Guam,GU,Other,Other
-Hawaii,HI,Pacific,West
-Idaho,ID,Mountain,West
-Illinois,IL,East North Central,Midwest
-Indiana,IN,East North Central,Midwest
-Iowa,IA,West North Central,Midwest
-Kansas,KS,West North Central,Midwest
-Kentucky,KY,East South Central,South
-Louisiana,LA,West South Central,South
-Maine,ME,New England,Northeast
-Maryland,MD,South Atlantic,South
-Massachusetts,MA,New England,Northeast
-Michigan,MI,East North Central,Midwest
-Minnesota,MN,West North Central,Midwest
-Mississippi,MS,East South Central,South
-Missouri,MO,West North Central,Midwest
-Montana,MT,Mountain,West
-Nebraska,NE,West North Central,Midwest
-Nevada,NV,Mountain,West
-New Hampshire,NH,New England,Northeast
-New Jersey,NJ,Mid-Atlantic,Northeast
-New Mexico,NM,Mountain,West
-New York,NY,Mid-Atlantic,Northeast
-North Carolina,NC,South Atlantic,South
-North Dakota,ND,West North Central,Midwest
-Northern Mariana Islands,MP,Other,Other
-Ohio,OH,East North Central,Midwest
-Oklahoma,OK,West South Central,South
-Oregon,OR,Pacific,West
-Pennsylvania,PA,Mid-Atlantic,Northeast
-Puerto Rico,PR,Other,Other
-Rhode Island,RI,New England,Northeast
-South Carolina,SC,South Atlantic,South
-South Dakota,SD,West North Central,Midwest
-Tennessee,TN,East South Central,South
-Texas,TX,West South Central,South
-Trust Territories,TT,Other,Other
-Utah,UT,Mountain,West
-Vermont,VT,New England,Northeast
-Virginia,VA,South Atlantic,South
-Virgin Islands,VI,Other,Other
-Washington,WA,Pacific,West
-West Virginia,WV,South Atlantic,South
-Wisconsin,WI,East North Central,Midwest
-Wyoming,WY,Mountain,West
+State,Abbreviation,Division,Region,Country
+Alabama,AL,East South Central,South,USA
+Alaska,AK,Pacific,West,USA
+Arizona,AZ,Mountain,West,USA
+Arkansas,AR,West South Central,South,USA
+American Samoa,AS,Other,Other,USA
+California,CA,Pacific,West,USA
+Colorado,CO,Mountain,West,USA
+Connecticut,CT,New England,Northeast,USA
+Delaware,DE,South Atlantic,South,USA
+District of Columbia,DC,South Atlantic,South,USA
+Florida,FL,South Atlantic,South,USA
+Georgia,GA,South Atlantic,South,USA
+Guam,GU,Other,Other,USA
+Hawaii,HI,Pacific,West,USA
+Idaho,ID,Mountain,West,USA
+Illinois,IL,East North Central,Midwest,USA
+Indiana,IN,East North Central,Midwest,USA
+Iowa,IA,West North Central,Midwest,USA
+Kansas,KS,West North Central,Midwest,USA
+Kentucky,KY,East South Central,South,USA
+Louisiana,LA,West South Central,South,USA
+Maine,ME,New England,Northeast,USA
+Maryland,MD,South Atlantic,South,USA
+Massachusetts,MA,New England,Northeast,USA
+Michigan,MI,East North Central,Midwest,USA
+Minnesota,MN,West North Central,Midwest,USA
+Mississippi,MS,East South Central,South,USA
+Missouri,MO,West North Central,Midwest,USA
+Montana,MT,Mountain,West,USA
+Nebraska,NE,West North Central,Midwest,USA
+Nevada,NV,Mountain,West,USA
+New Hampshire,NH,New England,Northeast,USA
+New Jersey,NJ,Mid-Atlantic,Northeast,USA
+New Mexico,NM,Mountain,West,USA
+New York,NY,Mid-Atlantic,Northeast,USA
+North Carolina,NC,South Atlantic,South,USA
+North Dakota,ND,West North Central,Midwest,USA
+Northern Mariana Islands,MP,Other,Other,USA
+Ohio,OH,East North Central,Midwest,USA
+Oklahoma,OK,West South Central,South,USA
+Oregon,OR,Pacific,West,USA
+Pennsylvania,PA,Mid-Atlantic,Northeast,USA
+Puerto Rico,PR,Other,Other,USA
+Rhode Island,RI,New England,Northeast,USA
+South Carolina,SC,South Atlantic,South,USA
+South Dakota,SD,West North Central,Midwest,USA
+Tennessee,TN,East South Central,South,USA
+Texas,TX,West South Central,South,USA
+Trust Territories,TT,Other,Other,USA
+Utah,UT,Mountain,West,USA
+Vermont,VT,New England,Northeast,USA
+Virginia,VA,South Atlantic,South,USA
+Virgin Islands,VI,Other,Other,USA
+Washington,WA,Pacific,West,USA
+West Virginia,WV,South Atlantic,South,USA
+Wisconsin,WI,East North Central,Midwest,USA
+Wyoming,WY,Mountain,West,USA
+Alberta,AB,,,Canada
+British Columbia,BC,,,Canada
+Manitoba,MB,,,Canada
+New Brunswick,NB,,,Canada
+Newfoundland and Labrador,NL,,,Canada
+Northwest Territories,NT,,,Canada
+Nova Scotia,NS,,,Canada
+Nunavut,NU,,,Canada
+Ontario,ON,,,Canada
+Prince Edward Island,PE,,,Canada
+Quebec,QC,,,Canada
+Saskatchewan,SK,,,Canada
+Yukon,YT,,,Canada

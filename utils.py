@@ -18,7 +18,7 @@ import time
 # Function to download data from GISAID
 # Opening and downloading from the website
 
-def open_gisaid(username, password, browser, sleep_time, start_date, end_date, continent):
+def open_gisaid(username, password, browser, sleep_time, continent, start_date, end_date):
 
     if browser=="Firefox":
         # If you want to open Firefox
@@ -304,7 +304,7 @@ def open_gisaid(username, password, browser, sleep_time, start_date, end_date, c
     driver.close()
 
 # Function to convert fasta file to dataframe 
-def fasta_df(file_name):
+def fasta_df(file_name, state_ref):
 
     fasta = pd.DataFrame()
     headers = []
@@ -354,7 +354,8 @@ def fasta_df(file_name):
     fasta["Isolate_Name"] = isolate_names
     fasta["Subtype"] = subtypes
     fasta["Segment"] = segments
-    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: x.split("/")[2])
+    # Geo_Location is more complicated
+    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2], 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2], 'Abbreviation'].iloc[0] if x.split("/")[2] in state_ref["State"].values else x.split("/")[2])
     fasta["Collection_Date"] = collection_dates
     fasta["Sequence"] = sequences
     
@@ -471,7 +472,7 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
             fasta_seg["Genotype"] = fasta_gen
 
             # Rename sequences 
-            new_name = ">" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Collection_Date"] + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
+            new_name = ">" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Collection_Date"] + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
             fasta_seg["New_Name"] = new_name
             # print(fasta_seg["New_Name"])
 
