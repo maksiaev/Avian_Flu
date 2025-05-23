@@ -448,7 +448,7 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
     # genotypes = ["B3.13", "D1.1"]
     # genotype_fastas = {"B3.13": b313_fasta, "D1.1": d11_fasta}
 
-    # “>Isolate_name|subtype|collection_date|host_type|genotype”
+    # “>EPI_ID/Isolate_name|subtype|collection_date|host_type|genotype”
 
     segment_fastas = []
     for fasta_gen in genotypes: # .keys():
@@ -472,7 +472,7 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
             fasta_seg["Genotype"] = fasta_gen
 
             # Rename sequences 
-            new_name = ">" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Collection_Date"] + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
+            new_name = ">" + fasta_seg["Isolate_Id"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Collection_Date"] + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
             fasta_seg["New_Name"] = new_name
             # print(fasta_seg["New_Name"])
 
@@ -490,9 +490,12 @@ def sort_animals_andersen(metadata):
     host_names = metadata["Host"]
     animal_list = []
     for name in host_names.values:
-        animal_low = name.lower()
-        # animal = animal_low.replace(" ", "_") # replace spaces with underscores
-        animal_list.append(animal_low)
+        try: 
+            animal_low = name.lower()
+            # animal = animal_low.replace(" ", "_") # replace spaces with underscores
+            animal_list.append(animal_low)
+        except:
+            animal_list.append(name)
 
     unique_animals = list(set(animal_list))
 
