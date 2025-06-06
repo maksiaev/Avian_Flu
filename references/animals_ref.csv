@@ -3,8 +3,8 @@ great_horned_owl,dairy_cow,cat,deer mouse,washington,mixed
 common_raven,cattle,domestic_cat,house_mouse,nevada,environment
 cooper's_hawk,cattle milk product,feral_cat,skunk,wyoming,multispecies
 coopers_hawk,bovine_milk,feline,striped_skunk,california,unknown
-peafowl,bovine ,domestic-cat,norway rat,michigan,
-crane,bos taurus,domestic cat,ermine,colorado,
+peafowl,bovine ,domestic-cat,norway rat,michigan,'
+crane,bos taurus,domestic cat,ermine,colorado,-
 peregrine_falcon,,bobcat,harbor_seal,ohio,
 barn_owl,,geoffroys_cat,fox,louisiana,
 flamingo,,cougar,bottlenose_dolphin,british_columbia,
@@ -414,3 +414,15 @@ sand_crane,,,,,
 american_green-winged_teal,,,,,
 bonaparte's_gull,,,,,
 sharp-shinned_hawk,,,,,
+sharp-shinned hawk,,,,,
+bonaparte's gull,,,,,
+american coot,,,,,
+greater scaup,,,,,
+snowy egret,,,,,
+barred owl,,,,,
+glaucous gull,,,,,
+rock goose,,,,,
+sand crane,,,,,
+ross's goose,,,,,
+great egret,,,,,
+guinea,,,,,
