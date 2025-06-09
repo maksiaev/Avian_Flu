@@ -303,7 +303,7 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
 
     driver.close()
 
-# Function to convert fasta file to dataframe 
+# Function to prepare dataframes
 def fasta_df(file_name, state_ref):
 
     fasta = pd.DataFrame()
@@ -314,6 +314,9 @@ def fasta_df(file_name, state_ref):
     segments = []
     collection_dates = []
     sequences = []
+    host_types = []
+    species = []
+    genotypes = []
     with open(file_name) as f:
         lines = f.readlines()
         for num, line in enumerate(lines):
@@ -323,19 +326,23 @@ def fasta_df(file_name, state_ref):
                     header = line[1:].strip() # Remove the ">"
                     # print(header)
                     split_header = header.split("|")
+                    split_first_header = split_header[0].split("/")
                     # print(split_header)
                     headers.append(header) 
-                    isolate_ids.append(split_header[0])
-                    isolate_names.append(split_header[1]) # We'll need to extract data from this too
+                    isolate_ids.append(split_first_header[3])
+                    isolate_names.append(split_header[0]) # We'll need to extract data from this too
                     # print(split_header[2].split("_")[-1])
-                    subtypes.append(split_header[2].split("_")[-1])  # Get only H5N1
-                    segments.append(split_header[3])
-                    if split_header[4] == "2024-01-01":
-                        collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
-                    elif split_header[4] == "2025-01-01":
-                        collection_dates.append("2025")
-                    else: 
-                        collection_dates.append(split_header[4])
+                    subtypes.append(split_header[1])  # Get only H5N1
+                    genotypes.append(split_header[-1])
+                    segments.append(file_name.split("_")[-3])
+                    host_types.append(split_header[-2])
+                    species.append(split_first_header[1])
+                    # if split_header[4] == "2024-01-01":
+                    #     collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
+                    # elif split_header[4] == "2025-01-01":
+                    #     collection_dates.append("2025")
+                    # else: 
+                    collection_dates.append(split_header[3].split("_")[-1])
                     if num < len(lines): # If we're not at the last line
                         # for i, l in enumerate(lines[num + 1:]):
                         i = num
@@ -355,11 +362,72 @@ def fasta_df(file_name, state_ref):
     fasta["Subtype"] = subtypes
     fasta["Segment"] = segments
     # Geo_Location is more complicated
-    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2], 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2], 'Abbreviation'].iloc[0] if x.split("/")[2] in state_ref["State"].values else x.split("/")[2])
-    fasta["Collection_Date"] = collection_dates
+    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
+    fasta["Date Collected"] = collection_dates
+    fasta["Species"] = species
+    fasta["Host_Type"] = host_types
+    fasta["Genotype"] = genotypes
     fasta["Sequence"] = sequences
     
     return fasta
+
+# # Function to convert fasta file to dataframe 
+# def fasta_df(file_name, state_ref):
+
+#     fasta = pd.DataFrame()
+#     headers = []
+#     isolate_ids = []
+#     isolate_names = []
+#     subtypes = []
+#     segments = []
+#     collection_dates = []
+#     sequences = []
+#     with open(file_name) as f:
+#         lines = f.readlines()
+#         for num, line in enumerate(lines):
+#             # print(line)
+#             if line[0] == ">": # If it's a header
+#                 if line[1:].strip() not in headers: # And the previous line is not a header we've seen before
+#                     header = line[1:].strip() # Remove the ">"
+#                     # print(header)
+#                     split_header = header.split("|")
+#                     # print(split_header)
+#                     headers.append(header) 
+#                     isolate_ids.append(split_header[0])
+#                     isolate_names.append(split_header[1]) # We'll need to extract data from this too
+#                     # print(split_header[2].split("_")[-1])
+#                     subtypes.append(split_header[2].split("_")[-1])  # Get only H5N1
+#                     segments.append(split_header[3])
+#                     if split_header[4] == "2024-01-01":
+#                         collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
+#                     elif split_header[4] == "2025-01-01":
+#                         collection_dates.append("2025")
+#                     else: 
+#                         collection_dates.append(split_header[4])
+#                     if num < len(lines): # If we're not at the last line
+#                         # for i, l in enumerate(lines[num + 1:]):
+#                         i = num
+#                         sequence = ""
+#                         # print(lines[i])
+#                         # print(lines[i + 1])
+#                         while i < len(lines) - 1 and lines[i + 1][0] != ">": # While the next line is part of a sequence
+#                             sequence = sequence + lines[i + 1].strip()
+#                             i += 1
+#                         sequences.append(sequence) # Add next line to sequences
+#         f.close()
+
+#     # Create columns for data frame 
+#     fasta["Header"] = headers
+#     fasta["Isolate_Id"] = isolate_ids
+#     fasta["Isolate_Name"] = isolate_names
+#     fasta["Subtype"] = subtypes
+#     fasta["Segment"] = segments
+#     # Geo_Location is more complicated
+#     fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2], 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2], 'Abbreviation'].iloc[0] if x.split("/")[2] in state_ref["State"].values else x.split("/")[2])
+#     fasta["Collection_Date"] = collection_dates
+#     fasta["Sequence"] = sequences
+    
+#     return fasta
 
 # Function to get each unique animal listed so we can sort them
 
