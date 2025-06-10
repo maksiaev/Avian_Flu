@@ -314,9 +314,10 @@ def fasta_df(file_name, state_ref):
     segments = []
     collection_dates = []
     sequences = []
-    host_types = []
+    # host_types = []
     species = []
-    genotypes = []
+    identifiers = []
+    # genotypes = []
     with open(file_name) as f:
         lines = f.readlines()
         for num, line in enumerate(lines):
@@ -324,25 +325,29 @@ def fasta_df(file_name, state_ref):
             if line[0] == ">": # If it's a header
                 if line[1:].strip() not in headers: # And the previous line is not a header we've seen before
                     header = line[1:].strip() # Remove the ">"
-                    # print(header)
+                    print(header)
                     split_header = header.split("|")
-                    split_first_header = split_header[0].split("/")
+                    if len(header.split("|")) > 4:
+                        identifier = header.split("|")[0]
+                        identifiers.append(identifier)
+                    split_first_header = split_header[-4].split("/")
+                    # print(split_first_header)
                     # print(split_header)
                     headers.append(header) 
                     isolate_ids.append(split_first_header[3])
-                    isolate_names.append(split_header[0]) # We'll need to extract data from this too
+                    isolate_names.append(split_header[-4]) # We'll need to extract data from this too
                     # print(split_header[2].split("_")[-1])
-                    subtypes.append(split_header[1])  # Get only H5N1
-                    genotypes.append(split_header[-1])
-                    segments.append(file_name.split("_")[-3])
-                    host_types.append(split_header[-2])
+                    subtypes.append(split_header[-3].split("_")[-1])  # Get only H5N1
+                    # genotypes.append(split_header[-1])
+                    segments.append(split_header[-2].split("_")[-1])
+                    # host_types.append(split_first_header[1])
                     species.append(split_first_header[1])
                     # if split_header[4] == "2024-01-01":
                     #     collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
                     # elif split_header[4] == "2025-01-01":
                     #     collection_dates.append("2025")
                     # else: 
-                    collection_dates.append(split_header[3].split("_")[-1])
+                    collection_dates.append(split_header[-1].split("_")[-1])
                     if num < len(lines): # If we're not at the last line
                         # for i, l in enumerate(lines[num + 1:]):
                         i = num
@@ -365,9 +370,11 @@ def fasta_df(file_name, state_ref):
     fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
     fasta["Date Collected"] = collection_dates
     fasta["Species"] = species
-    fasta["Host_Type"] = host_types
-    fasta["Genotype"] = genotypes
+    # fasta["Host_Type"] = host_types
+    # fasta["Genotype"] = genotypes
     fasta["Sequence"] = sequences
+    if len(identifiers) == len(fasta):
+        fasta["Identifier"] = identifiers
     
     return fasta
 
@@ -524,15 +531,20 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
 
             xls = metadata[metadata["Genotype"].apply(lambda x: x.split(" ")[0]) == fasta_gen]
 
+            # print(xls)
             # print("XLS: ", metadata["Genotype"])
 
             # print(d11_xls)
 
             # FASTA
 
-            mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
+            if "Identifier" in fasta.columns:
+                mask = fasta["Identifier"].isin(xls['Isolate_Id'])
+            else:           
+                mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
 
             fasta_seg_pre = fasta[mask]
+            # print(fasta_seg_pre)
 
             # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
             fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
@@ -540,11 +552,12 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
             fasta_seg["Genotype"] = fasta_gen
 
             # Rename sequences 
-            new_name = ">" + fasta_seg["Isolate_Id"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Collection_Date"] + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
+            new_name = ">" + fasta_seg["Isolate_Id"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"] + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
             fasta_seg["New_Name"] = new_name
             # print(fasta_seg["New_Name"])
 
             segment_fastas.append(fasta_seg)
+            # print(fasta_seg)
 
     return segment_fastas, unique_segments
 
