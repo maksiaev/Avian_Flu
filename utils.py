@@ -552,7 +552,7 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
             fasta_seg["Genotype"] = fasta_gen
 
             # Rename sequences 
-            new_name = ">" + fasta_seg["Isolate_Id"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"] + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
+            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"] + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
             fasta_seg["New_Name"] = new_name
             # print(fasta_seg["New_Name"])
 
