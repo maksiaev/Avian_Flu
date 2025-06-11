@@ -325,11 +325,13 @@ def fasta_df(file_name, state_ref):
             if line[0] == ">": # If it's a header
                 if line[1:].strip() not in headers: # And the previous line is not a header we've seen before
                     header = line[1:].strip() # Remove the ">"
-                    print(header)
+                    # print(header)
                     split_header = header.split("|")
                     if len(header.split("|")) > 4:
                         identifier = header.split("|")[0]
                         identifiers.append(identifier)
+                    else:
+                        identifiers.append("unknown")
                     split_first_header = split_header[-4].split("/")
                     # print(split_first_header)
                     # print(split_header)
