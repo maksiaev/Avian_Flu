@@ -1,71 +1,71 @@
-State,Abbreviation,Division,Region,Country
-Alabama,AL,East South Central,South,USA
-Alaska,AK,Pacific,West,USA
-Arizona,AZ,Mountain,West,USA
-Arkansas,AR,West South Central,South,USA
-American Samoa,AS,Other,Other,USA
-California,CA,Pacific,West,USA
-Colorado,CO,Mountain,West,USA
-Connecticut,CT,New England,Northeast,USA
-Delaware,DE,South Atlantic,South,USA
-District of Columbia,DC,South Atlantic,South,USA
-Florida,FL,South Atlantic,South,USA
-Georgia,GA,South Atlantic,South,USA
-Guam,GU,Other,Other,USA
-Hawaii,HI,Pacific,West,USA
-Idaho,ID,Mountain,West,USA
-Illinois,IL,East North Central,Midwest,USA
-Indiana,IN,East North Central,Midwest,USA
-Iowa,IA,West North Central,Midwest,USA
-Kansas,KS,West North Central,Midwest,USA
-Kentucky,KY,East South Central,South,USA
-Louisiana,LA,West South Central,South,USA
-Maine,ME,New England,Northeast,USA
-Maryland,MD,South Atlantic,South,USA
-Massachusetts,MA,New England,Northeast,USA
-Michigan,MI,East North Central,Midwest,USA
-Minnesota,MN,West North Central,Midwest,USA
-Mississippi,MS,East South Central,South,USA
-Missouri,MO,West North Central,Midwest,USA
-Montana,MT,Mountain,West,USA
-Nebraska,NE,West North Central,Midwest,USA
-Nevada,NV,Mountain,West,USA
-New Hampshire,NH,New England,Northeast,USA
-New Jersey,NJ,Mid-Atlantic,Northeast,USA
-New Mexico,NM,Mountain,West,USA
-New York,NY,Mid-Atlantic,Northeast,USA
-North Carolina,NC,South Atlantic,South,USA
-North Dakota,ND,West North Central,Midwest,USA
-Northern Mariana Islands,MP,Other,Other,USA
-Ohio,OH,East North Central,Midwest,USA
-Oklahoma,OK,West South Central,South,USA
-Oregon,OR,Pacific,West,USA
-Pennsylvania,PA,Mid-Atlantic,Northeast,USA
-Puerto Rico,PR,Other,Other,USA
-Rhode Island,RI,New England,Northeast,USA
-South Carolina,SC,South Atlantic,South,USA
-South Dakota,SD,West North Central,Midwest,USA
-Tennessee,TN,East South Central,South,USA
-Texas,TX,West South Central,South,USA
-Trust Territories,TT,Other,Other,USA
-Utah,UT,Mountain,West,USA
-Vermont,VT,New England,Northeast,USA
-Virginia,VA,South Atlantic,South,USA
-Virgin Islands,VI,Other,Other,USA
-Washington,WA,Pacific,West,USA
-West Virginia,WV,South Atlantic,South,USA
-Wisconsin,WI,East North Central,Midwest,USA
-Wyoming,WY,Mountain,West,USA
-Alberta,AB,,,Canada
-British Columbia,BC,,,Canada
-Manitoba,MB,,,Canada
-New Brunswick,NB,,,Canada
-Newfoundland and Labrador,NL,,,Canada
-Northwest Territories,NT,,,Canada
-Nova Scotia,NS,,,Canada
-Nunavut,NU,,,Canada
-Ontario,ON,,,Canada
-Prince Edward Island,PE,,,Canada
-Quebec,QC,,,Canada
-Saskatchewan,SK,,,Canada
-Yukon,YT,,,Canada
+State,Abbreviation,Division,Region,Country,Latitude,Longitude
+Alabama,AL,East South Central,South,USA,32.806671,-86.79113
+Alaska,AK,Pacific,West,USA,61.370716,-152.404419
+Arizona,AZ,Mountain,West,USA,33.729759,-111.431221
+Arkansas,AR,West South Central,South,USA,34.969704,-92.373123
+American Samoa,AS,Other,Other,USA,,
+California,CA,Pacific,West,USA,36.116203,-119.681564
+Colorado,CO,Mountain,West,USA,39.059811,-105.311104
+Connecticut,CT,New England,Northeast,USA,41.597782,-72.755371
+Delaware,DE,South Atlantic,South,USA,39.318523,-75.507141
+District of Columbia,DC,South Atlantic,South,USA,38.897438,-77.026817
+Florida,FL,South Atlantic,South,USA,27.766279,-81.686783
+Georgia,GA,South Atlantic,South,USA,33.040619,-83.643074
+Guam,GU,Other,Other,USA,,
+Hawaii,HI,Pacific,West,USA,21.094318,-157.498337
+Idaho,ID,Mountain,West,USA,44.240459,-114.478828
+Illinois,IL,East North Central,Midwest,USA,40.349457,-88.986137
+Indiana,IN,East North Central,Midwest,USA,39.849426,-86.258278
+Iowa,IA,West North Central,Midwest,USA,42.011539,-93.210526
+Kansas,KS,West North Central,Midwest,USA,38.5266,-96.726486
+Kentucky,KY,East South Central,South,USA,37.66814,-84.670067
+Louisiana,LA,West South Central,South,USA,31.169546,-91.867805
+Maine,ME,New England,Northeast,USA,44.693947,-69.381927
+Maryland,MD,South Atlantic,South,USA,39.063946,-76.802101
+Massachusetts,MA,New England,Northeast,USA,42.230171,-71.530106
+Michigan,MI,East North Central,Midwest,USA,43.326618,-84.536095
+Minnesota,MN,West North Central,Midwest,USA,45.694454,-93.900192
+Mississippi,MS,East South Central,South,USA,32.741646,-89.678696
+Missouri,MO,West North Central,Midwest,USA,38.456085,-92.288368
+Montana,MT,Mountain,West,USA,46.921925,-110.454353
+Nebraska,NE,West North Central,Midwest,USA,41.12537,-98.268082
+Nevada,NV,Mountain,West,USA,38.313515,-117.055374
+New Hampshire,NH,New England,Northeast,USA,43.452492,-71.563896
+New Jersey,NJ,Mid-Atlantic,Northeast,USA,40.298904,-74.521011
+New Mexico,NM,Mountain,West,USA,34.840515,-106.248482
+New York,NY,Mid-Atlantic,Northeast,USA,42.165726,-74.948051
+North Carolina,NC,South Atlantic,South,USA,35.630066,-79.806419
+North Dakota,ND,West North Central,Midwest,USA,47.528912,-99.784012
+Northern Mariana Islands,MP,Other,Other,USA,,
+Ohio,OH,East North Central,Midwest,USA,40.388783,-82.764915
+Oklahoma,OK,West South Central,South,USA,35.565342,-96.928917
+Oregon,OR,Pacific,West,USA,44.572021,-122.070938
+Pennsylvania,PA,Mid-Atlantic,Northeast,USA,40.590752,-77.209755
+Puerto Rico,PR,Other,Other,USA,,
+Rhode Island,RI,New England,Northeast,USA,41.680893,-71.51178
+South Carolina,SC,South Atlantic,South,USA,33.856892,-80.945007
+South Dakota,SD,West North Central,Midwest,USA,44.299782,-99.438828
+Tennessee,TN,East South Central,South,USA,35.747845,-86.692345
+Texas,TX,West South Central,South,USA,31.054487,-97.563461
+Trust Territories,TT,Other,Other,USA,,
+Utah,UT,Mountain,West,USA,40.150032,-111.862434
+Vermont,VT,New England,Northeast,USA,44.045876,-72.710686
+Virginia,VA,South Atlantic,South,USA,37.769337,-78.169968
+Virgin Islands,VI,Other,Other,USA,,
+Washington,WA,Pacific,West,USA,47.400902,-121.490494
+West Virginia,WV,South Atlantic,South,USA,38.491226,-80.954453
+Wisconsin,WI,East North Central,Midwest,USA,44.268543,-89.616508
+Wyoming,WY,Mountain,West,USA,42.755966,-107.30249
+Alberta,AB,,,Canada,,
+British Columbia,BC,,,Canada,,
+Manitoba,MB,,,Canada,,
+New Brunswick,NB,,,Canada,,
+Newfoundland and Labrador,NL,,,Canada,,
+Northwest Territories,NT,,,Canada,,
+Nova Scotia,NS,,,Canada,,
+Nunavut,NU,,,Canada,,
+Ontario,ON,,,Canada,,
+Prince Edward Island,PE,,,Canada,,
+Quebec,QC,,,Canada,,
+Saskatchewan,SK,,,Canada,,
+Yukon,YT,,,Canada,,
