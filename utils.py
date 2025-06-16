@@ -332,12 +332,12 @@ def fasta_df(file_name, state_ref):
                         identifiers.append(identifier)
                     else:
                         identifiers.append("unknown")
-                    split_first_header = split_header[-4].split("/")
-                    # print(split_first_header)
+                    split_first_header = split_header[1].split("/")
+                    print(split_first_header)
                     # print(split_header)
                     headers.append(header) 
                     isolate_ids.append(split_first_header[3])
-                    isolate_names.append(split_header[-4]) # We'll need to extract data from this too
+                    isolate_names.append(split_header[1]) # We'll need to extract data from this too
                     # print(split_header[2].split("_")[-1])
                     subtypes.append(split_header[-3].split("_")[-1])  # Get only H5N1
                     # genotypes.append(split_header[-1])
