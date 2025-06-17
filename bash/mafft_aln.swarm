@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH --job-name="MAFFT cat genome"
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user="alexander.maksiaev@nih.gov"
+##################################################
+######################
+
+
+set -e
+module load mafft
+
+cd /data/maksiaevai/11-01-2021--06-13-2025_cats/A3/HA/; mafft --thread $SLURM_CPUS_PER_TASK A3_HA_concat_11-01-2021--06-13-2025.fasta > A3_HA_concat_11-01-2021--06-13-2025_aln.fasta
+cd /data/maksiaevai/11-01-2021--06-13-2025_cats/A3/MP/; mafft --thread $SLURM_CPUS_PER_TASK A3_MP_concat_11-01-2021--06-13-2025.fasta > A3_MP_concat_11-01-2021--06-13-2025_aln.fasta
+cd /data/maksiaevai/11-01-2021--06-13-2025_cats/A3/NP/; mafft --thread $SLURM_CPUS_PER_TASK A3_NP_concat_11-01-2021--06-13-2025.fasta > A3_NP_concat_11-01-2021--06-13-2025_aln.fasta
+cd /data/maksiaevai/11-01-2021--06-13-2025_cats/A3/NS/; mafft --thread $SLURM_CPUS_PER_TASK A3_NS_concat_11-01-2021--06-13-2025.fasta > A3_NS_concat_11-01-2021--06-13-2025_aln.fasta
+cd /data/maksiaevai/11-01-2021--06-13-2025_cats/A3/NA/; mafft --thread $SLURM_CPUS_PER_TASK A3_NA_concat_11-01-2021--06-13-2025.fasta > A3_NA_concat_11-01-2021--06-13-2025_aln.fasta
+cd /data/maksiaevai/11-01-2021--06-13-2025_cats/A3/PA/; mafft --thread $SLURM_CPUS_PER_TASK A3_PA_concat_11-01-2021--06-13-2025.fasta > A3_PA_concat_11-01-2021--06-13-2025_aln.fasta
+cd /data/maksiaevai/11-01-2021--06-13-2025_cats/A3/PB1/; mafft --thread $SLURM_CPUS_PER_TASK A3_PB1_concat_11-01-2021--06-13-2025.fasta > A3_PB1_concat_11-01-2021--06-13-2025_aln.fasta
+cd /data/maksiaevai/11-01-2021--06-13-2025_cats/A3/PB2/; mafft --thread $SLURM_CPUS_PER_TASK A3_PB2_concat_11-01-2021--06-13-2025.fasta > A3_PB2_concat_11-01-2021--06-13-2025_aln.fasta
