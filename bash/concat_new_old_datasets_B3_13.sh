@@ -1,12 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name="B3_13 MAFFT concatenation genome"
+#SBATCH --job-name="B3.13 old and new concatenation"
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user="alexander.maksiaev@nih.gov"
 ##################################################
 ######################
-
-set -e
-module load mafft
 
 segments[0]="PB2"
 segments[1]="PB1"
@@ -17,7 +14,7 @@ segments[5]="NA"
 segments[6]="MP"
 segments[7]="NS"
 
-for segment in ${segments[@]}; do mafft --thread $SLURM_CPUS_PER_TASK B3_13_${segment}_concat_11-01-2021--06-13-2025.fasta > B3_13_${segment}_concat_11-01-2021--06-13-2025_aln.fasta; done
+for segment in ${segments[@]}; do cat *"$segment"*.fasta > B3_13_${segment}_concat_11-01-2021--06-13-2025.fasta; done
 
 ######################
 date +"%Y-%m-%d %H:%M"
