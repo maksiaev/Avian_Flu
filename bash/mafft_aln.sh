@@ -17,7 +17,7 @@ segments[5]="NA"
 segments[6]="MP"
 segments[7]="NS"
 
-for segment in ${segments[@]}; do mafft --thread $SLURM_CPUS_PER_TASK B3_13_${segment}_concat_11-01-2021--06-13-2025.fasta > B3_13_${segment}_concat_11-01-2021--06-13-2025_aln.fasta; done
+for segment in ${segments[@]}; do mafft --thread --cpus-per-task=4 B3_13_${segment}_concat_11-01-2021--06-13-2025.fasta > B3_13_${segment}_concat_11-01-2021--06-13-2025_aln.fasta; done
 
 ######################
 date +"%Y-%m-%d %H:%M"
