@@ -78,7 +78,7 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
     time.sleep(sleep_time)
 
     # H: 5
-    h_5 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')]//option[@value='2.3.4.4b']") # The second multi-select
+    h_5 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')]//option[@value='5']") # The second multi-select
     ActionChains(driver).move_to_element(h_5).pause(1).click(h_5).perform() 
 
     time.sleep(sleep_time)
@@ -86,10 +86,10 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
     # Find the ID for N
 
     # N: 1
-    # n_1 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')][3]//option[@value='1']") # The third multi-select
-    # ActionChains(driver).move_to_element(n_1).pause(1).click(n_1).perform() 
+    n_1 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')][3]//option[@value='1']") # The third multi-select
+    ActionChains(driver).move_to_element(n_1).pause(1).click(n_1).perform() 
 
-    # time.sleep(sleep_time)
+    time.sleep(sleep_time)
     
     # Location
     # North America: 6440
@@ -341,7 +341,7 @@ def fasta_df(file_name, state_ref):
                     # print(split_header[2].split("_")[-1])
                     subtypes.append(split_header[-3].split("_")[-1])  # Get only H5N1
                     # genotypes.append(split_header[-1])
-                    segments.append(split_header[-2].split("_")[-1])
+                    segments.append(split_header[-2].split("|")[-1])
                     # host_types.append(split_first_header[1])
                     species.append(split_first_header[1])
                     # if split_header[4] == "2024-01-01":
