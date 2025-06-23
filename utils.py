@@ -573,12 +573,17 @@ def sort_animals_andersen(metadata):
     host_names = metadata["Host"]
     animal_list = []
     for name in host_names.values:
-        try: 
-            animal_low = name.lower()
-            # animal = animal_low.replace(" ", "_") # replace spaces with underscores
-            animal_list.append(animal_low)
+        # try: 
+        #     animal_low = name.lower()
+        #     # animal = animal_low.replace(" ", "_") # replace spaces with underscores
+        #     animal_list.append(animal_low)
+        # except:
+        try:
+            if name.replace(" ", "").isalpha():
+                animal_low = name.lower()
+                animal_list.append(animal_low)
         except:
-            animal_list.append(name)
+            animal_list.append("unknown")
 
     unique_animals = list(set(animal_list))
 
