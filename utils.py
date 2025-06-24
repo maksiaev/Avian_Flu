@@ -86,7 +86,7 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
     # Find the ID for N
 
     # N: 1
-    n_1 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')][3]//option[@value='1']") # The third multi-select
+    n_1 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')][3]//option[@value='2.3.4.4b']") # The third multi-select
     ActionChains(driver).move_to_element(n_1).pause(1).click(n_1).perform() 
 
     time.sleep(sleep_time)
