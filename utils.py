@@ -311,13 +311,13 @@ def fasta_df(file_name, state_ref):
     isolate_ids = []
     isolate_names = []
     subtypes = []
-    segments = []
+    # segments = []
     collection_dates = []
     sequences = []
-    # host_types = []
+    host_types = []
     species = []
     identifiers = []
-    # genotypes = []
+    genotypes = []
     with open(file_name) as f:
         lines = f.readlines()
         for num, line in enumerate(lines):
@@ -327,29 +327,31 @@ def fasta_df(file_name, state_ref):
                     header = line[1:].strip() # Remove the ">"
                     # print(header)
                     split_header = header.split("|")
-                    if len(header.split("|")) > 4:
+                    if len(header.split("|")) > 6:
                         identifier = header.split("|")[0]
                         identifiers.append(identifier)
+                        split_first_header = split_header[1].split("/")
                     else:
                         identifiers.append("unknown")
-                    split_first_header = split_header[1].split("/")
+                        split_first_header = split_header[0].split("/")
                     # print(split_first_header)
                     # print(split_header)
                     headers.append(header) 
                     isolate_ids.append(split_first_header[3])
-                    isolate_names.append(split_header[1]) # We'll need to extract data from this too
+                    isolate_names.append(split_header[-6]) # We'll need to extract data from this too
                     # print(split_header[2].split("_")[-1])
-                    subtypes.append(split_header[-3].split("_")[-1])  # Get only H5N1
-                    # genotypes.append(split_header[-1])
-                    segments.append(split_header[-2].split("|")[-1])
-                    # host_types.append(split_first_header[1])
+                    subtypes.append(split_header[-5].split("_")[-1])  # Get only H5N1
+                    genotypes.append(split_header[-1])
+                    # segments.append(split_header[-2].split("|")[-1])
+                    host_types.append(split_header[-2])
                     species.append(split_first_header[1])
                     # if split_header[4] == "2024-01-01":
                     #     collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
                     # elif split_header[4] == "2025-01-01":
                     #     collection_dates.append("2025")
                     # else: 
-                    collection_dates.append(split_header[-1].split("_")[-1])
+                    collection_dates.append(split_header[-3])
+                    # collection_dates.append(split_header[-1].split("_")[-1])
                     if num < len(lines): # If we're not at the last line
                         # for i, l in enumerate(lines[num + 1:]):
                         i = num
@@ -367,13 +369,13 @@ def fasta_df(file_name, state_ref):
     fasta["Isolate_Id"] = isolate_ids
     fasta["Isolate_Name"] = isolate_names
     fasta["Subtype"] = subtypes
-    fasta["Segment"] = segments
+    # fasta["Segment"] = segments
     # Geo_Location is more complicated
     fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
     fasta["Date Collected"] = collection_dates
     fasta["Species"] = species
-    # fasta["Host_Type"] = host_types
-    # fasta["Genotype"] = genotypes
+    fasta["Host_Type"] = host_types
+    fasta["Genotype"] = genotypes
     fasta["Sequence"] = sequences
     if len(identifiers) == len(fasta):
         fasta["Identifier"] = identifiers
