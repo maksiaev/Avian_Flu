@@ -1,8 +1,8 @@
-mafft --thread 4 D1.1_PB2_combined_06-16-2025.fasta > D1_1_PB2_11-01-2021--06-13-2025_aln.fasta
-mafft --thread 4 D1.1_PB1_combined_06-16-2025.fasta > D1_1_PB1_11-01-2021--06-13-2025_aln.fasta
-mafft --thread 4 D1.1_PA_combined_06-16-2025.fasta > D1_1_PA_11-01-2021--06-13-2025_aln.fasta
-mafft --thread 4 D1.1_HA_combined_06-16-2025.fasta > D1_1_HA_11-01-2021--06-13-2025_aln.fasta
-mafft --thread 4 D1.1_NP_combined_06-16-2025.fasta > D1_1_NP_11-01-2021--06-13-2025_aln.fasta
-mafft --thread 4 D1.1_NA_combined_06-16-2025.fasta > D1_1_NA_11-01-2021--06-13-2025_aln.fasta
-mafft --thread 4 D1.1_MP_combined_06-16-2025.fasta > D1_1_MP_11-01-2021--06-13-2025_aln.fasta
-mafft --thread 4 D1.1_NS_combined_06-16-2025.fasta > D1_1_NS_11-01-2021--06-13-2025_aln.fasta
+mafft --thread 4 B3_13_PB2_concat_11-01-2021--06-27-2025.fasta > B3_13_PB2_11-01-2021--06-27-2025_aln.fasta
+mafft --thread 4 B3_13_PB1_concat_11-01-2021--06-27-2025.fasta > B3_13_PB1_11-01-2021--06-27-2025_aln.fasta
+mafft --thread 4 B3_13_PA_concat_11-01-2021--06-27-2025.fasta > B3_13_PA_11-01-2021--06-27-2025_aln.fasta
+mafft --thread 4 B3_13_HA_concat_11-01-2021--06-27-2025.fasta > B3_13_HA_11-01-2021--06-27-2025_aln.fasta
+mafft --thread 4 B3_13_NP_concat_11-01-2021--06-27-2025.fasta > B3_13_NP_11-01-2021--06-27-2025_aln.fasta
+mafft --thread 4 B3_13_NA_concat_11-01-2021--06-27-2025.fasta > B3_13_NA_11-01-2021--06-27-2025_aln.fasta
+mafft --thread 4 B3_13_MP_concat_11-01-2021--06-27-2025.fasta > B3_13_MP_11-01-2021--06-27-2025_aln.fasta
+mafft --thread 4 B3_13_NS_concat_11-01-2021--06-27-2025.fasta > B3_13_NS_11-01-2021--06-27-2025_aln.fasta
