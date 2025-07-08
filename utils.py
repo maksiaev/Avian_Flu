@@ -1,6 +1,5 @@
 
 import os
-import glob 
 import pandas as pd
 import re
 import requests
@@ -12,6 +11,241 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 import time 
+
+### Andersen Lab functions ###
+
+# Rename host type
+def sort_animals_andersen(metadata):
+    host_names = metadata["Host"]
+    animal_list = []
+    for name in host_names.values:
+        try:
+            if name.replace("-", " ").replace(" ", "").isalpha(): # If all characters are alphanumeric
+                animal_low = name.lower() # make the name lowercase
+                animal_list.append(animal_low)
+        except:
+            animal_list.append("unknown")
+
+    unique_animals = list(set(animal_list))
+
+    # Save the animals to a file so we can sort them (outside of this function)
+    return unique_animals
+
+# Fix animals
+def fix_animals_andersen(metadata, animals_ref):
+
+    # If the animal is in a specific column of animals_ref, label host type as column name
+    animal_list = [] # Find animals first
+    for name in metadata["Host"].values:
+        try:
+            name = name.lower()
+            animal_list.append(name)
+        except:
+            animal_list.append("unknown")
+
+    animal_types = []
+    for animal in animal_list: # Label each animal as a type
+        # print(animal)
+        if animal in animals_ref["avian"].values:
+            animal_types.append("avian")
+        elif animal in animals_ref["cattle"].values:
+            animal_types.append("cattle")
+        elif animal in animals_ref["feline"].values:
+            animal_types.append("feline")
+        elif animal in animals_ref["other_mammal"].values:
+            animal_types.append("other_mammal")
+        else: # If other
+            animal_types.append("other")
+
+    metadata["Host_Type"] = animal_types
+    # metadata["Host"] = metadata["Host"].apply(lambda x: x.replace(" ", "_")) # Avoid space issues
+
+# Get collection date from GenBank eutils 
+
+def search_collection_date(biosample, metadata_genbank):
+
+    # print(biosample)
+
+    try:
+    
+        base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+        search_url = base_url + "esearch.fcgi?db=biosample&term=" + biosample +"&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        # Get Biosample ID from search_url
+        output = requests.get(search_url)
+        xml = output.content
+        root = ET.fromstring(xml)
+        sample_id = root.find("./IdList/Id").text
+
+        biosample_url = base_url + "elink.fcgi?dbfrom=biosample&db=nuccore&id=" + sample_id + "&cmd=neighbor_history&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+        
+        # Get Nucleotide ID from biosample_url
+        output = requests.get(biosample_url)
+        xml = output.content
+        root = ET.fromstring(xml)
+        query_key = root.find(".//QueryKey").text
+        web_env = root.find(".//WebEnv").text
+
+        nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        print(nucleotide_url)
+
+        output = requests.get(nucleotide_url) 
+        xml = output.content
+        root = ET.fromstring(xml)
+
+        # Grab collection date at the end of the sub name
+        collection_date = root.find(".//SubName").text.split("|")[-1]
+
+        # Grab geo_location as well
+        # geo_location = root.find(".//SubName").text.split("/")[2]
+
+        # # If there's a state associated, re-format
+        # geo_location = geo_location.replace(": ", "-")
+
+        print(collection_date)
+
+        # Avoid spamming the server
+        time.sleep(2)
+
+        # return geo_location + "|" + collection_date
+        return collection_date
+    
+    except:
+        print("Unable to find collection date.")
+
+        if len(metadata_genbank[metadata_genbank["BioSample"] == biosample]["Collection_Date"]) > 0: # If a year exists
+            collection_date = metadata_genbank[metadata_genbank["BioSample"] == biosample]["Collection_Date"].values[0]
+        else:
+            collection_date = float('nan') 
+
+        # Avoid spamming the server
+        time.sleep(1)
+
+        return collection_date
+    
+def create_dataframes(directory):
+    dfs = defaultdict(list)
+    for dirpath, dirs, files in os.walk(directory): # Find the fasta file
+        for file in files:
+            file_name = os.path.join(dirpath, file) # Get file name
+            # print(file_name)
+            df = pd.DataFrame()
+            with open(file_name) as f:
+                lines = f.readlines()
+                isolate_partial = []
+                full_header = []
+                sequence = []
+                # Some lines start with 25_, others 25-. This shouldn't matter, but split on "_" first
+                for num, line in enumerate(lines):
+                    if line[0] == ">": # If it's a header
+                        full_header.append(line)
+                        full = line.split("/")[3] # Get the isolate
+                        partial = full.split("_")[-1] # If 25_, get the last bit
+                        digits = partial.split("-")
+                        isolate = ""
+                        # other = ""
+                        for d in digits:
+                            # print(d)
+                            if len(d) == 6 and d.isnumeric(): # If it's just digits and not one of those weird isolates
+                                isolate = d + "-"
+                            elif len(d) == 3 and d.isnumeric():
+                                isolate = isolate + d
+                            # elif d.isnumeric() == False: # If it's a weird isolate
+                            #     other = d + "-"
+                            # else: # If it's a weird isolate
+                            #     other = other + d
+                        # Now add to list to check in Andersen files without doing wild for loops
+                        if len(isolate) == 10: # If this is a correctly formatted isolate
+                            # isolates.append(isolate)
+                            # All headers are followed by sequences
+                            isolate_partial.append(isolate)
+                        else: # If this is some other isolate
+                            isolate_partial.append(full)
+                    elif line == "nan\n":
+                        print(directory) # Some headers in the Andersen files don't exist 
+                        isolate_partial.append(float('nan'))
+                        full_header.append(line) # Sorry :/
+                    else: # It's a sequence
+                        sequence.append(line)
+                    
+                df["isolate_partial"] = isolate_partial
+                df["full_header"] = full_header
+                # print(len(sequence))
+                df["sequence"] = sequence
+                key_name = (file_name.split("/")[-1][:-6]).split("_")[0] + "_" + (file_name.split("/")[-1][:-6]).split("_")[1]
+                print(key_name)
+                dfs[key_name].append(df)
+            f.close()
+        break # Don't go into subdirectories 
+    return dfs
+
+def df_from_fasta(file_name):
+    df = pd.DataFrame()
+    with open(file_name) as f:
+        lines = f.readlines()
+        full_header = []
+        sequences = []
+        sequence = ""
+        for num, line in enumerate(lines):
+            if line[0] == ">" and num < 1: # If it's the first header
+                full_header.append(line)
+            elif line[0] == ">" and num >= 1: # If it's a subsequent header
+                full_header.append(line)
+                sequences.append(sequence)
+                sequence = "" # Erase sequence 
+            else: # Else it's a sequence
+                sequence += line
+            if num == len(lines) - 1: # If it's the last part of the last sequence
+                sequences.append(sequence)
+            
+        df["full_header"] = full_header
+        df["sequence"] = sequences
+    f.close()
+    return df
+
+def df_to_fasta(fasta, file_name, output_path):
+
+    output_file = open(output_path + file_name, "w")
+
+    for index, row in fasta.iterrows():
+        name = fasta.loc[index, "full_header"]
+        sequence = fasta.loc[index, "sequence"]
+    # First is header, second is sequence
+        output_file.write(name + "\n")
+        output_file.write(sequence + "\n")
+    output_file.close()
+
+def relabel_animals(fasta, animals_ref):
+
+    names = []
+    for name in fasta["full_header"].values:
+        animal = name.split("/")[1]
+        animal = animal.lower()
+        host_type = name.split("|")[-2]
+
+        if animal in animals_ref["avian"].values:
+            new_name = name.replace(host_type, "avian")
+            names.append(new_name)
+        elif animal in animals_ref["cattle"].values:
+            new_name = name.replace(host_type, "cattle")
+            names.append(new_name)
+        elif animal in animals_ref["feline"].values:
+            new_name = name.replace(host_type, "feline")
+            names.append(new_name)
+        elif animal in animals_ref["other_mammal"].values:
+            new_name = name.replace(host_type, "other_mammal")
+            names.append(new_name)
+        elif animal in animals_ref["human"].values:
+            new_name = name.replace(host_type, "human")
+            names.append(new_name)
+        else: # If other
+            new_name = name.replace(host_type, "other")
+            names.append(new_name)
+
+    fasta["full_header"] = names
+
+    return fasta
 
 ### GISAID functions ###
 
@@ -574,312 +808,3 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
 
 
 
-### Andersen Lab functions ###
-
-# Rename host type
-
-def sort_animals_andersen(metadata):
-    host_names = metadata["Host"]
-    animal_list = []
-    for name in host_names.values:
-        # try: 
-        #     animal_low = name.lower()
-        #     # animal = animal_low.replace(" ", "_") # replace spaces with underscores
-        #     animal_list.append(animal_low)
-        # except:
-        try:
-            if name.replace(" ", "").isalpha():
-                animal_low = name.lower()
-                animal_list.append(animal_low)
-        except:
-            animal_list.append("unknown")
-
-    unique_animals = list(set(animal_list))
-
-    # Save the animals to a file so we can sort them
-    return unique_animals
-
-# Fix animals
-
-def fix_animals_andersen(metadata, animals_ref):
-
-    # If the animal is in a specific column of animals_ref, label host type as column name
-    animal_list = [] # Find animals first
-    for name in metadata["Host"].values:
-        try:
-            name = name.lower()
-            # name = name.replace(" ", "_")
-            animal_list.append(name)
-        except:
-            animal_list.append("unknown")
-
-    animal_types = []
-    for animal in animal_list: # Label each animal as a type
-        # print(animal)
-        if animal in animals_ref["avian"].values:
-            animal_types.append("avian")
-        elif animal in animals_ref["cattle"].values:
-            animal_types.append("cattle")
-        elif animal in animals_ref["feline"].values:
-            animal_types.append("feline")
-        elif animal in animals_ref["other_mammal"].values:
-            animal_types.append("other_mammal")
-        else: # If other
-            animal_types.append("other")
-
-    metadata["Host_Type"] = animal_types
-
-# Get collection date from GenBank eutils 
-
-def search_collection_date(biosample, metadata_genbank):
-
-    # print(biosample)
-
-    try:
-    
-        base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-        search_url = base_url + "esearch.fcgi?db=biosample&term=" + biosample +"&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
-
-        # Get Biosample ID from search_url
-        output = requests.get(search_url)
-        xml = output.content
-        root = ET.fromstring(xml)
-        sample_id = root.find("./IdList/Id").text
-
-        biosample_url = base_url + "elink.fcgi?dbfrom=biosample&db=nuccore&id=" + sample_id + "&cmd=neighbor_history&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
-        
-        # Get Nucleotide ID from biosample_url
-        output = requests.get(biosample_url)
-        xml = output.content
-        root = ET.fromstring(xml)
-        query_key = root.find(".//QueryKey").text
-        web_env = root.find(".//WebEnv").text
-
-        nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
-
-        print(nucleotide_url)
-
-        output = requests.get(nucleotide_url) 
-        xml = output.content
-        root = ET.fromstring(xml)
-
-        # Grab collection date at the end of the sub name
-        collection_date = root.find(".//SubName").text.split("|")[-1]
-
-        # Grab geo_location as well
-        # geo_location = root.find(".//SubName").text.split("/")[2]
-
-        # # If there's a state associated, re-format
-        # geo_location = geo_location.replace(": ", "-")
-
-        print(collection_date)
-
-        # Avoid spamming the server
-        time.sleep(2)
-
-        # return geo_location + "|" + collection_date
-        return collection_date
-    
-    except:
-        print("Unable to find collection date.")
-
-        if len(metadata_genbank[metadata_genbank["BioSample"] == biosample]["Collection_Date"]) > 0: # If a year exists
-            collection_date = metadata_genbank[metadata_genbank["BioSample"] == biosample]["Collection_Date"].values[0]
-        else:
-            collection_date = float('nan') 
-
-        # Avoid spamming the server
-        time.sleep(1)
-
-        return collection_date
-    
-def search_collection_date_term(term, metadata_genbank):
-
-    print(term)
-
-    try:
-
-        base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-
-        search_url = base_url + "esearch.fcgi?db=nuccore&term=" + term +"&idtype=acc&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
-
-        # search_url = base_url + "egquery.fcgi?term=" + term # + "&usehistory=y"
-
-        # print(search_url) 
-
-        # # Get Biosample ID from search_url
-        # output = requests.get(search_url)
-        # xml = output.content
-        # root = ET.fromstring(xml)
-        # sample_id = root.find("./IdList/Id").text
-
-        # nuc_id = biosample        
-
-        # biosample_url = base_url + "elink.fcgi?dbfrom=biosample&db=nuccore&id=" + term + "&cmd=neighbor_history&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
-
-        # print(biosample_url)
-
-        # Get Nucleotide ID from biosample_url
-        output = requests.get(search_url)
-        xml = output.content
-        root = ET.fromstring(xml)
-        query_key = root.find(".//QueryKey").text
-        web_env = root.find(".//WebEnv").text
-
-        nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
-
-        print(nucleotide_url)
-
-        output = requests.get(nucleotide_url) 
-        xml = output.content
-        root = ET.fromstring(xml)
-
-        # Grab collection date at the end of the sub name
-        collection_date = root.find(".//SubName").text.split("|")[-1]
-
-        # Grab geo_location as well
-        geo_location = root.find(".//SubName").text.split("/")[2] 
-
-        # If there's a state associated, re-format
-        geo_location = geo_location.replace(": ", "-")
-
-        print(collection_date)
-
-        # Avoid spamming the server
-        time.sleep(2)
-
-        return geo_location + "|" + collection_date
-    
-    except:
-        print("Unable to find collection date.")
-
-        row = metadata_genbank[metadata_genbank["genbank_acc"] == term]
-        collection_date = row.loc[:, "genbank_name"].values[0].split("/")[4]
-
-        # Avoid spamming the server
-        time.sleep(1)
-
-        return collection_date
-    
-def create_dataframes(directory):
-    dfs = defaultdict(list)
-    for dirpath, dirs, files in os.walk(directory): # Find the fasta file
-        for file in files:
-            file_name = os.path.join(dirpath, file) # Get file name
-            # print(file_name)
-            df = pd.DataFrame()
-            with open(file_name) as f:
-                lines = f.readlines()
-                isolate_partial = []
-                full_header = []
-                sequence = []
-                # Some lines start with 25_, others 25-. This shouldn't matter, but split on "_" first
-                for num, line in enumerate(lines):
-                    if line[0] == ">": # If it's a header
-                        full_header.append(line)
-                        full = line.split("/")[3] # Get the isolate
-                        partial = full.split("_")[-1] # If 25_, get the last bit
-                        digits = partial.split("-")
-                        isolate = ""
-                        # other = ""
-                        for d in digits:
-                            # print(d)
-                            if len(d) == 6 and d.isnumeric(): # If it's just digits and not one of those weird isolates
-                                isolate = d + "-"
-                            elif len(d) == 3 and d.isnumeric():
-                                isolate = isolate + d
-                            # elif d.isnumeric() == False: # If it's a weird isolate
-                            #     other = d + "-"
-                            # else: # If it's a weird isolate
-                            #     other = other + d
-                        # Now add to list to check in Andersen files without doing wild for loops
-                        if len(isolate) == 10: # If this is a correctly formatted isolate
-                            # isolates.append(isolate)
-                            # All headers are followed by sequences
-                            isolate_partial.append(isolate)
-                        else: # If this is some other isolate
-                            isolate_partial.append(full)
-                    elif line == "nan\n":
-                        print(directory) # Some headers in the Andersen files don't exist 
-                        isolate_partial.append(float('nan'))
-                        full_header.append(line) # Sorry :/
-                    else: # It's a sequence
-                        sequence.append(line)
-                    
-                df["isolate_partial"] = isolate_partial
-                df["full_header"] = full_header
-                # print(len(sequence))
-                df["sequence"] = sequence
-                key_name = (file_name.split("/")[-1][:-6]).split("_")[0] + "_" + (file_name.split("/")[-1][:-6]).split("_")[1]
-                print(key_name)
-                dfs[key_name].append(df)
-            f.close()
-        break # Don't go into subdirectories 
-    return dfs
-
-def df_from_fasta(file_name):
-    df = pd.DataFrame()
-    with open(file_name) as f:
-        lines = f.readlines()
-        full_header = []
-        sequences = []
-        sequence = ""
-        for num, line in enumerate(lines):
-            if line[0] == ">" and num < 1: # If it's the first header
-                full_header.append(line)
-            elif line[0] == ">" and num >= 1: # If it's a subsequent header
-                full_header.append(line)
-                sequences.append(sequence)
-                sequence = "" # Erase sequence 
-            else: # Else it's a sequence
-                sequence += line
-            if num == len(lines) - 1: # If it's the last part of the last sequence
-                sequences.append(sequence)
-            
-        df["full_header"] = full_header
-        df["sequence"] = sequences
-    f.close()
-    return df
-
-def df_to_fasta(fasta, file_name, output_path):
-
-    output_file = open(output_path + file_name, "w")
-
-    for index, row in fasta.iterrows():
-        name = fasta.loc[index, "full_header"]
-        sequence = fasta.loc[index, "sequence"]
-    # First is header, second is sequence
-        output_file.write(name + "\n")
-        output_file.write(sequence + "\n")
-    output_file.close()
-
-def relabel_animals(fasta, animals_ref):
-
-    names = []
-    for name in fasta["full_header"].values:
-        animal = name.split("/")[1]
-        animal = animal.lower()
-        host_type = name.split("|")[-2]
-
-        if animal in animals_ref["avian"].values:
-            new_name = name.replace(host_type, "avian")
-            names.append(new_name)
-        elif animal in animals_ref["cattle"].values:
-            new_name = name.replace(host_type, "cattle")
-            names.append(new_name)
-        elif animal in animals_ref["feline"].values:
-            new_name = name.replace(host_type, "feline")
-            names.append(new_name)
-        elif animal in animals_ref["other_mammal"].values:
-            new_name = name.replace(host_type, "other_mammal")
-            names.append(new_name)
-        elif animal in animals_ref["human"].values:
-            new_name = name.replace(host_type, "human")
-            names.append(new_name)
-        else: # If other
-            new_name = name.replace(host_type, "other")
-            names.append(new_name)
-
-    fasta["full_header"] = names
-
-    return fasta
