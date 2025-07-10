@@ -3,12 +3,12 @@ Alabama,AL,East South Central,South,USA,32.806671,-86.79113
 Alaska,AK,Pacific,West,USA,61.370716,-152.404419
 Arizona,AZ,Mountain,West,USA,33.729759,-111.431221
 Arkansas,AR,West South Central,South,USA,34.969704,-92.373123
-American Samoa,AS,Other,Other,USA,,
+American_Samoa,AS,Other,Other,USA,,
 California,CA,Pacific,West,USA,36.116203,-119.681564
 Colorado,CO,Mountain,West,USA,39.059811,-105.311104
 Connecticut,CT,New England,Northeast,USA,41.597782,-72.755371
 Delaware,DE,South Atlantic,South,USA,39.318523,-75.507141
-District of Columbia,DC,South Atlantic,South,USA,38.897438,-77.026817
+District_of_Columbia,DC,South Atlantic,South,USA,38.897438,-77.026817
 Florida,FL,South Atlantic,South,USA,27.766279,-81.686783
 Georgia,GA,South Atlantic,South,USA,33.040619,-83.643074
 Guam,GU,Other,Other,USA,,
@@ -30,42 +30,43 @@ Missouri,MO,West North Central,Midwest,USA,38.456085,-92.288368
 Montana,MT,Mountain,West,USA,46.921925,-110.454353
 Nebraska,NE,West North Central,Midwest,USA,41.12537,-98.268082
 Nevada,NV,Mountain,West,USA,38.313515,-117.055374
-New Hampshire,NH,New England,Northeast,USA,43.452492,-71.563896
-New Jersey,NJ,Mid-Atlantic,Northeast,USA,40.298904,-74.521011
-New Mexico,NM,Mountain,West,USA,34.840515,-106.248482
-New York,NY,Mid-Atlantic,Northeast,USA,42.165726,-74.948051
-North Carolina,NC,South Atlantic,South,USA,35.630066,-79.806419
-North Dakota,ND,West North Central,Midwest,USA,47.528912,-99.784012
-Northern Mariana Islands,MP,Other,Other,USA,,
+New_Hampshire,NH,New England,Northeast,USA,43.452492,-71.563896
+New_Jersey,NJ,Mid-Atlantic,Northeast,USA,40.298904,-74.521011
+New_Mexico,NM,Mountain,West,USA,34.840515,-106.248482
+New_York,NY,Mid-Atlantic,Northeast,USA,42.165726,-74.948051
+North_Carolina,NC,South Atlantic,South,USA,35.630066,-79.806419
+North_Dakota,ND,West North Central,Midwest,USA,47.528912,-99.784012
+Northern_Mariana_Islands,MP,Other,Other,USA,,
 Ohio,OH,East North Central,Midwest,USA,40.388783,-82.764915
 Oklahoma,OK,West South Central,South,USA,35.565342,-96.928917
 Oregon,OR,Pacific,West,USA,44.572021,-122.070938
 Pennsylvania,PA,Mid-Atlantic,Northeast,USA,40.590752,-77.209755
-Puerto Rico,PR,Other,Other,USA,,
-Rhode Island,RI,New England,Northeast,USA,41.680893,-71.51178
-South Carolina,SC,South Atlantic,South,USA,33.856892,-80.945007
-South Dakota,SD,West North Central,Midwest,USA,44.299782,-99.438828
+Puerto_Rico,PR,Other,Other,USA,,
+Rhode_Island,RI,New England,Northeast,USA,41.680893,-71.51178
+South_Carolina,SC,South Atlantic,South,USA,33.856892,-80.945007
+South_Dakota,SD,West North Central,Midwest,USA,44.299782,-99.438828
 Tennessee,TN,East South Central,South,USA,35.747845,-86.692345
 Texas,TX,West South Central,South,USA,31.054487,-97.563461
-Trust Territories,TT,Other,Other,USA,,
+Trust_Territories,TT,Other,Other,USA,,
 Utah,UT,Mountain,West,USA,40.150032,-111.862434
 Vermont,VT,New England,Northeast,USA,44.045876,-72.710686
 Virginia,VA,South Atlantic,South,USA,37.769337,-78.169968
-Virgin Islands,VI,Other,Other,USA,,
+Virgin_Islands,VI,Other,Other,USA,,
 Washington,WA,Pacific,West,USA,47.400902,-121.490494
-West Virginia,WV,South Atlantic,South,USA,38.491226,-80.954453
+West_Virginia,WV,South Atlantic,South,USA,38.491226,-80.954453
 Wisconsin,WI,East North Central,Midwest,USA,44.268543,-89.616508
 Wyoming,WY,Mountain,West,USA,42.755966,-107.30249
 Alberta,AB,,,Canada,,
-British Columbia,BC,,,Canada,,
+British_Columbia,BC,,,Canada,,
 Manitoba,MB,,,Canada,,
-New Brunswick,NB,,,Canada,,
-Newfoundland and Labrador,NL,,,Canada,,
-Northwest Territories,NT,,,Canada,,
-Nova Scotia,NS,,,Canada,,
+New_Brunswick,NB,,,Canada,,
+Newfoundland_and_Labrador,NL,,,Canada,,
+Northwest_Territories,NT,,,Canada,,
+Nova_Scotia,NS,,,Canada,,
 Nunavut,NU,,,Canada,,
 Ontario,ON,,,Canada,,
-Prince Edward Island,PE,,,Canada,,
+Prince_Edward_Island,PE,,,Canada,,
 Quebec,QC,,,Canada,,
 Saskatchewan,SK,,,Canada,,
 Yukon,YT,,,Canada,,
+San_Bernardino_County,CA,Pacific,West,USA,,
