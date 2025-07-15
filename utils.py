@@ -766,6 +766,69 @@ def fasta_df(file_name, state_ref):
     
 #     return fasta
 
+# Get collection date from GenBank eutils if no recognized date
+def search_collection_date_isolate(nuccore, metadata_genbank):
+
+    # print(nuccore)
+
+    try:
+    
+        base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+        search_url = base_url + "esearch.fcgi?db=nuccore&term=" + nuccore +"&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        # Get Biosample ID from search_url
+        output = requests.get(search_url)
+        xml = output.content
+        root = ET.fromstring(xml)
+        sample_id = root.find("./IdList/Id").text
+
+        nuccore_url = base_url + "elink.fcgi?dbfrom=nuccore&db=nuccore&id=" + sample_id + "&cmd=neighbor_history&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+        
+        # Get Nucleotide ID from biosample_url
+        output = requests.get(nuccore_url)
+        xml = output.content
+        root = ET.fromstring(xml)
+        query_key = root.find(".//QueryKey").text
+        web_env = root.find(".//WebEnv").text
+
+        nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        print(nucleotide_url)
+
+        output = requests.get(nucleotide_url) 
+        xml = output.content
+        root = ET.fromstring(xml)
+
+        # Grab collection date at the end of the sub name
+        collection_date = root.find(".//SubName").text.split("|")[-1]
+
+        # Grab geo_location as well
+        # geo_location = root.find(".//SubName").text.split("/")[2]
+
+        # # If there's a state associated, re-format
+        # geo_location = geo_location.replace(": ", "-")
+
+        print(collection_date)
+
+        # Avoid spamming the server
+        time.sleep(2)
+
+        # return geo_location + "|" + collection_date
+        return collection_date
+    
+    except:
+        print("Unable to find collection date.")
+
+        if len(metadata_genbank[metadata_genbank["Isolate_Id"] == nuccore]["Collection_Date"]) > 0: # If a year exists
+            collection_date = metadata_genbank[metadata_genbank["Isolate_Id"] == nuccore]["Collection_Date"].values[0]
+        else:
+            collection_date = float('nan') 
+
+        # Avoid spamming the server
+        time.sleep(1)
+
+        return collection_date
+
 # Function to get each unique animal listed so we can sort them
 
 def sort_animals(fasta):
