@@ -2,6 +2,7 @@
 import os
 import pandas as pd
 import re
+import dateutil 
 import requests
 import xml.etree.ElementTree as ET
 from collections import defaultdict 
@@ -9,7 +10,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
-
 import time 
 
 ### Andersen Lab functions ###
@@ -256,7 +256,15 @@ def fasta_df_complete(file_name, state_ref):
     fasta["Subtype"] = subtypes
     # fasta["Segment"] = segments
     # Geo_Location is more complicated
-    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
+    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(', ', ' ').split(' ')), regex=True), 'Country'].iloc[0] 
+                                                        + "-" + 
+                                                        x
+                                                  if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(", ", " ").split(" "))), regex=True).any()
+                                                  else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(', ', ' ').split(' ')), regex=True), 'Country'].iloc[0]
+                                                        + "-" + 
+                                                        state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(', ', ' ').split(' ')), regex=True), 'Abbreviation'].iloc[0] 
+                                                  if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(", ", " ").split(" "))), regex=True).any()
+                                                  else x.split("/")[2].replace(": ", "-"))
     fasta["Date Collected"] = collection_dates
     fasta["Species"] = species
     fasta["Host_Type"] = host_types
@@ -704,6 +712,7 @@ def fasta_df(file_name, state_ref):
     # Geo_Location is more complicated
     fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
     fasta["Date Collected"] = collection_dates
+    fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
     fasta["Species"] = species
     # fasta["Host_Type"] = host_types
     # fasta["Genotype"] = genotypes
@@ -875,12 +884,7 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
 
             # FASTA
 
-            if "Identifier" in fasta.columns:
-                mask = fasta["Identifier"].isin(xls['Isolate_Id'])
-            else:           
-                mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
-
-            fasta_seg_pre = fasta[mask]
+            fasta_seg_pre = fasta #[mask]
             # print(fasta_seg_pre)
 
             # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
@@ -889,7 +893,7 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
             fasta_seg["Genotype"] = fasta_gen
 
             # Rename sequences 
-            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"] + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
+            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
             fasta_seg["New_Name"] = new_name
             # print(fasta_seg["New_Name"])
 
