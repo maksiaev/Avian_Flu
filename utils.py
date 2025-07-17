@@ -256,15 +256,7 @@ def fasta_df_complete(file_name, state_ref):
     fasta["Subtype"] = subtypes
     # fasta["Segment"] = segments
     # Geo_Location is more complicated
-    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(', ', ' ').split(' ')), regex=True), 'Country'].iloc[0] 
-                                                        + "-" + 
-                                                        x
-                                                  if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(", ", " ").split(" "))), regex=True).any()
-                                                  else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(', ', ' ').split(' ')), regex=True), 'Country'].iloc[0]
-                                                        + "-" + 
-                                                        state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(', ', ' ').split(' ')), regex=True), 'Abbreviation'].iloc[0] 
-                                                  if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(", ", " ").split(" "))), regex=True).any()
-                                                  else x.split("/")[2].replace(": ", "-"))
+    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
     fasta["Date Collected"] = collection_dates
     fasta["Species"] = species
     fasta["Host_Type"] = host_types
@@ -883,8 +875,12 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
             # print(d11_xls)
 
             # FASTA
+            if "Identifier" in fasta.columns:
+                mask = fasta["Identifier"].isin(xls['Isolate_Id'])
+            else:           
+                mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
 
-            fasta_seg_pre = fasta #[mask]
+            fasta_seg_pre = fasta[mask]
             # print(fasta_seg_pre)
 
             # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
