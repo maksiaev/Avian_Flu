@@ -14,7 +14,7 @@ segments[5]="NA"
 segments[6]="MP"
 segments[7]="NS"
 
-for segment in ${segments[@]}; do cat *"$segment"*.fasta > B3_13_${segment}_concat_11-01-2021--07-04-2025.fasta; done
+for segment in ${segments[@]}; do cat *"$segment"*.fasta > B3_13_${segment}_concat_11-01-2021--07-18-2025.fasta; done
 
 ######################
 date +"%Y-%m-%d %H:%M"
