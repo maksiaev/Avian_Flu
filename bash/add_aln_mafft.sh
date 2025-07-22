@@ -9,6 +9,6 @@
 set -e
 module load mafft
 
-mafft --thread $SLURM_CPUS_PER_TASK --reorder --add B3.13_genome_combined_06-10-2025_clean.fasta newid-B3.13_concat_genome_MAY14_trim_aln_n3651_FINAL_updated_06-11-2025_clean.fasta > newid-B3.13_genome_JUNE6_aln.fasta 
+mafft --thread $SLURM_CPUS_PER_TASK --reorder --add B3_13_concat_07-05-2025--07-18-2025.fas B3_13_11-01-2021--07-04-2025_concat_4819_updated_07-21-2025.fasta > B3_13_11-01-2021--07-18-2025_concat.fasta 
 
-for file_name in $(ls); do mafft --thread $SLURM_CPUS_PER_TASK --reorder --add B3.13_genome_combined_06-10-2025_clean.fasta newid-B3.13_concat_genome_MAY14_trim_aln_n3651_FINAL_updated_06-11-2025_clean.fasta done > newid-B3.13_genome_JUNE6_aln.fasta 
+for file_name in $(ls); do mafft --thread $SLURM_CPUS_PER_TASK --reorder --add D1_1_concat_07-05-2025--07-18-2025.fas D1_1_11-01-2021--07-04-2025_concat_2620_updated_07-21-2025.fasta done > D1_1_11-01-2021--07-18-2025_concat.fasta 
