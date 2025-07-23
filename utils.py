@@ -663,7 +663,7 @@ def fasta_df(file_name, state_ref):
                         # print(split_first_header)
                         # print(split_header)
                         headers.append(header) 
-                        isolate_ids.append(split_first_header[3])
+                        isolate_ids.append(split_first_header[-2])
                         isolate_names.append(split_header[-4]) # We'll need to extract data from this too
                         # print(split_header[2].split("_")[-1])
                         subtypes.append(split_header[-3].split("_")[-1])  # Get only H5N1
@@ -702,7 +702,7 @@ def fasta_df(file_name, state_ref):
     fasta["Subtype"] = subtypes
     fasta["Segment"] = segments
     # Geo_Location is more complicated
-    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
+    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[-2], 'Country'].iloc[0] + "-" + x.split("/")[-2] if x.split("/")[-2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[-2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[-2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[-2].replace("_", " ") in state_ref["State"].values else x.split("/")[-2].replace(": ", "-"))
     fasta["Date Collected"] = collection_dates
     fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
     fasta["Species"] = species
