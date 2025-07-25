@@ -337,6 +337,208 @@ def relabel_animals(fasta, animals_ref):
 
     return fasta
 
+### NCBI Virus functions ###
+
+# Function to download data from NCBI
+
+def open_ncbi_virus(browser, sleep_time, continent, start_date, end_date):
+
+    if browser=="Firefox":
+        # If you want to open Firefox
+        driver = webdriver.Firefox()
+    elif browser=="Chrome": # if Chrome...
+        driver = webdriver.Chrome()
+    else: # Edge, probably
+        driver = webdriver.Edge()
+
+    # How many seconds should pass between tasks
+    sleep_time = int(sleep_time)
+
+    # Requested URL
+    driver.get("https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Alphainfluenzavirus,%20taxid:197911&Serotype_s=H5N*")
+
+    # Wait for it to load, otherwise it won't work
+    # driver.implicitly_wait(20)
+    # username_field = wait.until(EC.element_to_be_clickable((By.NAME, 'login')))
+    # password_field = wait.until(EC.element_to_be_clickable((By.NAME, 'password')))
+
+    # Wait for it to load again
+    time.sleep(sleep_time)
+
+    # Need locations and date
+
+    # Locations
+
+    # Find the correct tab
+    location_link = driver.find_element(By.XPATH, "//*[contains(text(), 'Location and Source')]")
+    location_link.click()
+
+    time.sleep(sleep_time)
+
+    # Pick continents
+    for c in continent.split(","):
+
+        geographic_region = driver.find_element(By.XPATH, "//*[contains(text(), 'Geographic Region')]")
+        geographic_region.click()
+        
+        time.sleep(sleep_time)
+        
+        toggle = "//*[contains(text(), 'Toggle " + c + "')]"
+        continent_needed = driver.find_element(By.XPATH, toggle)
+        driver.execute_script("arguments[0].scrollIntoView();", continent_needed)
+        ActionChains(driver).move_to_element(continent_needed).pause(1).click(continent_needed).perform() 
+        
+        time.sleep(sleep_time)
+
+    time.sleep(sleep_time)
+
+    # Dates
+
+    dates_tab = driver.find_element(By.XPATH, "//*[contains(text(), 'Dates')]")
+    dates_tab.click()
+
+    time.sleep(sleep_time)
+
+    release_date = driver.find_element(By.XPATH, "//*[contains(text(), 'Release Date')]")
+    release_date.click()
+
+    time.sleep(sleep_time)
+
+    first_date = driver.find_element(By.XPATH, "//input[@id='CreateDate_dt_From']") # First date
+    first_date.send_keys(start_date)
+
+    time.sleep(sleep_time)
+    
+    last_date = driver.find_element(By.XPATH, "//input[@id='CreateDate_dt_To']") # Second date
+    last_date.send_keys(Keys.CONTROL,"a")
+    last_date.send_keys(Keys.BACK_SPACE) # Clear the default 
+    last_date.send_keys(end_date)
+
+    time.sleep(sleep_time)
+
+    # Submit
+
+    last_date.send_keys(Keys.ENTER)
+
+    time.sleep(sleep_time)
+
+    # Download all results
+    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download All Results')]")
+    download_button.click()
+
+    time.sleep(sleep_time)
+
+    # First is automatic, nucleotide -- select "Next"
+    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
+    next_button.click()
+
+    time.sleep(sleep_time)
+
+
+    # Download all records, do the same
+    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
+    next_button.click()
+
+    time.sleep(sleep_time)
+
+    # Build custom names
+    build_custom = driver.find_element(By.XPATH, "//*[contains(text(), ' Build custom ')]")
+    build_custom.click()
+
+    time.sleep(sleep_time)
+
+    # Remove Accession and GenBank Title
+    accession = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[@id='3']/div/span[2]/form/div/span/uswds-ncbi-app-custom-listbox/div/div[3]/div/ul/li[1]/span") 
+    accession.click()
+
+    time.sleep(sleep_time)
+
+    remove = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[contains(text(), 'Remove')]") 
+    remove.click()
+
+    time.sleep(sleep_time)
+
+    genbank_title = driver.find_element(By.XPATH, "//*[contains(@class, 'record-picker')]//*[contains(text(), 'GenBank Title')]") 
+    genbank_title.click()
+
+    time.sleep(sleep_time)
+
+    remove = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[contains(text(), 'Remove')]") 
+    remove.click()
+
+    time.sleep(sleep_time)
+
+    # Now add what we want
+
+    for element in ["Organism Name", "Geo Location", "Isolate", "Genotype", "Collection Date", "Host", "GenBank/RefSeq", "SRA Accession", "BioSample", "BioProject", "GenBank Title"]:
+        # Find
+        element_location = "//*[contains(@class, 'record-picker')]//*[contains(text(), '" + element + "')]"
+        toggle = driver.find_element(By.XPATH, element_location)
+        driver.execute_script("arguments[0].scrollIntoView();", toggle)
+        ActionChains(driver).move_to_element(toggle).pause(1).click(toggle).perform() 
+        time.sleep(sleep_time)
+        # Add
+        add = driver.find_element(By.XPATH, "//*[contains(text(), 'Add')]") 
+        add.click()
+        time.sleep(sleep_time)
+
+    time.sleep(sleep_time)
+
+    # Download
+    download_button = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[2]/button[2]")
+    time.sleep(sleep_time)
+    ActionChains(driver).move_to_element(download_button).click(download_button).perform()
+
+    time.sleep(sleep_time)
+
+    # Download all results
+    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download All Results')]")
+    download_button.click()
+
+    time.sleep(sleep_time)
+
+    # Now download the metadata
+    csv_format = driver.find_element(By.XPATH, "//*[contains(text(), 'CSV format')]")
+    csv_format.click()
+
+    time.sleep(sleep_time)
+
+    # Next
+    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
+    next_button.click()
+
+    time.sleep(sleep_time)
+
+
+    # Download all records, do the same
+    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
+    next_button.click()
+
+    time.sleep(sleep_time)
+
+    # Select all
+    select_all = driver.find_element(By.XPATH, "//*[contains(text(), 'Select All')]")
+    select_all.click()
+
+    time.sleep(sleep_time)
+
+    # With version
+    with_version = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[3]/form/div/div[2]/div[3]/label")
+    with_version.click()
+
+    time.sleep(sleep_time)
+    
+    # Download
+    download_button = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[3]/button[2]")
+    time.sleep(sleep_time)
+    ActionChains(driver).move_to_element(download_button).click(download_button).perform()
+
+    time.sleep(sleep_time * 20) # Let it download
+
+    # Close browser
+
+    driver.close()
+
 ### GISAID functions ###
 
 # Function to download data from GISAID
