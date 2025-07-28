@@ -844,6 +844,7 @@ def fasta_df(file_name, state_ref):
     # host_types = []
     species = []
     identifiers = []
+    locations = []
     # genotypes = []
     with open(file_name) as f:
         lines = f.readlines()
@@ -866,6 +867,7 @@ def fasta_df(file_name, state_ref):
                         # print(split_header)
                         headers.append(header) 
                         isolate_ids.append(split_first_header[-2])
+                        locations.append(split_first_header[-3])
                         isolate_names.append(split_header[-4]) # We'll need to extract data from this too
                         # print(split_header[2].split("_")[-1])
                         subtypes.append(split_header[-3].split("_")[-1])  # Get only H5N1
@@ -903,8 +905,25 @@ def fasta_df(file_name, state_ref):
     fasta["Isolate_Name"] = isolate_names
     fasta["Subtype"] = subtypes
     fasta["Segment"] = segments
+    fasta["Location"] = locations
     # Geo_Location is more complicated
-    fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[-2], 'Country'].iloc[0] + "-" + x.split("/")[-2] if x.split("/")[-2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[-2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[-2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[-2].replace("_", " ") in state_ref["State"].values else x.split("/")[-2].replace(": ", "-"))
+    fasta["Geo_Location"] = fasta["Location"].apply( # lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
+
+                                                lambda x: 
+                                                # If "x" has the state abbreviation (e.g. "MD")
+                                                state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0] 
+                                                + "-" + 
+                                                x.split(" ")[-1]
+                                                if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+                                                # If "x" has the full state name (e.g. "Maryland")
+                                                else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0]
+                                                + "-" + 
+                                                state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Abbreviation'].iloc[0] 
+                                                if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+                                                # If "x" has neither the state abbreviation nor the full state name nor is "USA"
+                                                else 
+                                                "USA"
+                                                )
     fasta["Date Collected"] = collection_dates
     fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
     fasta["Species"] = species
