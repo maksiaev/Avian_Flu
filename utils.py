@@ -20,7 +20,7 @@ def sort_animals_andersen(metadata):
     animal_list = []
     for name in host_names.values:
         try:
-            if name.replace("-", " ").replace(" ", "").isalpha(): # If all characters are alphanumeric
+            if name.replace("-", " ").replace(" ", "").replace(".", "").replace(",", "").isalpha(): # If all characters are alphanumeric
                 animal_low = name.lower() # make the name lowercase
                 animal_list.append(animal_low)
         except:
@@ -188,6 +188,7 @@ def fasta_df_complete(file_name, state_ref):
     fasta = pd.DataFrame()
     headers = []
     isolate_ids = []
+    isolate_partials = []
     isolate_names = []
     subtypes = []
     # segments = []
@@ -218,6 +219,7 @@ def fasta_df_complete(file_name, state_ref):
                         # print(split_header)
                         headers.append(header) 
                         isolate_ids.append(split_first_header[3])
+                        isolate_partials.append(partial_isolate(split_first_header[3]))
                         isolate_names.append(split_header[-6]) # We'll need to extract data from this too
                         # print(split_header[2].split("_")[-1])
                         subtypes.append(split_header[-5].split("_")[-1])  # Get only H5N1
@@ -254,6 +256,7 @@ def fasta_df_complete(file_name, state_ref):
     fasta["Isolate_Id"] = isolate_ids
     fasta["Isolate_Name"] = isolate_names
     fasta["Subtype"] = subtypes
+    fasta["Partials"] = isolate_partials
     # fasta["Segment"] = segments
     # Geo_Location is more complicated
     fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
@@ -1119,5 +1122,30 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
 
     return segment_fastas, unique_segments
 
+def partial_isolate(id):
 
+    partial = id.split("_")[-1] # If 25_, get the last bit
+    digits = partial.split("-")
+    # Build partial isolates
+    isolate = ""
+    other = ""
+    for d in digits:
+        # print(d)
+        if len(d) == 6 and d.isnumeric(): # If it's just digits and not one of those weird isolates
+            isolate = d + "-"
+        elif len(d) == 3 and d.isnumeric():
+            isolate = isolate + d
+        elif d.isnumeric() == False: # If it's a weird isolate
+            other = d + "-"
+        else: 
+            other = other + d
+    # Now add to list to check in Andersen files without doing wild for loops
+    if len(isolate) == 10: # If this is a correctly formatted isolate
+        # isolates.append(isolate)
+        # All headers are followed by sequences
+        partial_isolate = isolate
+    else: # If this is some other isolate
+        partial_isolate = other
+
+    return partial_isolate
 
