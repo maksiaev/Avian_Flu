@@ -927,6 +927,8 @@ def fasta_df(file_name, state_ref):
                                                 else 
                                                 "USA"
                                                 )
+    fasta["Geo_Location"] = fasta["Geo_Location"].apply(lambda x: x.split("-")[0] if x.split("-")[-1] == "" or x.split("-")[-1] == x.split("-")[0] else x)
+
     fasta["Date Collected"] = collection_dates
     fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
     fasta["Species"] = species
