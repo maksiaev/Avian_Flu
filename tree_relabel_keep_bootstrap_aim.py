@@ -12,7 +12,7 @@ os.chdir("C:/Users/maksiaevai.NCBI_NT/Documents/Avian_Flu_Files/Trees/D1_3/")
 
 # Load the Nexus file
 # Replace 'your_nexus_file.nex' with the actual file name
-nexus_data = Phylo.NexusIO.parse('D1_3_11-01-2021--07-04-2025_concat_318_tree_nexus.nex')
+nexus_data = Phylo.NexusIO.parse('D1.3_11-01-2021--08-08-2025_concat_321_bs.fasta.treefile')
 
 # Assuming there's one tree in the Nexus file
 tree = next(nexus_data)
@@ -60,5 +60,5 @@ for node in tree.get_nonterminals():
 
 # Save the relabeled tree to a new Nexus file
 # Replace 'relabeled_tree.nex' with your desired output file name
-Phylo.write([tree], 'D1_3_11-01-2021--07-04-2025_concat_318_tree_counties.nex', 'nexus')
+Phylo.write([tree], 'D1.3_11-01-2021--08-08-2025_concat_321_tree_counties.nex', 'nexus')
 
