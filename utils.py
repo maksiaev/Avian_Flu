@@ -490,7 +490,7 @@ def open_ncbi_virus(browser, sleep_time, continent, start_date, end_date):
 
     # Now add what we want
 
-    for element in ["Organism Name", "Geo Location", "Isolate", "Genotype", "Collection Date", "Host", "GenBank/RefSeq", "SRA Accession", "BioSample", "BioProject", "GenBank Title"]:
+    for element in ["Organism Name", "Geo Location", "Isolate", "Genotype", "Collection Date", "Host", "GenBank/RefSeq", "SRA Accession", "BioSample", "BioProject", "GenBank Title", "Accession"]:
         # Find
         element_location = "//*[contains(@class, 'record-picker')]//*[contains(text(), '" + element + "')]"
         toggle = driver.find_element(By.XPATH, element_location)
