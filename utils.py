@@ -54,6 +54,8 @@ def fix_animals_andersen(metadata, animals_ref):
             animal_types.append("cattle")
         elif animal in animals_ref["feline"].values:
             animal_types.append("feline")
+        elif animal in animals_ref["human"].values:
+            animal_types.append("human")
         elif animal in animals_ref["other_mammal"].values:
             animal_types.append("other_mammal")
         else: # If other
