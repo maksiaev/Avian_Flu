@@ -807,10 +807,10 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
 
     time.sleep(sleep_time * 10)
 
-    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download')]")
-    ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
+    # download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download')]")
+    # ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
 
-    time.sleep(sleep_time * 10)
+    # time.sleep(sleep_time * 10)
 
     # Download segment sequences as DNA FASTA file
     # iframe_download = driver.find_element(By.NAME, "downl")

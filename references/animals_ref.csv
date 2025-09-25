@@ -24,7 +24,7 @@ gadwall,broiler_breeders_chicken,,pet_food,red fox,england,ck
 swan,layer,,felis catus,harbor seal,hunan,barnacle
 black_vulture,common_pheasant,,panthera tigris,house-mouse,changsha,decoy_duck
 sandhill_crane,laying_hen,,leptailurus serval,dolphin,jiangsu,house_fly
-mallard,anser_anser,,puma concolor,weasel,homo sapiens,
+mallard,anser_anser,,puma concolor,weasel,homo sapiens,cheese
 barred_owl,chicken_,,lynx rufus,bottlenose dolphin,homo_sapiens,
 dunlin,phasianus_colchicus,,leopardus geoffroyi,pig,,
 sanderling,broiler,,african lion,house mouse,,
@@ -936,3 +936,4 @@ american goshawk,,,,,,
 cooper s hawk,,,,,,
 loon common,,,,,,
 swanson s hawk,,,,,,
+pintado_petrel,,,,,,
