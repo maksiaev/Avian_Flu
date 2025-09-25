@@ -1160,6 +1160,7 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta
 def partial_isolate(id):
 
     partial = id.replace("_", "-") # [-1] # If 25_, get the last bit
+    partial = partial.replace("-original", "") # If -original suffix, remove
     digits = partial.split("-")
     # Build partial isolates
     isolate = ""
@@ -1167,7 +1168,8 @@ def partial_isolate(id):
     for d in digits:
         # print(d)
         if len(d) == 2 and d.isnumeric(): # The 25 bit
-            isolate = d + "-"
+            # isolate = d + "-"
+            pass
         if len(d) == 6 and d.isnumeric(): # If it's just digits and not one of those weird isolates
             isolate = d + "-"
         if len(d) == 3 and d.isnumeric():
@@ -1177,7 +1179,7 @@ def partial_isolate(id):
         # else: 
         #     other = partial 
     # Now add to list to check in Andersen files without doing wild for loops
-    if len(isolate) == 13: # If this is a correctly formatted isolate
+    if len(isolate) == 10: # If this is a correctly formatted isolate
         # isolates.append(isolate)
         # All headers are followed by sequences
         partial_isolate = isolate
