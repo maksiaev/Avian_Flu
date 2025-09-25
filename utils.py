@@ -717,136 +717,150 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
     select_checkbox = driver.find_element(By.XPATH, "//*[contains(@class, 'yui-dt-first yui-dt-last')]//input[@type='checkbox']")
     select_checkbox.click()
 
-    # Press the select button and select up to 10,000 entries. If there's more afterwards, download the first 10k and continue until we've reached the end.
+    time.sleep(sleep_time * 10)
 
-    # Press the select button
-    select_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Select')]")
-    ActionChains(driver).move_to_element(select_button).pause(1).click(select_button).perform()    
+    # # Press the select button and select up to 10,000 entries. If there's more afterwards, download the first 10k and continue until we've reached the end.
+
+    # # Press the select button
+    # select_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Select')]")
+    # ActionChains(driver).move_to_element(select_button).pause(1).click(select_button).perform()    
+
+    # time.sleep(sleep_time)
+
+    # # Get all the entries
+    # iframe = driver.find_element(By.NAME, "wjob")
+    # driver.switch_to.frame(iframe)
+    # entry_text = driver.find_element(By.XPATH, "//textarea")
+    # time.sleep(sleep_time)
+    # full_text = entry_text.text
+    # entries = re.split(r"[,]", full_text)
+
+    # # Get rid of empty strings
+    # for entry in entries:
+    #     if entry == '':
+    #         entries.remove(entry)
+
+    # # While there are >10k sequences, add each set of 10k to a list
+    # # 1 string ~= 8 sequences
+    # thresh = 200 # //10
+    # ten_thousands = []
+    # # entries = entries[thresh:]
+
+    # while len(entries) > thresh: 
+    #     ten_k = entries[:thresh]
+    #     ten_thousands.append(ten_k)
+    #     entries = entries[thresh:]
+    #     # print(len(entries))
+
+    # ten_thousands.append(entries) # if less than thresh to begin with, appends full batch. Else appends last batch. 
+
+    # # for t in ten_thousands:
+    # #     print(len(t))
+
+    # print(len(ten_thousands))
+
+    # # Go back and select the nth 10k from the entries frame
+
+    # # Clear the iframe
+    # entry_text.clear()
+
+    # for text in ten_thousands: # IMPORTANT: If it failed, pick up from wherever it failed
+    #     for t in text:
+    #         entry_text.send_keys(t)
+        # # Press OK
+        # ok_button = driver.find_element(By.XPATH, "//button[contains(text(), 'OK')]")
+        # ok_button.click()
+
+        # time.sleep(sleep_time)
+        # # Press OK again
+        # ok_button2 = driver.find_element(By.XPATH, "//*[contains(@class, 'yui-panel-container shadow')]//button[contains(text(), 'OK')]")
+        # ok_button2.click()
+
+        # time.sleep(sleep_time)
+
+    #Press download
+    # driver.switch_to.default_content()
+    download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Download')]")
+    ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
+
+    time.sleep(sleep_time * 10) 
+
+    # download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
+    # ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
+
+    # time.sleep(sleep_time * 10)
+
+    # Download metadata as XLS
+    # iframe_download = driver.find_element(By.CLASS_NAME, "page")
+    # driver.switch_to.frame(iframe_download)
+    time.sleep(sleep_time)
+    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download')]")
+    ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()   
+    # download_button.click()
+
+    time.sleep(sleep_time * 30) # Downloads can take a while
+
+    #Press download
+    # driver.switch_to.default_content()
+    download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Download')]")
+    ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
+
+    time.sleep(sleep_time * 10)
+
+    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download')]")
+    ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
+
+    time.sleep(sleep_time * 10)
+
+    # Download segment sequences as DNA FASTA file
+    # iframe_download = driver.find_element(By.NAME, "downl")
+    # iframe_download = driver.find_element(By.CLASS_NAME, "page")
+    # driver.switch_to.frame(iframe_download)
+    time.sleep(sleep_time)
+    dna = driver.find_element(By.XPATH, "//input[@value='dna']")
+    ActionChains(driver).move_to_element(dna).pause(1).click(dna).perform()    
 
     time.sleep(sleep_time)
 
-    # Get all the entries
-    iframe = driver.find_element(By.NAME, "wjob")
-    driver.switch_to.frame(iframe)
-    entry_text = driver.find_element(By.XPATH, "//textarea")
+    # Rename
+    name_text = driver.find_element(By.XPATH, "//input[@type='text']")
+    name_text.clear()
+    t = "Isolate ID | Isolate name | Type | Segment | Collection date"
+    name_text.send_keys(t)
     time.sleep(sleep_time)
-    full_text = entry_text.text
-    entries = re.split(r"[,]", full_text)
+    # Segments: PB2, PB1, PA, HA, NP, NA, MP, NS (all EXCEPT HE, P3)
+    segment_list = ['PB2', 'PB1', 'PA', 'HA', 'NP', 'NA', 'MP', 'NS']
+    for segment in segment_list:
+        xpath = "//input[@value='" + segment + "']"
+        pb2 = driver.find_element(By.XPATH, xpath)
+        ActionChains(driver).move_to_element(pb2).pause(1).click(pb2).perform()
+    # Assume both checkboxes for spaces and underscores are already checked -- if not, come back to this
+    # download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
+    download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
+    ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()   
 
-    # Get rid of empty strings
-    for entry in entries:
-        if entry == '':
-            entries.remove(entry)
+    time.sleep(sleep_time)
 
-    # While there are >10k sequences, add each set of 10k to a list
-    # 1 string ~= 8 sequences
-    thresh = 200 # //10
-    ten_thousands = []
-    # entries = entries[thresh:]
+    go_back = driver.find_element(By.XPATH, "//button[contains(text(), 'Go back')]")
+    ActionChains(driver).move_to_element(go_back).pause(1).click(go_back).perform()   
 
-    while len(entries) > thresh: 
-        ten_k = entries[:thresh]
-        ten_thousands.append(ten_k)
-        entries = entries[thresh:]
-        # print(len(entries))
+    time.sleep(sleep_time)
 
-    ten_thousands.append(entries) # if less than thresh to begin with, appends full batch. Else appends last batch. 
+    # driver.switch_to.default_content()
 
-    # for t in ten_thousands:
-    #     print(len(t))
+    time.sleep(sleep_time * 50)
 
-    print(len(ten_thousands))
+    # # Press the select button
+    # select_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Select')]")
+    # ActionChains(driver).move_to_element(select_button).pause(1).click(select_button).perform()
 
-    # Go back and select the nth 10k from the entries frame
+    # time.sleep(sleep_time)  
 
-    # Clear the iframe
-    entry_text.clear()
-
-    for text in ten_thousands: # IMPORTANT: If it failed, pick up from wherever it failed
-        for t in text:
-            entry_text.send_keys(t)
-        # Press OK
-        ok_button = driver.find_element(By.XPATH, "//button[contains(text(), 'OK')]")
-        ok_button.click()
-
-        time.sleep(sleep_time)
-        # Press OK again
-        ok_button2 = driver.find_element(By.XPATH, "//*[contains(@class, 'yui-panel-container shadow')]//button[contains(text(), 'OK')]")
-        ok_button2.click()
-
-        time.sleep(sleep_time)
-
-        #Press download
-        driver.switch_to.default_content()
-        download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Download')]")
-        ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
-
-        time.sleep(sleep_time) 
-
-        # Download metadata as XLS
-        iframe_download = driver.find_element(By.NAME, "downl")
-        driver.switch_to.frame(iframe_download)
-        time.sleep(sleep_time)
-        download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
-        ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()   
-        # download_button.click()
-
-        time.sleep(sleep_time * 10) # Downloads can take a while
-
-        #Press download
-        driver.switch_to.default_content()
-        download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Download')]")
-        ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()    
-
-        time.sleep(sleep_time)
-
-        # Download segment sequences as DNA FASTA file
-        iframe_download = driver.find_element(By.NAME, "downl")
-        driver.switch_to.frame(iframe_download)
-        time.sleep(sleep_time)
-        dna = driver.find_element(By.XPATH, "//input[@value='dna']")
-        ActionChains(driver).move_to_element(dna).pause(1).click(dna).perform()    
-
-        time.sleep(sleep_time)
-
-        # Rename
-        name_text = driver.find_element(By.XPATH, "//input[@type='text']")
-        name_text.clear()
-        t = "Isolate ID | Isolate name | Type | Segment | Collection date"
-        name_text.send_keys(t)
-        time.sleep(sleep_time)
-        # Segments: PB2, PB1, PA, HA, NP, NA, MP, NS (all EXCEPT HE, P3)
-        segment_list = ['PB2', 'PB1', 'PA', 'HA', 'NP', 'NA', 'MP', 'NS']
-        for segment in segment_list:
-            xpath = "//input[@value='" + segment + "']"
-            pb2 = driver.find_element(By.XPATH, xpath)
-            ActionChains(driver).move_to_element(pb2).pause(1).click(pb2).perform()
-        # Assume both checkboxes for spaces and underscores are already checked -- if not, come back to this
-        download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
-        ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()   
-
-        time.sleep(sleep_time)
-
-        go_back = driver.find_element(By.XPATH, "//button[contains(text(), 'Go back')]")
-        ActionChains(driver).move_to_element(go_back).pause(1).click(go_back).perform()   
-
-        time.sleep(sleep_time)
-
-        driver.switch_to.default_content()
-
-        time.sleep(sleep_time * 20)
-
-        # Press the select button
-        select_button = driver.find_element(By.XPATH, "//*[contains(@class, 'buttons container-slot')]//button[contains(text(), 'Select')]")
-        ActionChains(driver).move_to_element(select_button).pause(1).click(select_button).perform()
-
-        time.sleep(sleep_time)  
-
-        # Clear the iframe
-        iframe = driver.find_element(By.NAME, "wjob")
-        driver.switch_to.frame(iframe)
-        entry_text = driver.find_element(By.XPATH, "//textarea")
-        entry_text.clear()
+    # # Clear the iframe
+    # iframe = driver.find_element(By.NAME, "wjob")
+    # driver.switch_to.frame(iframe)
+    # entry_text = driver.find_element(By.XPATH, "//textarea")
+    # entry_text.clear()
 
     # Close browser
 
