@@ -5,8 +5,8 @@ cooper's_hawk,chicken,cattle milk product,feral_cat,skunk,wyoming,multispecies
 coopers_hawk,goose,bovine_milk,feline,striped_skunk,california,unknown
 peafowl,guinea_fowl,bovine ,domestic-cat,norway rat,michigan,'
 crane,quail,bos taurus,domestic cat,ermine,colorado,-
-peregrine_falcon,duck,,bobcat,harbor_seal,ohio,environmental
-barn_owl,guineafowl,,geoffroys_cat,fox,louisiana,enviroment
+peregrine_falcon,duck,dairy cow,bobcat,harbor_seal,ohio,environmental
+barn_owl,guineafowl,bovine,geoffroys_cat,fox,louisiana,enviroment
 snow_goose,emu,,cougar,bottlenose_dolphin,british_columbia,environmental_(em)_
 heron,ostrich,,tiger,bear,texas,mal
 great_black-backed_gull,domestic_turkey,,serval,red_fox,antofagasta,ty
@@ -24,6 +24,7 @@ gadwall,broiler_breeders_chicken,,pet_food,red fox,england,ck
 swan,layer,,felis catus,harbor seal,hunan,barnacle
 black_vulture,common_pheasant,,panthera tigris,house-mouse,changsha,decoy_duck
 sandhill_crane,laying_hen,,leptailurus serval,dolphin,jiangsu,house_fly
+mallard,anser_anser,,puma concolor,weasel,homo sapiens,cheese
 mallard,anser_anser,,puma concolor,weasel,homo sapiens,cheese
 barred_owl,chicken_,,lynx rufus,bottlenose dolphin,homo_sapiens,
 dunlin,phasianus_colchicus,,leopardus geoffroyi,pig,,
@@ -66,8 +67,8 @@ green_winged_teal,numida meleagris,,,arctic-fox,,
 falcon,anas,,,bush_dog,,
 american_kestrel,anatinae,,,seal,,
 gull,struthio camelus,,,silver_fox,,
-ring-necked_duck,,,,vulpes_vulpes,,
-wild_goose,,,,mustela_furo,,
+ring-necked_duck,gallus gallus domesticus,,,vulpes_vulpes,,
+wild_goose,domestic turkey,,,mustela_furo,,
 gull_spp.,,,,badger,,
 white_winged_scoter,,,,harbour_porpoise,,
 muscovy_duck,,,,otter,,
@@ -98,8 +99,8 @@ thayers_gull,,,,delphinus delphis,,
 atlantic_puffin,,,,ursus americanus,,
 glaucous-winged_gull,,,,pinnipedia,,
 black_crowned_night-heron,,,,otaria byronia,,
-sabine's_gull,,,,,,
-common_murre,,,,,,
+sabine's_gull,,,,polar bear,,
+common_murre,,,,black bear,,
 laridae,,,,,,
 black_skimmer,,,,,,
 gadwall_duck,,,,,,
