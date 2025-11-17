@@ -794,7 +794,7 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
     # iframe_download = driver.find_element(By.CLASS_NAME, "page")
     # driver.switch_to.frame(iframe_download)
     time.sleep(sleep_time)
-    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download')]")
+    download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-form-button')]//button[contains(text(), 'Download')]")
     ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()   
     # download_button.click()
 
@@ -836,7 +836,7 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
         ActionChains(driver).move_to_element(pb2).pause(1).click(pb2).perform()
     # Assume both checkboxes for spaces and underscores are already checked -- if not, come back to this
     # download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
-    download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-component-slot')]//button[contains(text(), 'Download')]")
+    download_button = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-form-button')]//button[contains(text(), 'Download')]")
     ActionChains(driver).move_to_element(download_button).pause(1).click(download_button).perform()   
 
     time.sleep(sleep_time)
