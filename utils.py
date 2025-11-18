@@ -620,23 +620,23 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
 
     # Type: A
     # Gives "internal server error" without action chains
-    # type_a = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')]//option[@value='A']")
-    # ActionChains(driver).move_to_element(type_a).pause(1).click(type_a).perform() 
+    type_a = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')]//option[@value='A']")
+    ActionChains(driver).move_to_element(type_a).pause(1).click(type_a).perform() 
 
     # time.sleep(sleep_time)
 
     # H: 5
-    # h_5 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')]//option[@value='5']") # The second multi-select
-    # ActionChains(driver).move_to_element(h_5).pause(1).click(h_5).perform() 
+    h_5 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-form-filine-td')]//option[@value='5']") # The second multi-select
+    ActionChains(driver).move_to_element(h_5).pause(1).click(h_5).perform() 
 
-    # time.sleep(sleep_time)
+    time.sleep(sleep_time)
 
     # Find the ID for N
 
     # N: 1
-    n_1 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='2.3.4.4b']") # The third multi-select
-    driver.execute_script("arguments[0].scrollIntoView();", n_1)
-    ActionChains(driver).move_to_element(n_1).pause(1).click(n_1).perform() 
+    # n_1 = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='2.3.4.4b']") # The third multi-select
+    # driver.execute_script("arguments[0].scrollIntoView();", n_1)
+    # ActionChains(driver).move_to_element(n_1).pause(1).click(n_1).perform() 
 
     time.sleep(sleep_time)
     

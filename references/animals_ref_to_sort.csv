@@ -1,16 +1,16 @@
 ,wild_avian,domestic_avian,cattle,feline,other_mammal,human,other,new
-0,great_horned_owl,pheasant,dairy_cow,cat,deer mouse,washington,mixed,
-1,common_raven,turkey,cattle,domestic_cat,house_mouse,nevada,environment,
-2,cooper's_hawk,chicken,cattle milk product,feral_cat,skunk,wyoming,multispecies,
-3,coopers_hawk,goose,bovine_milk,feline,striped_skunk,california,unknown,
-4,peafowl,guinea_fowl,bovine ,domestic-cat,norway rat,michigan,',
-5,crane,quail,bos taurus,domestic cat,ermine,colorado,-,
-6,peregrine_falcon,duck,bovine,bobcat,harbor_seal,ohio,environmental,
-7,barn_owl,guineafowl,dairy cow,geoffroys_cat,fox,louisiana,enviroment,
-8,snow_goose,emu,cattle domestic dairy no breed specified,cougar,bottlenose_dolphin,british_columbia,environmental_(em)_,
-9,heron,ostrich,,tiger,bear,texas,mal,
-10,great_black-backed_gull,domestic_turkey,,serval,red_fox,antofagasta,ty,
-11,double-crested_co,layer_chicken,,lion,macaque,chile,blow_fly,
+0,great_horned_owl,pheasant,dairy_cow,cat,deer mouse,washington,mixed,mourning dove
+1,common_raven,turkey,cattle,domestic_cat,house_mouse,nevada,environment,cheetah
+2,cooper's_hawk,chicken,cattle milk product,feral_cat,skunk,wyoming,multispecies,duck ring necked
+3,coopers_hawk,goose,bovine_milk,feline,striped_skunk,california,unknown,wigeon american
+4,peafowl,guinea_fowl,bovine ,domestic-cat,norway rat,michigan,',teal cinnamon
+5,crane,quail,bos taurus,domestic cat,ermine,colorado,-,kittiwake black legged
+6,peregrine_falcon,duck,bovine,bobcat,harbor_seal,ohio,environmental,duck american black
+7,barn_owl,guineafowl,dairy cow,geoffroys_cat,fox,louisiana,enviroment,arinae sp
+8,snow_goose,emu,cattle domestic dairy no breed specified,cougar,bottlenose_dolphin,british_columbia,environmental_(em)_,duck pintail
+9,heron,ostrich,dairy cattle,tiger,bear,texas,mal,shoveler northern
+10,great_black-backed_gull,domestic_turkey,,serval,red_fox,antofagasta,ty,duck wood
+11,double-crested_co,layer_chicken,,lion,macaque,chile,blow_fly,black rat
 12,bald_eagle,domestic_duck,,lynx,atlantic_white-sided_dolphin,sichuan,water,
 13,red-tailed_hawk,peacock,,mountain_lion,mink,guangdong,unl,
 14,vulture,pekin_duck,,savannah_cat,polar_bear,gx-guilin,dk,
@@ -41,7 +41,7 @@
 39,swanson's_hawk,anas_platyrhynchos_domestica,,,mephitidae,,,
 40,rock_pigeon,common_peacock,,feliformia,procyon lotor,,,
 41,common_goldeneye,rooster,,panthera leo,sus scrofa,,,
-42,crow,guinea,,,capra hircus,,,
+42,crow,guinea,,feral cat,capra hircus,,,
 43,turkey_vulture,perdicinae,,,vicugna pacos,,,
 44,bufflehead,numididae sp.,,,mus musculus,,,
 45,cooper_s_hawk,phasianinae,,,vulpes vulpes,,,
@@ -76,11 +76,11 @@
 74,black-crowned_night-heron,duck domestic not otherwise specified,,,canine,,,
 75,avian,chicken domestic layer,,,european_polecat,,,
 76,snowy_owl,turkey domestic grower meat type,,,coati,,,
-77,northern_shoveler,,,,arctic_fox,,,
-78,american_white_pelican,,,,opossum,,,
-79,common_merganser,,,,red-fox,,,
-80,mute_swan,,,,wild_mink,,,
-81,common_loon,,,,coyote,,,
+77,northern_shoveler,broiler breeders chicken,,,arctic_fox,,,
+78,american_white_pelican,domestic bird,,,opossum,,,
+79,common_merganser,fancy chicken,,,red-fox,,,
+80,mute_swan,taiwanese chicken,,,wild_mink,,,
+81,common_loon,layer chicken,,,coyote,,,
 82,american_crow,,,,gray_seal,,,
 83,western_gull,,,,virginia_opossum,,,
 84,cackling_goose,,,,mirounga leonina,,,
@@ -104,9 +104,9 @@
 102,black_skimmer,,,,south american sea lion,,,
 103,gadwall_duck,,,,black bear,,,
 104,great-tailed_grackle,,,,southern elephant seal,,,
-105,northern_harrier,,,,,,,
-106,brandt_goose,,,,,,,
-107,black_swan,,,,,,,
+105,northern_harrier,,,,gray seal,,,
+106,brandt_goose,,,,atlantic white-sided dolphin,,,
+107,black_swan,,,,striped skunk,,,
 108,swainsons_hawk,,,,,,,
 109,red-necked_grebe,,,,,,,
 110,american_green_winged_teal,,,,,,,
@@ -1013,3 +1013,25 @@
 1011,goose canada,,,,,,,
 1012,teal blue winged,,,,,,,
 1013,pelican american white,,,,,,,
+1014,northern fulmar,,,,,,,
+1015,gadwall duck,,,,,,,
+1016,golden eagle,,,,,,,
+1017,south polar skua,,,,,,,
+1018,great shearwater,,,,,,,
+1019,black-billed magpie,,,,,,,
+1020,atlantic puffin,,,,,,,
+1021,rosy-billed pochard,,,,,,,
+1022,franklins gull,,,,,,,
+1023,collared plover,,,,,,,
+1024,california gull,,,,,,,
+1025,northwestern crow,,,,,,,
+1026,greater yellowlegs,,,,,,,
+1027,common barn owl,,,,,,,
+1028,coopers hawk,,,,,,,
+1029,ferruginous hawk,,,,,,,
+1030,great grey owl,,,,,,,
+1031,common murre,,,,,,,
+1032,ruffed grouse,,,,,,,
+1033,emperor goose,,,,,,,
+1034,iceland gull,,,,,,,
+1035,irere,,,,,,,
