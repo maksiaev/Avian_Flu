@@ -6,7 +6,7 @@
 ######################
 
 module load iqtree
-iqtree2 -s D1.3_11-01-2021--08-15-2025_concat_323.fasta -m GTR+G -bb 1000 -nt AUTO
+iqtree2 -s D1.3_concat_321.fasta -m GTR+G -bb 1000 -nt AUTO
 
 ######################
 date +"%Y-%m-%d %H:%M"
