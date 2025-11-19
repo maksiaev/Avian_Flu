@@ -1,38 +1,38 @@
 ,wild_avian,domestic_avian,cattle,feline,other_mammal,human,other,new
-0,great_horned_owl,pheasant,dairy_cow,cat,deer mouse,washington,mixed,mourning dove
-1,common_raven,turkey,cattle,domestic_cat,house_mouse,nevada,environment,cheetah
-2,cooper's_hawk,chicken,cattle milk product,feral_cat,skunk,wyoming,multispecies,duck ring necked
-3,coopers_hawk,goose,bovine_milk,feline,striped_skunk,california,unknown,wigeon american
-4,peafowl,guinea_fowl,bovine ,domestic-cat,norway rat,michigan,',teal cinnamon
-5,crane,quail,bos taurus,domestic cat,ermine,colorado,-,kittiwake black legged
-6,peregrine_falcon,duck,bovine,bobcat,harbor_seal,ohio,environmental,duck american black
-7,barn_owl,guineafowl,dairy cow,geoffroys_cat,fox,louisiana,enviroment,arinae sp
-8,snow_goose,emu,cattle domestic dairy no breed specified,cougar,bottlenose_dolphin,british_columbia,environmental_(em)_,duck pintail
-9,heron,ostrich,dairy cattle,tiger,bear,texas,mal,shoveler northern
-10,great_black-backed_gull,domestic_turkey,,serval,red_fox,antofagasta,ty,duck wood
-11,double-crested_co,layer_chicken,,lion,macaque,chile,blow_fly,black rat
-12,bald_eagle,domestic_duck,,lynx,atlantic_white-sided_dolphin,sichuan,water,
-13,red-tailed_hawk,peacock,,mountain_lion,mink,guangdong,unl,
-14,vulture,pekin_duck,,savannah_cat,polar_bear,gx-guilin,dk,
-15,osprey,poultry,,geoffroy's cat,dog,fujian-sanyuan,env,
-16,tundra_swan,taiwanese_chicken,,mountain lion,black_bear,hangzhou,t_dk,
-17,blue-winged_teal,waterfowl,,savannah cat,raccoon,castillalamancha,ch,
-18,wood_duck,domestic_goose,,pet food,alpaca,guangxi,est,
-19,ruddy_duck,silkie_chicken,,raw pet food,goat,astrakhan,go,
-20,white-faced_ibis,ring-necked_pheasant,,raw_pet_food,swine,jiangxi,grey_go,
-21,gadwall,broiler_breeders_chicken,,pet_food,red fox,england,ck,
-22,swan,layer,,felis catus,harbor seal,hunan,barnacle,
-23,black_vulture,common_pheasant,,panthera tigris,house-mouse,changsha,decoy_duck,
-24,sandhill_crane,laying_hen,,leptailurus serval,dolphin,jiangsu,house_fly,
-25,mallard,anser_anser,,puma concolor,weasel,homo sapiens,cheese,
-26,barred_owl,chicken_,,lynx rufus,bottlenose dolphin,homo_sapiens,,
-27,dunlin,phasianus_colchicus,,leopardus geoffroyi,pig,,,
-28,sanderling,broiler,,african lion,house mouse,,,
-29,pigeon,hen,,amur leopard,nasua_nasua,,,
-30,herring_gull,madarin_duck,,amur tiger,sea_lion,,,
-31,trumpeter_swan,chiken,,bengal tiger,burmeisters_porpoise,,,
-32,red_tailed_hawk,anser,,bobcat (captive),otaria_flavescens,,,
-33,wild_duck,anser_anser_domesticus,,canada lynx,pinniped,,,
+0,great_horned_owl,pheasant,dairy_cow,cat,deer mouse,washington,mixed,cheetah
+1,common_raven,turkey,cattle,domestic_cat,house_mouse,nevada,environment,aves sp
+2,cooper's_hawk,chicken,cattle milk product,feral_cat,skunk,wyoming,multispecies,gull glaucous
+3,coopers_hawk,goose,bovine_milk,feline,striped_skunk,california,unknown,strigiformes sp
+4,peafowl,guinea_fowl,bovine ,domestic-cat,norway rat,michigan,',accipitridae sp
+5,crane,quail,bos taurus,domestic cat,ermine,colorado,-,wigeon american
+6,peregrine_falcon,duck,bovine,bobcat,harbor_seal,ohio,environmental,phalacrocoracidae sp
+7,barn_owl,guineafowl,dairy cow,geoffroys_cat,fox,louisiana,enviroment,pelecanidae sp
+8,snow_goose,emu,cattle domestic dairy no breed specified,cougar,bottlenose_dolphin,british_columbia,environmental_(em)_,mourning dove
+9,heron,ostrich,dairy cattle,tiger,bear,texas,mal,strix varia
+10,great_black-backed_gull,domestic_turkey,,serval,red_fox,antofagasta,ty,numididae sp
+11,double-crested_co,layer_chicken,,lion,macaque,chile,blow_fly,duck ring necked
+12,bald_eagle,domestic_duck,,lynx,atlantic_white-sided_dolphin,sichuan,water,shoveler northern
+13,red-tailed_hawk,peacock,,mountain_lion,mink,guangdong,unl,anas crecca
+14,vulture,pekin_duck,,savannah_cat,polar_bear,gx-guilin,dk,teal cinnamon
+15,osprey,poultry,,geoffroy's cat,dog,fujian-sanyuan,env,cygnus sp
+16,tundra_swan,taiwanese_chicken,,mountain lion,black_bear,hangzhou,t_dk,duck american black
+17,blue-winged_teal,waterfowl,,savannah cat,raccoon,castillalamancha,ch,anser sp
+18,wood_duck,domestic_goose,,pet food,alpaca,guangxi,est,duck pintail
+19,ruddy_duck,silkie_chicken,,raw pet food,goat,astrakhan,go,kittiwake black legged
+20,white-faced_ibis,ring-necked_pheasant,,raw_pet_food,swine,jiangxi,grey_go,cygnus buccinator
+21,gadwall,broiler_breeders_chicken,,pet_food,red fox,england,ck,white winged scoter
+22,swan,layer,,felis catus,harbor seal,hunan,barnacle,cathartidae sp
+23,black_vulture,common_pheasant,,panthera tigris,house-mouse,changsha,decoy_duck,anas sp
+24,sandhill_crane,laying_hen,,leptailurus serval,dolphin,jiangsu,house_fly,duck wood
+25,mallard,anser_anser,,puma concolor,weasel,homo sapiens,cheese,black rat
+26,barred_owl,chicken_,,lynx rufus,bottlenose dolphin,homo_sapiens,,phasianidae sp
+27,dunlin,phasianus_colchicus,,leopardus geoffroyi,pig,mexico,,pelecanus occidentalis
+28,sanderling,broiler,,african lion,house mouse,,,laridae sp
+29,pigeon,hen,,amur leopard,nasua_nasua,,,corvus sp
+30,herring_gull,madarin_duck,,amur tiger,sea_lion,,,callipepla sp
+31,trumpeter_swan,chiken,,bengal tiger,burmeisters_porpoise,,,corvidae sp
+32,red_tailed_hawk,anser,,bobcat (captive),otaria_flavescens,,,great black backed gulll
+33,wild_duck,anser_anser_domesticus,,canada lynx,pinniped,,,arinae sp
 34,pelican,domestic-duck,,eurasian lynx,southern_elephant_seal,,,
 35,blue_jay,guinea-fowl,,hybrid tiger (panthera),south_american_sea_lion,,,
 36,european_starling,mandarin_duck,,mountain lion (captive),south_american_fur_seal,,,
@@ -1035,3 +1035,7 @@
 1033,emperor goose,,,,,,,
 1034,iceland gull,,,,,,,
 1035,irere,,,,,,,
+1036,antarctic_shag,,,,,,,
+1037,pigeon_guillemot,,,,,,,
+1038,rosy-billed_pochard,,,,,,,
+1039,skua,,,,,,,
