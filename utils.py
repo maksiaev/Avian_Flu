@@ -58,6 +58,8 @@ def fix_animals_andersen(metadata, animals_ref):
             animal_types.append("human")
         elif animal in animals_ref["other_mammal"].values:
             animal_types.append("other_mammal")
+        elif animal in animals_ref["pet_food"].values:
+            animal_types.append("pet_food")
         else: # If other
             animal_types.append("other")
 
@@ -350,6 +352,9 @@ def relabel_animals(fasta, animals_ref):
             names.append(new_name)
         elif animal in animals_ref["human"].values:
             new_name = name.replace(host_type, "human")
+            names.append(new_name)
+        elif animal in animals_ref["pet_food"].values:
+            new_name = name.replace(host_type, "pet_food")
             names.append(new_name)
         else: # If other
             new_name = name.replace(host_type, "other")
@@ -1100,6 +1105,8 @@ def fix_animals(fasta, animals_ref):
             animal_types.append("other_mammal")
         elif animal in animals_ref["human"].values:
             animal_types.append("human")
+        elif animal in animals_ref["pet_food"].values:
+            animal_types.append("pet_food")
         else: # If other
             animal_types.append("other")
 

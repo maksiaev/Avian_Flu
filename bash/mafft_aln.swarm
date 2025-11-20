@@ -1,8 +1,8 @@
-mafft --thread 4 all_D1.3_PB2_11-01-2021--11-14-2025.fasta > D1.3_PB2_11-01-2021--11-14-2025_aln.fasta
-mafft --thread 4 all_D1.3_PB1_11-01-2021--11-14-2025.fasta > D1.3_PB1_11-01-2021--11-14-2025_aln.fasta
-mafft --thread 4 all_D1.3_PA_11-01-2021--11-14-2025.fasta > D1.3_PA_11-01-2021--11-14-2025_aln.fasta
-mafft --thread 4 all_D1.3_HA_11-01-2021--11-14-2025.fasta > D1.3_HA_11-01-2021--11-14-2025_aln.fasta
-mafft --thread 4 all_D1.3_NP_11-01-2021--11-14-2025.fasta > D1.3_NP_11-01-2021--11-14-2025_aln.fasta
-mafft --thread 4 all_D1.3_NA_11-01-2021--11-14-2025.fasta > D1.3_NA_11-01-2021--11-14-2025_aln.fasta
-mafft --thread 4 all_D1.3_MP_11-01-2021--11-14-2025.fasta > D1.3_MP_11-01-2021--11-14-2025_aln.fasta
-mafft --thread 4 all_D1.3_NS_11-01-2021--11-14-2025.fasta > D1.3_NS_11-01-2021--11-14-2025_aln.fasta
+mafft --thread 4 all_Minor105_PB2_11-01-2021--11-14-2025.fasta > Minor105_PB2_11-01-2021--11-14-2025_aln.fasta
+mafft --thread 4 all_Minor105_PB1_11-01-2021--11-14-2025.fasta > Minor105_PB1_11-01-2021--11-14-2025_aln.fasta
+mafft --thread 4 all_Minor105_PA_11-01-2021--11-14-2025.fasta > Minor105_PA_11-01-2021--11-14-2025_aln.fasta
+mafft --thread 4 all_Minor105_HA_11-01-2021--11-14-2025.fasta > Minor105_HA_11-01-2021--11-14-2025_aln.fasta
+mafft --thread 4 all_Minor105_NP_11-01-2021--11-14-2025.fasta > Minor105_NP_11-01-2021--11-14-2025_aln.fasta
+mafft --thread 4 all_Minor105_NA_11-01-2021--11-14-2025.fasta > Minor105_NA_11-01-2021--11-14-2025_aln.fasta
+mafft --thread 4 all_Minor105_MP_11-01-2021--11-14-2025.fasta > Minor105_MP_11-01-2021--11-14-2025_aln.fasta
+mafft --thread 4 all_Minor105_NS_11-01-2021--11-14-2025.fasta > Minor105_NS_11-01-2021--11-14-2025_aln.fasta
