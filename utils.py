@@ -279,7 +279,7 @@ def fasta_df_complete(file_name, state_ref):
                                                 if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
                                                 # If "x" has neither the state abbreviation nor the full state name nor is "USA"
                                                 else 
-                                                "USA"
+                                                x
                                                 )
     fasta["Date Collected"] = collection_dates
     fasta["Species"] = species
@@ -963,7 +963,7 @@ def fasta_df(file_name, state_ref):
                                                 if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
                                                 # If "x" has neither the state abbreviation nor the full state name nor is "USA"
                                                 else 
-                                                "USA"
+                                                x
                                                 )
     fasta["Geo_Location"] = fasta["Geo_Location"].apply(lambda x: x.split("-")[0] if x.split("-")[-1] == "" or x.split("-")[-1] == x.split("-")[0] else x)
 
