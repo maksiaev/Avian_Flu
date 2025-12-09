@@ -1,10 +1,13 @@
+# install.packages("tidyr")
+
 # Load required libraries
 library(readxl)
 library(ggplot2)
 library(dplyr)
+library(tidyr)
 
 # Read the data
-data <- read_excel("C:/Users/maksi/Documents/Statistics/Projects/Avian_Flu_Files/h5n1-human-case-data.xlsx")
+data <- read_excel("C:/Users/maksi/Documents/Statistics/Projects/Avian_Flu_Files/Cats/feline-genotype-table_R.xlsx")
 
 
 # Preview the data
@@ -14,13 +17,13 @@ print(paste("Total rows:", nrow(data)))
 
 # Remove rows with NA in week ending date
 data <- data %>% 
-  filter(!is.na(week_ending_date))
+  filter(!is.na(collection_date))
 
 # For stacked lollipops, we need to count occurrences per week/genotype/exposure combination
 # and create a position variable for stacking
 data_stacked <- data %>%
-  arrange(week_ending_date, exposure, genotype) %>%
-  group_by(week_ending_date, exposure) %>%
+  arrange(collection_date, exposure, genotype) %>%
+  group_by(collection_date, exposure) %>%
   mutate(position = row_number()) %>%
   ungroup()
 
@@ -28,8 +31,8 @@ data_stacked <- data %>%
 #cols<- c("B3.13"= "orange", "B3.13 (inferred)"= "#FED8B1", "D1.1"= "#7F00FF", "D1.1 (inferred)"= "#D6B4FC",
  #        "B3.2"= "#895129", "D1.3"= "steelblue", "unknown"= "grey")
 
-cols2<- c("B3.13"= "orange", "B3.13 (inferred)"= "#FED8B1", "D1.1"= "#7F00FF", "D1.1 (inferred)"= "#D6B4FC",
-          "D1.3"= "steelblue", "unknown"= "grey")
+cols2<- c("B3.13"= "orange", "D1.1"= "#7F00FF",
+          "A3"= "steelblue", "unknown"= "grey")
 
 start <- as.Date("2021-11-01", "%Y-%m-%d")
 end <- as.Date("2025-11-01", "%Y-%m-%d")
@@ -53,9 +56,30 @@ get_eow_dates <- function(start_date, end_date) { #}, day_of_week = "Saturday") 
 }
 
 # Generate the specific break points (e.g., all Saturdays)
-saturday_breaks <- get_eow_dates(as.Date(min(data_stacked$week_ending_date), "%Y-%m-%d"), as.Date(max(data_stacked$week_ending_date), "%Y-%m-%d"))
+saturday_breaks <- get_eow_dates(as.Date(min(data_stacked$collection_date), "%Y-%m-%d"), as.Date(max(data_stacked$collection_date), "%Y-%m-%d"))
                                  # day_of_week = "Saturday"))
 print(saturday_breaks)
+
+week_ending_dates <- as.Date(c(start), "%Y-%m-%d")
+for (date in data_stacked$collection_date) {
+  
+  if (!is.na(as.Date(as.character(date), format = "%Y-%m-%d"))) {
+    day <- as.Date(date, "%Y-%m-%d")
+    # print(as.Date(as.Date(date, "%Y-%m-%d") + 6, "%Y-%m-%d"))
+    week_ending_date_var <- as.Date(day + which(weekdays(seq.Date(day, day + 6, by = "day")) == "Saturday"), "%Y-%m-%d")
+    print(week_ending_date_var)
+    week_ending_dates <- c(week_ending_dates, week_ending_date_var)
+  }
+  else {
+    week_ending_dates <- c(week_ending_dates, NA)
+  }
+}
+
+
+# print(week_ending_dates)
+data_stacked$week_ending_date <- as.Date(week_ending_dates[-1], "%Y-%m-%d")
+print(data_stacked$week_ending_date)
+data_stacked <- data_stacked %>% fill(week_ending_date, .direction = "down")
 data_stacked$week_ending_date <- as.Date(data_stacked$week_ending_date, "%Y-%m-%d")
 
 # lim <- as.numeric(c(start, end))
@@ -104,13 +128,13 @@ p <- ggplot(data_stacked, aes(x = week_ending_date,
 print(p)
 
 # Save the plot
-ggsave("C:/Users/maksi/Documents/Statistics/Projects/Avian_Flu_Files/h5n1_stacked_lollipop.png", 
+ggsave("C:/Users/maksi/Documents/Statistics/Projects/Avian_Flu_Files/cat_stacked_lollipop.png", 
        plot = p, 
        width = 14, 
        height = 7, 
        dpi = 300)
 
-print("Lollipop plot saved to h5n1_stacked_lollipop.png")
+print("Lollipop plot saved to cat_stacked_lollipop.png")
 
 
 # Print summary statistics
