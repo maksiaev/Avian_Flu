@@ -7,7 +7,7 @@ library(dplyr)
 library(tidyr)
 
 # Read the data
-data <- read_excel("C:/Users/maksi/Documents/Statistics/Projects/Avian_Flu_Files/Cats/feline-genotype-table_R.xlsx")
+data <- read_excel("C:/Users/maksi/Documents/Statistics/Projects/Avian_Flu_Files/Cats/feline-genotype-table_R_collection_dates.xlsx")
 
 
 # Preview the data
@@ -17,7 +17,7 @@ print(paste("Total rows:", nrow(data)))
 
 # Remove rows with NA in week ending date
 data <- data %>% 
-  filter(!is.na(collection_date))
+  filter(complete_collection_date == 1, exposure != "avian")
 
 # For stacked lollipops, we need to count occurrences per week/genotype/exposure combination
 # and create a position variable for stacking
@@ -27,17 +27,18 @@ data_stacked <- data %>%
   mutate(position = row_number()) %>%
   ungroup()
 
+print(data_stacked)
 
 #cols<- c("B3.13"= "orange", "B3.13 (inferred)"= "#FED8B1", "D1.1"= "#7F00FF", "D1.1 (inferred)"= "#D6B4FC",
  #        "B3.2"= "#895129", "D1.3"= "steelblue", "unknown"= "grey")
 
-cols2<- c("B3.13"= "orange", "D1.1"= "#7F00FF",
-          "A3"= "steelblue", "unknown"= "grey")
+cols2<- c("B3.13"= "#2069f0", "D1.1"= "#9100bd", "B3.7" = "#219c8c", "B3.6"="#4cfe78", "B3.2"="#fed976",
+          "A3"= "#ff7b00", "B3.5"="#f57a93")
 
 start <- as.Date("2021-11-01", "%Y-%m-%d")
-end <- as.Date("2025-11-01", "%Y-%m-%d")
+end <- as.Date("2025-08-01", "%Y-%m-%d")
 
-data_stacked$genotype<- factor(data_stacked$genotype, levels = c(""))
+# data_stacked$genotype <- factor(data_stacked$genotype, levels = c(""))
 
 
 
@@ -52,7 +53,7 @@ get_eow_dates <- function(start_date, end_date) { #}, day_of_week = "Saturday") 
   
   
   # Generate a sequence of these end-of-week days
-  return(seq.Date(from = first_eow, to = end_date, by = "2 weeks"))
+  return(seq.Date(from = first_eow, to = end_date, by = "2 months"))
 }
 
 # Generate the specific break points (e.g., all Saturdays)
@@ -62,7 +63,7 @@ print(saturday_breaks)
 
 week_ending_dates <- as.Date(c(start), "%Y-%m-%d")
 for (date in data_stacked$collection_date) {
-  
+  print(date)
   if (!is.na(as.Date(as.character(date), format = "%Y-%m-%d"))) {
     day <- as.Date(date, "%Y-%m-%d")
     # print(as.Date(as.Date(date, "%Y-%m-%d") + 6, "%Y-%m-%d"))
@@ -71,16 +72,23 @@ for (date in data_stacked$collection_date) {
     week_ending_dates <- c(week_ending_dates, week_ending_date_var)
   }
   else {
-    week_ending_dates <- c(week_ending_dates, NA)
+    week_ending_dates <- c(week_ending_dates, "NA")
   }
 }
 
 
+
 # print(week_ending_dates)
-data_stacked$week_ending_date <- as.Date(week_ending_dates[-1], "%Y-%m-%d")
-print(data_stacked$week_ending_date)
-data_stacked <- data_stacked %>% fill(week_ending_date, .direction = "down")
-data_stacked$week_ending_date <- as.Date(data_stacked$week_ending_date, "%Y-%m-%d")
+data_stacked$week_ending_date <- week_ending_dates[-1]
+# print(data_stacked$week_ending_date)
+# # data_stacked <- data_stacked %>% fill(week_ending_date, .direction = "down")
+
+
+# data_stacked <- data_stacked %>% 
+#                 filter(week_ending_date == "NA")
+
+# data_stacked$week_ending_date <- as.Date(data_stacked$week_ending_date, "%Y-%m-%d")
+print(data_stacked)
 
 # lim <- as.numeric(c(start, end))
 # str(lim)
@@ -110,8 +118,8 @@ p <- ggplot(data_stacked, aes(x = week_ending_date,
   #facet_grid(exposure~., ) +
   facet_wrap(~exposure, ncol = 1, scales = "free_x", strip.position = "right") +
   geom_hline(yintercept = 0, color = "black", size = 1) +
-  labs(title = "Confirmed H5N1 Cases in North America",
-       subtitle = "Nov 2021 - Nov 2025",
+  labs(title = "Confirmed H5N1 Feline Cases in North America",
+       subtitle = "Nov 2021 - Aug 2025",
        #  x = "Week Ending Date")+
        y = "Weekly Number of Cases", ) +
   theme_minimal(base_size = 10) +
