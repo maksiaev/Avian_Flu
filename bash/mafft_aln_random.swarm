@@ -1,0 +1,8 @@
+mafft --thread 4 mega_segment_PB2.fasta > random_PB2_2021-11-01--2025-12-05_aln.fasta
+mafft --thread 4 mega_segment_PB1.fasta > random_PB1_2021-11-01--2025-12-05_aln.fasta
+mafft --thread 4 mega_segment_PA.fasta > random_PA_2021-11-01--2025-12-05_aln.fasta
+mafft --thread 4 mega_segment_NA.fasta > random_NA_2021-11-01--2025-12-05_aln.fasta
+mafft --thread 4 mega_segment_NP.fasta > random_NP_2021-11-01--2025-12-05_aln.fasta
+mafft --thread 4 mega_segment_HA.fasta > random_HA_2021-11-01--2025-12-05_aln.fasta
+mafft --thread 4 mega_segment_MP.fasta > random_MP_2021-11-01--2025-12-05_aln.fasta
+mafft --thread 4 mega_segment_NS.fasta > random_NS_2021-11-01--2025-12-05_aln.fasta
