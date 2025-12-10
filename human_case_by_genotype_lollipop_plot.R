@@ -7,7 +7,7 @@ library(dplyr)
 library(tidyr)
 
 # Read the data
-data <- read_excel("C:/Users/maksi/Documents/Statistics/Projects/Avian_Flu_Files/Cats/feline-genotype-table_R_collection_dates.xlsx")
+data <- read_excel("C:/Users/maksi/Documents/Statistics/Projects/Avian_Flu_Files/Cats/Cat_Table2_R.xlsx")
 
 
 # Preview the data
@@ -40,7 +40,7 @@ end <- as.Date("2025-08-01", "%Y-%m-%d")
 
 # data_stacked$genotype <- factor(data_stacked$genotype, levels = c(""))
 
-
+excel_origin <- "1899-12-30"
 
 # Function to find the next desired end-of-week date (e.g., the first Saturday after a start date)
 get_eow_dates <- function(start_date, end_date) { #}, day_of_week = "Saturday") {
@@ -57,23 +57,22 @@ get_eow_dates <- function(start_date, end_date) { #}, day_of_week = "Saturday") 
 }
 
 # Generate the specific break points (e.g., all Saturdays)
-saturday_breaks <- get_eow_dates(as.Date(min(data_stacked$collection_date), "%Y-%m-%d"), as.Date(max(data_stacked$collection_date), "%Y-%m-%d"))
+saturday_breaks <- get_eow_dates(as.Date(min(data_stacked$collection_date), origin=excel_origin), as.Date(max(data_stacked$collection_date), origin=excel_origin))
                                  # day_of_week = "Saturday"))
 print(saturday_breaks)
 
 week_ending_dates <- as.Date(c(start), "%Y-%m-%d")
+
+# data_stacked$collection_date <- as.numeric(data_stacked$collection_date)
+print(data_stacked$collection_date)
+
 for (date in data_stacked$collection_date) {
   print(date)
-  if (!is.na(as.Date(as.character(date), format = "%Y-%m-%d"))) {
-    day <- as.Date(date, "%Y-%m-%d")
-    # print(as.Date(as.Date(date, "%Y-%m-%d") + 6, "%Y-%m-%d"))
-    week_ending_date_var <- as.Date(day + which(weekdays(seq.Date(day, day + 6, by = "day")) == "Saturday"), "%Y-%m-%d")
-    print(week_ending_date_var)
-    week_ending_dates <- c(week_ending_dates, week_ending_date_var)
-  }
-  else {
-    week_ending_dates <- c(week_ending_dates, "NA")
-  }
+  day <- as.Date(date, origin = excel_origin)
+  # print(as.Date(as.Date(date, "%Y-%m-%d") + 6, "%Y-%m-%d"))
+  week_ending_date_var <- as.Date(day + which(weekdays(seq.Date(day, day + 6, by = "day")) == "Saturday"), "%Y-%m-%d")
+  print(week_ending_date_var)
+  week_ending_dates <- c(week_ending_dates, week_ending_date_var)
 }
 
 
