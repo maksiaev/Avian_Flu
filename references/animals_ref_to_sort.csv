@@ -1,8 +1,8 @@
 ,wild_avian,domestic_avian,cattle,feline,other_mammal,human,other,pet_food,new
-0,great_horned_owl,pheasant,dairy_cow,cat,deer mouse,washington,mixed,pet food,
-1,common_raven,turkey,cattle,domestic_cat,house_mouse,nevada,environment,raw pet food,
-2,cooper's_hawk,chicken,cattle milk product,feral_cat,skunk,wyoming,multispecies,raw_pet_food,
-3,coopers_hawk,goose,bovine_milk,feline,striped_skunk,california,unknown,pet_food,
+0,great_horned_owl,pheasant,dairy_cow,cat,deer mouse,washington,mixed,pet food,northern herrier
+1,common_raven,turkey,cattle,domestic_cat,house_mouse,nevada,environment,raw pet food,hooded merganser duck
+2,cooper's_hawk,chicken,cattle milk product,feral_cat,skunk,wyoming,multispecies,raw_pet_food,canvasback duck
+3,coopers_hawk,goose,bovine_milk,feline,striped_skunk,california,unknown,pet_food,greater white fronted goose
 4,peafowl,guinea_fowl,bovine ,domestic-cat,norway rat,michigan,',,
 5,crane,quail,bos taurus,domestic cat,ermine,colorado,-,,
 6,peregrine_falcon,duck,bovine,bobcat,harbor_seal,ohio,environmental,,
@@ -25,7 +25,7 @@
 23,black_vulture,common_pheasant,,leopardus geoffroyi,house-mouse,changsha,decoy_duck,,
 24,sandhill_crane,laying_hen,,african lion,dolphin,jiangsu,house_fly,,
 25,mallard,anser_anser,,amur leopard,weasel,homo sapiens,cheese,,
-26,barred_owl,chicken_,,amur tiger,bottlenose dolphin,homo_sapiens,domestic grower,,
+26,barred_owl,chicken_,,amur tiger,bottlenose dolphin,homo_sapiens,,,
 27,dunlin,phasianus_colchicus,,bengal tiger,pig,mexico,,,
 28,sanderling,broiler,,bobcat (captive),house mouse,mexico_city,,,
 29,pigeon,hen,,canada lynx,nasua_nasua,,,,
@@ -84,7 +84,7 @@
 82,american_crow,domestic grower meat type turkey,,,gray_seal,,,,
 83,western_gull,domestic goose,,,virginia_opossum,,,,
 84,cackling_goose,meat-type_turkey,,,mirounga leonina,,,,
-85,rosss_goose,,,,nasua nasua,,,,
+85,rosss_goose,domestic grower,,,nasua nasua,,,,
 86,dove,,,,pekania pennanti,,,,
 87,canada_goose,,,,canis lupus familiaris,,,,
 88,surf_scoter,,,,halichoerus grypus,,,,
@@ -1084,3 +1084,8 @@
 1082,whooping_crane,,,,,,,,
 1083,furnarius rufus,,,,,,,,
 1084,dendrocygna viduata,,,,,,,,
+1085,dalmatian pelican,,,,,,,,
+1086,common gull,,,,,,,,
+1087,greater_black_backed_gull,,,,,,,,
+1088,chinstrap_penguin,,,,,,,,
+1089,northern_raven,,,,,,,,
