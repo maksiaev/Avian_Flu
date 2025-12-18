@@ -121,15 +121,16 @@ p <- ggplot(data_stacked, aes(x = week_ending_date,
        subtitle = "Nov 2021 - Aug 2025",
        #  x = "Week Ending Date")+
        y = "Weekly Number of Cases", ) +
-  theme_minimal(base_size = 10) +
+  theme_minimal(base_size = 18) +
   coord_cartesian(clip = "off") +
   scale_x_date(date_labels = "%b %d, %Y", limits = c(start, end), breaks = saturday_breaks) +
   theme(legend.position = "top", axis.line.y=element_blank(),
-        axis.text.x = element_text(angle = 45, hjust = 1),
-        title = element_text(size = 12),
-        axis.title.x = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 18),
+        title = element_text(size = 22),
+        axis.title.x = element_text(size = 18), # element_blank(),
         axis.ticks.y=element_blank(),
-        axis.ticks.x =element_blank())
+        axis.ticks.x =element_blank(),
+        axis.title.y.left = element_text(size = 18)) 
 
 # Display the plot
 print(p)
@@ -138,7 +139,7 @@ print(p)
 ggsave("C:/Users/maksi/Documents/Statistics/Projects/Avian_Flu_Files/cat_stacked_lollipop.png", 
        plot = p, 
        width = 14, 
-       height = 7, 
+       height = 14, 
        dpi = 300)
 
 print("Lollipop plot saved to cat_stacked_lollipop.png")
