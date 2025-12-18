@@ -6,7 +6,7 @@
 ######################
 
 module load iqtree
-iqtree2 -s B3.13_concat_4997.fasta -m GTR+G -bb 1000 -nt AUTO
+iqtree2 -s B3.13_concat_5095.fasta -m GTR+G -bb 1000 -nt AUTO
 
 ######################
 date +"%Y-%m-%d %H:%M"
