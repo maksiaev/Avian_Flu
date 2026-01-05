@@ -560,7 +560,7 @@ def open_ncbi_virus(browser, sleep_time, continent, start_date, end_date):
     time.sleep(sleep_time)
     ActionChains(driver).move_to_element(download_button).click(download_button).perform()
 
-    time.sleep(sleep_time * 20) # Let it download
+    time.sleep(sleep_time * 30) # Let it download
 
     # Close browser
 
