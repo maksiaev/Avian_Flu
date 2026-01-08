@@ -212,7 +212,11 @@ def fasta_df_complete(file_name, state_ref):
                     # print(header)
                     try:
                         split_header = header.split("|")
-                        if len(header.split("|")) > 6:
+                        if len(header.split("|")) > 6 and len(header.split("|")) < 8:
+                            identifier = header.split("|")[0]
+                            identifiers.append(identifier)
+                            split_first_header = split_header[1].split("/")
+                        elif len(header.split("|")) >= 8:
                             identifier = header.split("|")[0]
                             identifiers.append(identifier)
                             split_first_header = split_header[1].split("/")
@@ -224,7 +228,7 @@ def fasta_df_complete(file_name, state_ref):
                         headers.append(header) 
                         isolate_ids.append(split_first_header[3])
                         isolate_partials.append(partial_isolate(split_first_header[3]))
-                        isolate_names.append(split_header[-6]) # We'll need to extract data from this too
+                        isolate_names.append("/".join(split_first_header)) # We'll need to extract data from this too
                         # print(split_header[2].split("_")[-1])
                         subtypes.append(split_header[-5].split("_")[-1])  # Get only H5N1
                         genotypes.append(split_header[-1])
@@ -266,21 +270,21 @@ def fasta_df_complete(file_name, state_ref):
     fasta["Location"] = fasta["Isolate_Name"].apply(lambda x: x.split("/")[-3])
     fasta["Geo_Location"] = fasta["Location"].apply( # lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
 
-                                                lambda x: 
-                                                # If "x" has the state abbreviation (e.g. "MD")
-                                                state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0] 
-                                                + "-" + 
-                                                x.split(" ")[-1]
-                                                if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
-                                                # If "x" has the full state name (e.g. "Maryland")
-                                                else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0]
-                                                + "-" + 
-                                                state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Abbreviation'].iloc[0] 
-                                                if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
-                                                # If "x" has neither the state abbreviation nor the full state name nor is "USA"
-                                                else 
-                                                x
-                                                )
+                                                    lambda x: 
+                                                    # If "x" has the state abbreviation (e.g. "MD")
+                                                    state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0] 
+                                                    + "-" + 
+                                                    x.split(" ")[-1]
+                                                    if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+                                                    # If "x" has the full state name (e.g. "Maryland")
+                                                    else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0]
+                                                    + "-" + 
+                                                    state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Abbreviation'].iloc[0] 
+                                                    if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+                                                    # If "x" has neither the state abbreviation nor the full state name nor is "USA"
+                                                    else 
+                                                    x
+                                                    )
     fasta["Date Collected"] = collection_dates
     fasta["Species"] = species
     fasta["Host_Type"] = host_types
