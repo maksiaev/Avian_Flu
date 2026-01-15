@@ -12,209 +12,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 import time 
 
-### NCBI Virus functions ###
-
-# Function to download data from NCBI
-
-def open_ncbi_virus(browser, sleep_time, continent, start_date, end_date):
-
-    if browser=="Firefox":
-        # If you want to open Firefox
-        driver = webdriver.Firefox()
-    elif browser=="Chrome": # if Chrome...
-        driver = webdriver.Chrome()
-    else: # Edge, probably
-        driver = webdriver.Edge()
-
-    # How many seconds should pass between tasks
-    sleep_time = int(sleep_time)
-
-    # Requested URL
-    driver.get("https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Alphainfluenzavirus,%20taxid:197911&Serotype_s=H5N*")
-
-    # Wait for it to load, otherwise it won't work
-    # driver.implicitly_wait(20)
-    # username_field = wait.until(EC.element_to_be_clickable((By.NAME, 'login')))
-    # password_field = wait.until(EC.element_to_be_clickable((By.NAME, 'password')))
-
-    # Wait for it to load again
-    time.sleep(sleep_time)
-
-    # Need locations and date
-
-    # Locations
-
-    # Find the correct tab
-    location_link = driver.find_element(By.XPATH, "//*[contains(text(), 'Location and Source')]")
-    location_link.click()
-
-    time.sleep(sleep_time)
-
-    # Pick continents
-    for c in continent.split(","):
-
-        geographic_region = driver.find_element(By.XPATH, "//*[contains(text(), 'Geographic Region')]")
-        geographic_region.click()
-        
-        time.sleep(sleep_time)
-        
-        toggle = "//*[contains(text(), 'Toggle " + c + "')]"
-        continent_needed = driver.find_element(By.XPATH, toggle)
-        driver.execute_script("arguments[0].scrollIntoView();", continent_needed)
-        ActionChains(driver).move_to_element(continent_needed).pause(1).click(continent_needed).perform() 
-        
-        time.sleep(sleep_time)
-
-    time.sleep(sleep_time)
-
-    # Dates
-
-    dates_tab = driver.find_element(By.XPATH, "//*[contains(text(), 'Dates')]")
-    dates_tab.click()
-
-    time.sleep(sleep_time)
-
-    release_date = driver.find_element(By.XPATH, "//*[contains(text(), 'Release Date')]")
-    release_date.click()
-
-    time.sleep(sleep_time)
-
-    first_date = driver.find_element(By.XPATH, "//input[@id='CreateDate_dt_From']") # First date
-    first_date.send_keys(start_date)
-
-    time.sleep(sleep_time)
-    
-    last_date = driver.find_element(By.XPATH, "//input[@id='CreateDate_dt_To']") # Second date
-    last_date.send_keys(Keys.CONTROL,"a")
-    last_date.send_keys(Keys.BACK_SPACE) # Clear the default 
-    last_date.send_keys(end_date)
-
-    time.sleep(sleep_time)
-
-    # Submit
-
-    last_date.send_keys(Keys.ENTER)
-
-    time.sleep(sleep_time)
-
-    # Download all results
-    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download All Results')]")
-    download_button.click()
-
-    time.sleep(sleep_time)
-
-    # First is automatic, nucleotide -- select "Next"
-    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
-    next_button.click()
-
-    time.sleep(sleep_time)
-
-
-    # Download all records, do the same
-    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
-    next_button.click()
-
-    time.sleep(sleep_time)
-
-    # Build custom names
-    build_custom = driver.find_element(By.XPATH, "//*[contains(text(), ' Build custom ')]")
-    build_custom.click()
-
-    # time.sleep(sleep_time)
-
-    # # Remove Accession and GenBank Title
-    # accession = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[@id='3']/div/span[2]/form/div/span/uswds-ncbi-app-custom-listbox/div/div[3]/div/ul/li[1]/span") 
-    # accession.click()
-
-    # time.sleep(sleep_time)
-
-    # remove = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[contains(text(), 'Remove')]") 
-    # remove.click()
-
-    # time.sleep(sleep_time)
-
-    # genbank_title = driver.find_element(By.XPATH, "//*[contains(@class, 'record-picker')]//*[contains(text(), 'GenBank Title')]") 
-    # genbank_title.click()
-
-    # time.sleep(sleep_time)
-
-    # remove = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[contains(text(), 'Remove')]") 
-    # remove.click()
-
-    time.sleep(sleep_time)
-
-    # Now add what we want
-    # "Accession", "GenBank Title" already included
-
-    # for element in ["Assembly", "SRA Accession", "BioSample", "BioProject", "Genotype", "Isolate", "Geo Location", "Host", "Collection Date"]:
-    #     # Find
-    #     element_location = "//*[contains(@class, 'record-picker')]//*[contains(text(), '" + element + "')]"
-    #     toggle = driver.find_element(By.XPATH, element_location)
-    #     driver.execute_script("arguments[0].scrollIntoView();", toggle)
-    #     ActionChains(driver).move_to_element(toggle).pause(1).click(toggle).perform() 
-    #     time.sleep(sleep_time)
-    #     # Add
-    #     add = driver.find_element(By.XPATH, "//*[contains(text(), 'Add')]") 
-    #     add.click()
-    #     time.sleep(sleep_time)
-
-    # time.sleep(sleep_time)
-
-    # Download
-    download_button = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[2]/button[2]")
-    time.sleep(sleep_time)
-    ActionChains(driver).move_to_element(download_button).click(download_button).perform()
-
-    time.sleep(sleep_time)
-
-    # Download all results
-    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download All Results')]")
-    download_button.click()
-
-    time.sleep(sleep_time)
-
-    # Now download the metadata
-    csv_format = driver.find_element(By.XPATH, "//*[contains(text(), 'CSV format')]")
-    csv_format.click()
-
-    time.sleep(sleep_time)
-
-    # Next
-    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
-    next_button.click()
-
-    time.sleep(sleep_time)
-
-
-    # Download all records, do the same
-    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
-    next_button.click()
-
-    time.sleep(sleep_time)
-
-    # Select all
-    select_all = driver.find_element(By.XPATH, "//*[contains(text(), 'Select All')]")
-    select_all.click()
-
-    time.sleep(sleep_time)
-
-    # With version
-    with_version = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[3]/form/div/div[2]/div[3]/label")
-    with_version.click()
-
-    time.sleep(sleep_time)
-    
-    # Download
-    download_button = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[3]/button[2]")
-    time.sleep(sleep_time)
-    ActionChains(driver).move_to_element(download_button).click(download_button).perform()
-
-    time.sleep(sleep_time * 30) # Let it download
-
-    # Close browser
-
-    driver.close()
-
 ### Andersen Lab functions ###
 
 # Rename host type
@@ -269,6 +66,70 @@ def fix_animals_andersen(metadata, animals_ref):
     metadata["Host_Type"] = animal_types
     # metadata["Host"] = metadata["Host"].apply(lambda x: x.replace(" ", "_")) # Avoid space issues
 
+# Get collection date from GenBank eutils 
+
+def search_collection_date(biosample, metadata_genbank):
+
+    # print(biosample)
+
+    try:
+    
+        base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+        search_url = base_url + "esearch.fcgi?db=biosample&term=" + biosample +"&usehistory=y&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        # Get Biosample ID from search_url
+        output = requests.get(search_url)
+        xml = output.content
+        root = ET.fromstring(xml)
+        sample_id = root.find("./IdList/Id").text
+
+        biosample_url = base_url + "elink.fcgi?dbfrom=biosample&db=nuccore&id=" + sample_id + "&cmd=neighbor_history&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+        
+        # Get Nucleotide ID from biosample_url
+        output = requests.get(biosample_url)
+        xml = output.content
+        root = ET.fromstring(xml)
+        query_key = root.find(".//QueryKey").text
+        web_env = root.find(".//WebEnv").text
+
+        nucleotide_url = base_url + "esummary.fcgi?db=nuccore&query_key=" + query_key + "&WebEnv=" + web_env + "&version=2.0&api_key=2cbaf77ac9ec5ae7844ea350076ae6d56809"
+
+        print(nucleotide_url)
+
+        output = requests.get(nucleotide_url) 
+        xml = output.content
+        root = ET.fromstring(xml)
+
+        # Grab collection date at the end of the sub name
+        collection_date = root.find(".//SubName").text.split("|")[-1]
+
+        # Grab geo_location as well
+        # geo_location = root.find(".//SubName").text.split("/")[2]
+
+        # # If there's a state associated, re-format
+        # geo_location = geo_location.replace(": ", "-")
+
+        print(collection_date)
+
+        # Avoid spamming the server
+        time.sleep(2)
+
+        # return geo_location + "|" + collection_date
+        return collection_date
+    
+    except:
+        print("Unable to find collection date.")
+
+        if len(metadata_genbank[metadata_genbank["BioSample"] == biosample]["Collection_Date"]) > 0: # If a year exists
+            collection_date = metadata_genbank[metadata_genbank["BioSample"] == biosample]["Collection_Date"].values[0]
+        else:
+            collection_date = float('nan') 
+
+        # Avoid spamming the server
+        time.sleep(1)
+
+        return collection_date
+    
 def create_dataframes(directory):
     dfs = defaultdict(list)
     for dirpath, dirs, files in os.walk(directory): # Find the fasta file
@@ -506,6 +367,208 @@ def relabel_animals(fasta, animals_ref):
     fasta["full_header"] = names
 
     return fasta
+
+### NCBI Virus functions ###
+
+# Function to download data from NCBI
+
+def open_ncbi_virus(browser, sleep_time, continent, start_date, end_date):
+
+    if browser=="Firefox":
+        # If you want to open Firefox
+        driver = webdriver.Firefox()
+    elif browser=="Chrome": # if Chrome...
+        driver = webdriver.Chrome()
+    else: # Edge, probably
+        driver = webdriver.Edge()
+
+    # How many seconds should pass between tasks
+    sleep_time = int(sleep_time)
+
+    # Requested URL
+    driver.get("https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Alphainfluenzavirus,%20taxid:197911&Serotype_s=H5N*")
+
+    # Wait for it to load, otherwise it won't work
+    # driver.implicitly_wait(20)
+    # username_field = wait.until(EC.element_to_be_clickable((By.NAME, 'login')))
+    # password_field = wait.until(EC.element_to_be_clickable((By.NAME, 'password')))
+
+    # Wait for it to load again
+    time.sleep(sleep_time)
+
+    # Need locations and date
+
+    # Locations
+
+    # Find the correct tab
+    location_link = driver.find_element(By.XPATH, "//*[contains(text(), 'Location and Source')]")
+    location_link.click()
+
+    time.sleep(sleep_time)
+
+    # Pick continents
+    for c in continent.split(","):
+
+        geographic_region = driver.find_element(By.XPATH, "//*[contains(text(), 'Geographic Region')]")
+        geographic_region.click()
+        
+        time.sleep(sleep_time)
+        
+        toggle = "//*[contains(text(), 'Toggle " + c + "')]"
+        continent_needed = driver.find_element(By.XPATH, toggle)
+        driver.execute_script("arguments[0].scrollIntoView();", continent_needed)
+        ActionChains(driver).move_to_element(continent_needed).pause(1).click(continent_needed).perform() 
+        
+        time.sleep(sleep_time)
+
+    time.sleep(sleep_time)
+
+    # Dates
+
+    dates_tab = driver.find_element(By.XPATH, "//*[contains(text(), 'Dates')]")
+    dates_tab.click()
+
+    time.sleep(sleep_time)
+
+    release_date = driver.find_element(By.XPATH, "//*[contains(text(), 'Release Date')]")
+    release_date.click()
+
+    time.sleep(sleep_time)
+
+    first_date = driver.find_element(By.XPATH, "//input[@id='CreateDate_dt_From']") # First date
+    first_date.send_keys(start_date)
+
+    time.sleep(sleep_time)
+    
+    last_date = driver.find_element(By.XPATH, "//input[@id='CreateDate_dt_To']") # Second date
+    last_date.send_keys(Keys.CONTROL,"a")
+    last_date.send_keys(Keys.BACK_SPACE) # Clear the default 
+    last_date.send_keys(end_date)
+
+    time.sleep(sleep_time)
+
+    # Submit
+
+    last_date.send_keys(Keys.ENTER)
+
+    time.sleep(sleep_time)
+
+    # Download all results
+    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download All Results')]")
+    download_button.click()
+
+    time.sleep(sleep_time)
+
+    # First is automatic, nucleotide -- select "Next"
+    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
+    next_button.click()
+
+    time.sleep(sleep_time)
+
+
+    # Download all records, do the same
+    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
+    next_button.click()
+
+    time.sleep(sleep_time)
+
+    # Build custom names
+    build_custom = driver.find_element(By.XPATH, "//*[contains(text(), ' Build custom ')]")
+    build_custom.click()
+
+    # time.sleep(sleep_time)
+
+    # # Remove Accession and GenBank Title
+    # accession = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[@id='3']/div/span[2]/form/div/span/uswds-ncbi-app-custom-listbox/div/div[3]/div/ul/li[1]/span") 
+    # accession.click()
+
+    # time.sleep(sleep_time)
+
+    # remove = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[contains(text(), 'Remove')]") 
+    # remove.click()
+
+    # time.sleep(sleep_time)
+
+    # genbank_title = driver.find_element(By.XPATH, "//*[contains(@class, 'record-picker')]//*[contains(text(), 'GenBank Title')]") 
+    # genbank_title.click()
+
+    # time.sleep(sleep_time)
+
+    # remove = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[contains(text(), 'Remove')]") 
+    # remove.click()
+
+    time.sleep(sleep_time)
+
+    # Now add what we want
+    # "Accession", "GenBank Title" already included
+    for element in ["Assembly", "SRA Accession", "BioSample", "BioProject", "Genotype", "Isolate", "Geo Location", "Host", "Collection Date"]:
+        # Find
+        element_location = "//*[contains(@class, 'record-picker')]//*[contains(text(), '" + element + "')]"
+        toggle = driver.find_element(By.XPATH, element_location)
+        driver.execute_script("arguments[0].scrollIntoView();", toggle)
+        ActionChains(driver).move_to_element(toggle).pause(1).click(toggle).perform() 
+        time.sleep(sleep_time)
+        # Add
+        add = driver.find_element(By.XPATH, "//*[contains(text(), 'Add')]") 
+        add.click()
+        time.sleep(sleep_time)
+
+    time.sleep(sleep_time)
+
+    # Download
+    download_button = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[2]/button[2]")
+    time.sleep(sleep_time)
+    ActionChains(driver).move_to_element(download_button).click(download_button).perform()
+
+    time.sleep(sleep_time)
+
+    # Download all results
+    download_button = driver.find_element(By.XPATH, "//*[contains(text(), 'Download All Results')]")
+    download_button.click()
+
+    time.sleep(sleep_time)
+
+    # Now download the metadata
+    csv_format = driver.find_element(By.XPATH, "//*[contains(text(), 'CSV format')]")
+    csv_format.click()
+
+    time.sleep(sleep_time)
+
+    # Next
+    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
+    next_button.click()
+
+    time.sleep(sleep_time)
+
+
+    # Download all records, do the same
+    next_button = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//button[contains(text(), 'Next')]")
+    next_button.click()
+
+    time.sleep(sleep_time)
+
+    # Select all
+    select_all = driver.find_element(By.XPATH, "//*[contains(text(), 'Select All')]")
+    select_all.click()
+
+    time.sleep(sleep_time)
+
+    # With version
+    with_version = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[3]/form/div/div[2]/div[3]/label")
+    with_version.click()
+
+    time.sleep(sleep_time)
+    
+    # Download
+    download_button = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[3]/button[2]")
+    time.sleep(sleep_time)
+    ActionChains(driver).move_to_element(download_button).click(download_button).perform()
+
+    time.sleep(sleep_time * 30) # Let it download
+
+    # Close browser
+
+    driver.close()
 
 ### GISAID functions ###
 
@@ -812,87 +875,6 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
 
     driver.close()
 
-# Function to get metadata
-def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
-
-    fasta = fix_animals(fasta, animals_df) # Fix animals first
-    # Dummy host type -- we'll actually add this in later
-    # b313_fasta["Host_Type"] = "other"
-    # d11_fasta["Host_Type"] = "other"
-
-    unique_segments = list(set(fasta["Segment"])) # Get list of segments
-    # genotypes = ["B3.13", "D1.1"]
-    # genotype_fastas = {"B3.13": b313_fasta, "D1.1": d11_fasta}
-
-    # “>EPI_ID/Isolate_name|subtype|collection_date|host_type|genotype”
-
-    segment_fastas = [] # Get a list of fastas, separated by segment
-    for genotype in genotypes: # .keys(): # For each genotype
-        print(genotype)
-        for seg in unique_segments: # For each segment
-
-            xls = metadata[metadata["Genotype"].apply(lambda x: x.split(" ")[0]) == genotype] # Get only the metadata corresponding to that genotype
-
-            # print(xls)
-            # print("XLS: ", metadata["Genotype"])
-            # print(xls["Clade"])
-
-            # print(d11_xls)
-
-            # FASTA
-            # if "Identifier" in fasta.columns:
-            #     mask = fasta["Identifier"].isin(xls['Isolate_Id'])
-            # else:           
-            #     mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
-
-            fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
-            # print(fasta_seg_pre)
-            # break 
-
-            # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
-            fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
-
-            fasta_seg["Genotype"] = genotype
-
-            # Rename sequences 
-            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
-            fasta_seg["New_Name"] = new_name
-            # print(fasta_seg["New_Name"])
-
-            segment_fastas.append(fasta_seg)
-            # print(fasta_seg)
-    for seg in unique_segments:
-        xls = metadata[metadata["Genotype"].str.contains("Not")] # Get only the metadata corresponding to that genotype
-
-        # print(xls)
-        # print("XLS: ", metadata["Genotype"])
-        # print(xls["Isolate_Id"])
-
-        # print(d11_xls)
-
-        # FASTA
-        # if "Identifier" in fasta.columns:
-        #     mask = fasta["Identifier"].isin(xls['Isolate_Id'])
-        # else:           
-        #     mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
-
-        fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
-        # print(fasta_seg_pre)
-
-        # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
-        fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
-
-        fasta_seg["Genotype"] = "Unassigned"
-
-        # Rename sequences 
-        new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
-        fasta_seg["New_Name"] = new_name
-        # print(fasta_seg["New_Name"])
-
-        segment_fastas.append(fasta_seg)
-
-    return segment_fastas, unique_segments
-
 # Function to prepare dataframes
 def fasta_df(file_name, state_ref):
 
@@ -1000,6 +982,64 @@ def fasta_df(file_name, state_ref):
     
     return fasta
 
+# # Function to convert fasta file to dataframe 
+# def fasta_df(file_name, state_ref):
+
+#     fasta = pd.DataFrame()
+#     headers = []
+#     isolate_ids = []
+#     isolate_names = []
+#     subtypes = []
+#     segments = []
+#     collection_dates = []
+#     sequences = []
+#     with open(file_name) as f:
+#         lines = f.readlines()
+#         for num, line in enumerate(lines):
+#             # print(line)
+#             if line[0] == ">": # If it's a header
+#                 if line[1:].strip() not in headers: # And the previous line is not a header we've seen before
+#                     header = line[1:].strip() # Remove the ">"
+#                     # print(header)
+#                     split_header = header.split("|")
+#                     # print(split_header)
+#                     headers.append(header) 
+#                     isolate_ids.append(split_header[0])
+#                     isolate_names.append(split_header[1]) # We'll need to extract data from this too
+#                     # print(split_header[2].split("_")[-1])
+#                     subtypes.append(split_header[2].split("_")[-1])  # Get only H5N1
+#                     segments.append(split_header[3])
+#                     if split_header[4] == "2024-01-01":
+#                         collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
+#                     elif split_header[4] == "2025-01-01":
+#                         collection_dates.append("2025")
+#                     else: 
+#                         collection_dates.append(split_header[4])
+#                     if num < len(lines): # If we're not at the last line
+#                         # for i, l in enumerate(lines[num + 1:]):
+#                         i = num
+#                         sequence = ""
+#                         # print(lines[i])
+#                         # print(lines[i + 1])
+#                         while i < len(lines) - 1 and lines[i + 1][0] != ">": # While the next line is part of a sequence
+#                             sequence = sequence + lines[i + 1].strip()
+#                             i += 1
+#                         sequences.append(sequence) # Add next line to sequences
+#         f.close()
+
+#     # Create columns for data frame 
+#     fasta["Header"] = headers
+#     fasta["Isolate_Id"] = isolate_ids
+#     fasta["Isolate_Name"] = isolate_names
+#     fasta["Subtype"] = subtypes
+#     fasta["Segment"] = segments
+#     # Geo_Location is more complicated
+#     fasta["Geo_Location"] = fasta["Header"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2], 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2], 'Abbreviation'].iloc[0] if x.split("/")[2] in state_ref["State"].values else x.split("/")[2])
+#     fasta["Collection_Date"] = collection_dates
+#     fasta["Sequence"] = sequences
+    
+#     return fasta
+
 # Function to get each unique animal listed so we can sort them
 
 def sort_animals(fasta):
@@ -1020,6 +1060,24 @@ def sort_animals(fasta):
     return unique_animals
 
     # animals_df.to_csv(file_name) # We will have to sort manually, unfortunately :(
+
+# Separate B3.13 and D1.1 in both the Excel file and the FASTA file
+
+# def separate_b313_d11_xls(metadata_raw, fasta):
+#     # Excel
+#     b313_xls = metadata_raw[metadata_raw["Genotype"] == "B3.13"]
+#     d11_xls = metadata_raw[metadata_raw["Genotype"] == "D1.1"]
+
+#     # print(d11_xls)
+
+#     # FASTA
+
+#     b313_mask = fasta['Isolate_Id'].isin(b313_xls['Isolate_Id'])
+#     d11_mask = fasta['Isolate_Id'].isin(d11_xls['Isolate_Id'])
+
+#     b313_fasta = fasta[b313_mask]
+#     d11_fasta = fasta[d11_mask]
+#     return b313_fasta, d11_fasta
 
 # Fix animals in host type
 
@@ -1062,7 +1120,7 @@ def fix_animals(fasta, animals_ref):
 
 # Separate FASTA files into 8 different files based on segment
 
-def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): 
+def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
 
     fasta = fix_animals(fasta, animals_df)
     # Dummy host type -- we'll actually add this in later
