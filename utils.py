@@ -923,9 +923,9 @@ def fasta_df(file_name, state_ref):
                             identifier = header.split("|")[0]
                             identifiers.append(identifier)
                             split_first_header = split_header[1].split("/")
-                        else:
-                            identifiers.append("unknown")
-                            split_first_header = split_header[0].split("/")
+                        # else:
+                        #     identifiers.append("unknown")
+                        #     split_first_header = split_header[0].split("/")
                         # print(split_first_header)
                         # print(split_header)
                         headers.append(header) 
@@ -962,6 +962,7 @@ def fasta_df(file_name, state_ref):
                         continue
         f.close()
 
+    
     # Create columns for data frame 
     fasta["Header"] = headers
     fasta["Isolate_Id"] = isolate_ids
@@ -970,25 +971,28 @@ def fasta_df(file_name, state_ref):
     fasta["Segment"] = segments
     fasta["Location"] = locations
     # Geo_Location is more complicated
-    fasta["Geo_Location"] = fasta["Location"].apply( # lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
+    try:
+        fasta["Geo_Location"] = fasta["Location"].apply( # lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
 
-                                                lambda x: 
-                                                # If "x" has the state abbreviation (e.g. "MD")
-                                                state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0] 
-                                                + "-" + 
-                                                x.split(" ")[-1]
-                                                if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
-                                                # If "x" has the full state name (e.g. "Maryland")
-                                                else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0]
-                                                + "-" + 
-                                                state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Abbreviation'].iloc[0] 
-                                                if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
-                                                # If "x" has neither the state abbreviation nor the full state name nor is "USA"
-                                                else 
-                                                x
-                                                )
-    fasta["Geo_Location"] = fasta["Geo_Location"].apply(lambda x: x.split("-")[0] if x.split("-")[-1] == "" or x.split("-")[-1] == x.split("-")[0] else x)
-
+                                                    lambda x: 
+                                                    # If "x" has the state abbreviation (e.g. "MD")
+                                                    state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0] 
+                                                    + "-" + 
+                                                    x.split(" ")[-1]
+                                                    if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+                                                    # If "x" has the full state name (e.g. "Maryland")
+                                                    else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0]
+                                                    + "-" + 
+                                                    state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Abbreviation'].iloc[0] 
+                                                    if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+                                                    # If "x" has neither the state abbreviation nor the full state name nor is "USA"
+                                                    else 
+                                                    x
+                                                    )
+        fasta["Geo_Location"] = fasta["Geo_Location"].apply(lambda x: x.split("-")[0] if x.split("-")[-1] == "" or x.split("-")[-1] == x.split("-")[0] else x)
+    except:
+        print("Geo Location not found.")
+        fasta["Geo_Location"] = fasta["Location"]
     fasta["Date Collected"] = collection_dates
     fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
     fasta["Species"] = species
@@ -997,7 +1001,7 @@ def fasta_df(file_name, state_ref):
     fasta["Sequence"] = sequences
     # if len(identifiers) == len(fasta):
     fasta["Identifier"] = identifiers
-    
+        
     return fasta
 
 # Function to get each unique animal listed so we can sort them
@@ -1091,6 +1095,7 @@ def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes):
                 mask = fasta["Identifier"].isin(xls['Isolate_Id'])
             else:           
                 mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
+                fasta["Identifier"] = fasta["Isolate_Id"]
 
             fasta_seg_pre = fasta[mask]
             # print(fasta_seg_pre)
