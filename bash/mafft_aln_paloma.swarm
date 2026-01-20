@@ -1,0 +1,10 @@
+mafft --thread 4 combined_HA_H1_Paloma-ascii.fasta > HA_H1_Paloma_aln.fasta
+mafft --thread 4 combined_HA_H3_Paloma-ascii.fasta > HA_H3_Paloma_aln.fasta
+mafft --thread 4 combined_NA_N1_Paloma-ascii.fasta > NA_N1_Paloma_aln.fasta
+mafft --thread 4 combined_NA_N2_Paloma-ascii.fasta > NA_N2_Paloma_aln.fasta
+mafft --thread 4 combined_MP_Paloma-ascii.fasta > MP_Paloma_aln.fasta
+mafft --thread 4 combined_NP_Paloma-ascii.fasta > NP_Paloma_aln.fasta
+mafft --thread 4 combined_NS_Paloma-ascii.fasta > NS_Paloma_aln.fasta
+mafft --thread 4 combined_PA_Paloma-ascii.fasta > PA_Paloma_aln.fasta
+mafft --thread 4 combined_PB1_Paloma-ascii.fasta > PB1_Paloma_aln.fasta
+mafft --thread 4 combined_PB2_Paloma-ascii.fasta > PB2_Paloma_aln.fasta
