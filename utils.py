@@ -360,7 +360,8 @@ def fasta_df_complete(file_name, state_ref):
                             identifiers.append(identifier)
                             split_first_header = split_header[1].split("/")
                         else:
-                            identifiers.append("unknown")
+                            identifier = "unknown"
+                            identifiers.append(identifier)
                             split_first_header = split_header[0].split("/")
                         # print(split_first_header)
                         # print(split_header)
@@ -392,8 +393,10 @@ def fasta_df_complete(file_name, state_ref):
                                 i += 1
                             sequences.append(sequence) # Add next line to sequences
                     except:
-                        headers.remove(header)
-                        identifiers.remove(identifier)
+                        if header in headers:
+                            headers.remove(header)
+                        if identifier in identifiers:
+                            identifiers.remove(identifier)
                         print(header)
                         continue
         f.close()
@@ -816,15 +819,10 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
 def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
 
     fasta = fix_animals(fasta, animals_df) # Fix animals first
-    # Dummy host type -- we'll actually add this in later
-    # b313_fasta["Host_Type"] = "other"
-    # d11_fasta["Host_Type"] = "other"
 
     unique_segments = list(set(fasta["Segment"])) # Get list of segments
-    # genotypes = ["B3.13", "D1.1"]
-    # genotype_fastas = {"B3.13": b313_fasta, "D1.1": d11_fasta}
 
-    # “>EPI_ID/Isolate_name|subtype|collection_date|host_type|genotype”
+    # “>EPI_ID|Isolate_name|subtype|collection_date|host_type|genotype”
 
     segment_fastas = [] # Get a list of fastas, separated by segment
     for genotype in genotypes: # .keys(): # For each genotype
@@ -861,35 +859,38 @@ def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fast
 
             segment_fastas.append(fasta_seg)
             # print(fasta_seg)
-    for seg in unique_segments:
-        xls = metadata[metadata["Genotype"].str.contains("Not")] # Get only the metadata corresponding to that genotype
 
-        # print(xls)
-        # print("XLS: ", metadata["Genotype"])
-        # print(xls["Isolate_Id"])
+    if "Unassigned" in genotypes: # if we care about the unassigned sequences
+        # Unassigned genotypes
+        for seg in unique_segments:
+            xls = metadata[metadata["Genotype"].str.contains("Not")] # Get only the metadata corresponding to that genotype
 
-        # print(d11_xls)
+            # print(xls)
+            # print("XLS: ", metadata["Genotype"])
+            # print(xls["Isolate_Id"])
 
-        # FASTA
-        # if "Identifier" in fasta.columns:
-        #     mask = fasta["Identifier"].isin(xls['Isolate_Id'])
-        # else:           
-        #     mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
+            # print(d11_xls)
 
-        fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
-        # print(fasta_seg_pre)
+            # FASTA
+            # if "Identifier" in fasta.columns:
+            #     mask = fasta["Identifier"].isin(xls['Isolate_Id'])
+            # else:           
+            #     mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
 
-        # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
-        fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
+            fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
+            # print(fasta_seg_pre)
 
-        fasta_seg["Genotype"] = "Unassigned"
+            # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
+            fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
 
-        # Rename sequences 
-        new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
-        fasta_seg["New_Name"] = new_name
-        # print(fasta_seg["New_Name"])
+            fasta_seg["Genotype"] = "Unassigned"
 
-        segment_fastas.append(fasta_seg)
+            # Rename sequences 
+            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
+            fasta_seg["New_Name"] = new_name
+            # print(fasta_seg["New_Name"])
+
+            segment_fastas.append(fasta_seg)
 
     return segment_fastas, unique_segments
 
@@ -1066,52 +1067,60 @@ def fix_animals(fasta, animals_ref):
 
 # Separate FASTA files into 8 different files based on segment
 
-def separate_fasta_by_seg(metadata, fasta, animals_df, genotypes): 
+# Function to get metadata
+def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
 
-    fasta = fix_animals(fasta, animals_df)
-    # Dummy host type -- we'll actually add this in later
-    # b313_fasta["Host_Type"] = "other"
-    # d11_fasta["Host_Type"] = "other"
+    fasta = fix_animals(fasta, animals_df) # Fix animals first
 
-    unique_segments = list(set(fasta["Segment"]))
-    # genotypes = ["B3.13", "D1.1"]
-    # genotype_fastas = {"B3.13": b313_fasta, "D1.1": d11_fasta}
+    unique_segments = list(set(fasta["Segment"])) # Get list of segments
 
-    # “>EPI_ID/Isolate_name|subtype|collection_date|host_type|genotype”
+    # “>EPI_ID|Isolate_name|subtype|collection_date|host_type|genotype”
 
-    segment_fastas = []
-    for fasta_gen in genotypes: # .keys():
-        for seg in unique_segments:
+    segment_fastas = [] # Get a list of fastas, separated by segment
+    for genotype in genotypes: # .keys(): # For each genotype
+        print(genotype)
+        for seg in unique_segments: # For each segment
 
-            xls = metadata[metadata["Genotype"].apply(lambda x: x.split(" ")[0]) == fasta_gen]
+            xls = metadata[metadata["Genotype"].apply(lambda x: x.split(" ")[0]) == genotype] # Get only the metadata corresponding to that genotype
 
-            # print(xls)
-            # print("XLS: ", metadata["Genotype"])
+            fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
 
-            # print(d11_xls)
-
-            # FASTA
-            if "Identifier" in fasta.columns:
-                mask = fasta["Identifier"].isin(xls['Isolate_Id'])
-            else:           
-                mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
-                fasta["Identifier"] = fasta["Isolate_Id"]
-
-            fasta_seg_pre = fasta[mask]
-            # print(fasta_seg_pre)
+            # break 
 
             # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
             fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
 
-            fasta_seg["Genotype"] = fasta_gen
+            fasta_seg["Genotype"] = genotype
+
+            fasta_seg = fasta_seg.fillna("")
 
             # Rename sequences 
-            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_gen + "\n"
+            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
             fasta_seg["New_Name"] = new_name
             # print(fasta_seg["New_Name"])
 
             segment_fastas.append(fasta_seg)
             # print(fasta_seg)
+
+    if "Unassigned" in genotypes: # if we care about the unassigned sequences
+        # Unassigned genotypes
+        for seg in unique_segments:
+            xls = metadata[metadata["Genotype"].str.contains("Not")] # Get only the metadata corresponding to that genotype
+
+            fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
+            # print(fasta_seg_pre)
+
+            # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
+            fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
+
+            fasta_seg["Genotype"] = "Unassigned"
+
+            # Rename sequences 
+            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
+            fasta_seg["New_Name"] = new_name
+            # print(fasta_seg["New_Name"])
+
+            segment_fastas.append(fasta_seg)
 
     return segment_fastas, unique_segments
 
