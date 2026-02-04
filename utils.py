@@ -1081,7 +1081,7 @@ def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fast
         print(genotype)
         for seg in unique_segments: # For each segment
 
-            xls = metadata[metadata["Genotype"].apply(lambda x: x.split(" ")[0]) == genotype] # Get only the metadata corresponding to that genotype
+            xls = metadata[metadata["Genotype"].str.contains(genotype)] # Get only the metadata corresponding to that genotype
 
             fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
 
