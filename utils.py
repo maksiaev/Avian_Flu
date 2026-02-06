@@ -120,45 +120,7 @@ def open_ncbi_virus(browser, sleep_time, continent, start_date, end_date):
     build_custom = driver.find_element(By.XPATH, "//*[contains(text(), ' Build custom ')]")
     build_custom.click()
 
-    # time.sleep(sleep_time)
-
-    # # Remove Accession and GenBank Title
-    # accession = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[@id='3']/div/span[2]/form/div/span/uswds-ncbi-app-custom-listbox/div/div[3]/div/ul/li[1]/span") 
-    # accession.click()
-
-    # time.sleep(sleep_time)
-
-    # remove = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[contains(text(), 'Remove')]") 
-    # remove.click()
-
-    # time.sleep(sleep_time)
-
-    # genbank_title = driver.find_element(By.XPATH, "//*[contains(@class, 'record-picker')]//*[contains(text(), 'GenBank Title')]") 
-    # genbank_title.click()
-
-    # time.sleep(sleep_time)
-
-    # remove = driver.find_element(By.XPATH, "//*[contains(@class, 'modal-dialog')]//*[contains(text(), 'Remove')]") 
-    # remove.click()
-
     time.sleep(sleep_time)
-
-    # Now add what we want
-    # "Accession", "GenBank Title" already included
-
-    # for element in ["Assembly", "SRA Accession", "BioSample", "BioProject", "Genotype", "Isolate", "Geo Location", "Host", "Collection Date"]:
-    #     # Find
-    #     element_location = "//*[contains(@class, 'record-picker')]//*[contains(text(), '" + element + "')]"
-    #     toggle = driver.find_element(By.XPATH, element_location)
-    #     driver.execute_script("arguments[0].scrollIntoView();", toggle)
-    #     ActionChains(driver).move_to_element(toggle).pause(1).click(toggle).perform() 
-    #     time.sleep(sleep_time)
-    #     # Add
-    #     add = driver.find_element(By.XPATH, "//*[contains(text(), 'Add')]") 
-    #     add.click()
-    #     time.sleep(sleep_time)
-
-    # time.sleep(sleep_time)
 
     # Download
     download_button = driver.find_element(By.XPATH, "/html/body/ngb-modal-window/div/div/div[2]/uswds-ncbi-app-muti-step-form/div/div/div/span[2]/button[2]")
