@@ -32,11 +32,6 @@ def open_ncbi_virus(browser, sleep_time, continent, start_date, end_date):
     # Requested URL
     driver.get("https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=Alphainfluenzavirus,%20taxid:197911&Serotype_s=H5N*")
 
-    # Wait for it to load, otherwise it won't work
-    # driver.implicitly_wait(20)
-    # username_field = wait.until(EC.element_to_be_clickable((By.NAME, 'login')))
-    # password_field = wait.until(EC.element_to_be_clickable((By.NAME, 'password')))
-
     # Wait for it to load again
     time.sleep(sleep_time)
 
@@ -494,10 +489,6 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
     driver.get("https://www.epicov.org/epi3/frontend#")
 
     # Wait for it to load, otherwise it won't work
-    # driver.implicitly_wait(20)
-    # username_field = wait.until(EC.element_to_be_clickable((By.NAME, 'login')))
-    # password_field = wait.until(EC.element_to_be_clickable((By.NAME, 'password')))
-
     time.sleep(sleep_time)
 
     # Input username and password
@@ -575,31 +566,12 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
 
         time.sleep(sleep_time)
 
-    # location_southa = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='10053']")
-    # # location_northa = location_northa_1.location_once_scrolled_into_view
-    # driver.execute_script("arguments[0].scrollIntoView();", location_southa)
-    # ActionChains(driver).move_to_element(location_southa).pause(1).key_down(Keys.CONTROL).click(location_southa).key_up(Keys.CONTROL).perform()
-    # # location_northa.click()
-
-    # time.sleep(sleep_time)
-
-    # location_ant = driver.find_element(By.XPATH, "//*[contains(@class, 'sys-event-hook sys-fi-mark')]//option[@value='1945']")
-    # # location_northa = location_northa_1.location_once_scrolled_into_view
-    # driver.execute_script("arguments[0].scrollIntoView();", location_ant)
-    # ActionChains(driver).move_to_element(location_ant).pause(1).key_down(Keys.CONTROL).click(location_ant).key_up(Keys.CONTROL).perform()
-    # # location_northa.click()
-
-    # time.sleep(sleep_time)
-
     # Segments: PB2, PB1, PA, HA, NP, NA, MP, NS (all EXCEPT HE, P3)
     segment_list = ['PB2', 'PB1', 'PA', 'HA', 'NP', 'NA', 'MP', 'NS']
     for segment in segment_list:
         xpath = "//*[contains(@class, 'sys-form-fi-cb sys-fi-mark')]//input[@value='" + segment + "']"
         pb2 = driver.find_element(By.XPATH, xpath)
         ActionChains(driver).move_to_element(pb2).pause(1).click(pb2).perform()
-
-    # Start submission: 2023-03-18
-    # End submission: 2025-03-31
 
     # Insert dates
     first_date = driver.find_element(By.XPATH, "//*[contains(text(),'Submission date from')]/ancestor::td/following-sibling::td//input[@class='sys-event-hook sys-fi-mark hasDatepicker']") # First date
