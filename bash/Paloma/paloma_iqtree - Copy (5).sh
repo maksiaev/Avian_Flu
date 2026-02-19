@@ -6,7 +6,7 @@
 ######################
 
 module load iqtree
-iqtree2 -s NA_N2_Paloma_aln_trimmed_deduplicated.fasta -m GTR+G -bb 1000 -nt AUTO
+iqtree2 -s NA_N2_Paloma_aln_trim.fasta -m GTR+G -bb 1000 -nt AUTO
 
 ######################
 date +"%Y-%m-%d %H:%M"
