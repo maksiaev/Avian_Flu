@@ -1090,3 +1090,17 @@ def partial_isolate(id):
 
     return partial_isolate
 
+def metadata_from_fasta(file_name):
+    fasta_df = df_from_fasta(file_name)
+    try:
+        fasta_df["Accession"] = fasta_df["full_header"].apply(lambda x: x.split("|")[0].replace(">", ""))
+        fasta_df["Host"] = fasta_df["full_header"].apply(lambda x: "human" if "human" in x else x.split("/")[1] if "/" in x else "unknown") #  if len(x.split("/")) > 1 else "unknown")
+        fasta_df["Isolate"] = fasta_df["full_header"].apply(lambda x: x.split("/")[2] if "human" in x else x.split("/")[3] if "/" in x else "unknown") #  if len(x.split("/")) > 2 else "unknown")
+        fasta_df["Subtype"] = fasta_df["full_header"].apply(lambda x: x.split("|")[-5])
+        fasta_df["Geo_Location"] = fasta_df["full_header"].apply(lambda x: x.split("|")[-4])
+        fasta_df["Collection_Date"] = fasta_df["full_header"].apply(lambda x: x.split("|")[-3])
+        fasta_df["Host_Type"] = fasta_df["full_header"].apply(lambda x: x.split("|")[-2])
+        fasta_df["Genotype"] = fasta_df["full_header"].apply(lambda x: x.split("|")[-1])
+    except:
+        print(fasta_df)
+    return fasta_df
