@@ -166,7 +166,7 @@ def open_ncbi_virus(browser, sleep_time, continent, start_date, end_date):
     time.sleep(sleep_time)
     ActionChains(driver).move_to_element(download_button).click(download_button).perform()
 
-    time.sleep(sleep_time * 30) # Let it download
+    time.sleep(sleep_time * 45) # Let it download
 
     # Close browser
 
@@ -749,195 +749,195 @@ def open_gisaid(username, password, browser, sleep_time, continent, start_date, 
 
     driver.close()
 
-# Function to get metadata
-def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
+# # Function to get metadata
+# def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
 
-    fasta = fix_animals(fasta, animals_df) # Fix animals first
+#     fasta = fix_animals(fasta, animals_df) # Fix animals first
 
-    unique_segments = list(set(fasta["Segment"])) # Get list of segments
+#     unique_segments = list(set(fasta["Segment"])) # Get list of segments
 
-    # “>EPI_ID|Isolate_name|subtype|collection_date|host_type|genotype”
+#     # “>EPI_ID|Isolate_name|subtype|collection_date|host_type|genotype”
 
-    segment_fastas = [] # Get a list of fastas, separated by segment
-    for genotype in genotypes: # .keys(): # For each genotype
-        print(genotype)
-        for seg in unique_segments: # For each segment
+#     segment_fastas = [] # Get a list of fastas, separated by segment
+#     for genotype in genotypes: # .keys(): # For each genotype
+#         print(genotype)
+#         for seg in unique_segments: # For each segment
 
-            xls = metadata[metadata["Genotype"].apply(lambda x: x.split(" ")[0]) == genotype] # Get only the metadata corresponding to that genotype
+#             xls = metadata[metadata["Genotype"].apply(lambda x: x.split(" ")[0]) == genotype] # Get only the metadata corresponding to that genotype
 
-            # print(xls)
-            # print("XLS: ", metadata["Genotype"])
-            # print(xls["Clade"])
+#             # print(xls)
+#             # print("XLS: ", metadata["Genotype"])
+#             # print(xls["Clade"])
 
-            # print(d11_xls)
+#             # print(d11_xls)
 
-            # FASTA
-            # if "Identifier" in fasta.columns:
-            #     mask = fasta["Identifier"].isin(xls['Isolate_Id'])
-            # else:           
-            #     mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
+#             # FASTA
+#             # if "Identifier" in fasta.columns:
+#             #     mask = fasta["Identifier"].isin(xls['Isolate_Id'])
+#             # else:           
+#             #     mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
 
-            fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
-            # print(fasta_seg_pre)
-            # break 
+#             fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
+#             # print(fasta_seg_pre)
+#             # break 
 
-            # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
-            fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
+#             # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
+#             fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
 
-            fasta_seg["Genotype"] = genotype
+#             fasta_seg["Genotype"] = genotype
 
-            # Rename sequences 
-            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
-            fasta_seg["New_Name"] = new_name
-            # print(fasta_seg["New_Name"])
+#             # Rename sequences 
+#             new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
+#             fasta_seg["New_Name"] = new_name
+#             # print(fasta_seg["New_Name"])
 
-            segment_fastas.append(fasta_seg)
-            # print(fasta_seg)
+#             segment_fastas.append(fasta_seg)
+#             # print(fasta_seg)
 
-    if "Unassigned" in genotypes: # if we care about the unassigned sequences
-        # Unassigned genotypes
-        for seg in unique_segments:
-            xls = metadata[metadata["Genotype"].str.contains("Not")] # Get only the metadata corresponding to that genotype
+#     if "Unassigned" in genotypes: # if we care about the unassigned sequences
+#         # Unassigned genotypes
+#         for seg in unique_segments:
+#             xls = metadata[metadata["Genotype"].str.contains("Not")] # Get only the metadata corresponding to that genotype
 
-            # print(xls)
-            # print("XLS: ", metadata["Genotype"])
-            # print(xls["Isolate_Id"])
+#             # print(xls)
+#             # print("XLS: ", metadata["Genotype"])
+#             # print(xls["Isolate_Id"])
 
-            # print(d11_xls)
+#             # print(d11_xls)
 
-            # FASTA
-            # if "Identifier" in fasta.columns:
-            #     mask = fasta["Identifier"].isin(xls['Isolate_Id'])
-            # else:           
-            #     mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
+#             # FASTA
+#             # if "Identifier" in fasta.columns:
+#             #     mask = fasta["Identifier"].isin(xls['Isolate_Id'])
+#             # else:           
+#             #     mask = fasta['Isolate_Id'].isin(xls['Isolate_Id'])
 
-            fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
-            # print(fasta_seg_pre)
+#             fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
+#             # print(fasta_seg_pre)
 
-            # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
-            fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
+#             # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
+#             fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
 
-            fasta_seg["Genotype"] = "Unassigned"
+#             fasta_seg["Genotype"] = "Unassigned"
 
-            # Rename sequences 
-            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
-            fasta_seg["New_Name"] = new_name
-            # print(fasta_seg["New_Name"])
+#             # Rename sequences 
+#             new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
+#             fasta_seg["New_Name"] = new_name
+#             # print(fasta_seg["New_Name"])
 
-            segment_fastas.append(fasta_seg)
+#             segment_fastas.append(fasta_seg)
 
-    return segment_fastas, unique_segments
+#     return segment_fastas, unique_segments
 
-# Function to prepare dataframes
-def fasta_df(file_name, state_ref):
+# # Function to prepare dataframes
+# def fasta_df(file_name, state_ref):
 
-    fasta = pd.DataFrame()
-    headers = []
-    isolate_ids = []
-    isolate_names = []
-    subtypes = []
-    segments = []
-    collection_dates = []
-    sequences = []
-    # host_types = []
-    species = []
-    identifiers = []
-    locations = []
-    # genotypes = []
-    with open(file_name) as f:
-        lines = f.readlines()
-        for num, line in enumerate(lines):
-            # print(line)
-            if line[0] == ">": # If it's a header
-                if line[1:].strip() not in headers: # And the previous line is not a header we've seen before
-                    header = line[1:].strip() # Remove the ">"
-                    # print(header)
-                    try:
-                        split_header = header.split("|")
-                        if len(header.split("|")) > 4:
-                            identifier = header.split("|")[0]
-                            identifiers.append(identifier)
-                            split_first_header = split_header[1].split("/")
-                        # else:
-                        #     identifiers.append("unknown")
-                        #     split_first_header = split_header[0].split("/")
-                        # print(split_first_header)
-                        # print(split_header)
-                        headers.append(header) 
-                        isolate_ids.append(split_first_header[-2])
-                        locations.append(split_first_header[-3])
-                        isolate_names.append(split_header[-4]) # We'll need to extract data from this too
-                        # print(split_header[2].split("_")[-1])
-                        subtypes.append(split_header[-3].split("_")[-1])  # Get only H5N1
-                        # genotypes.append(split_header[-1])
-                        segments.append(split_header[-2]) # .split("|")[-1])
-                        # host_types.append(split_header[-2])
-                        species.append(split_first_header[1])
-                        # if split_header[4] == "2024-01-01":
-                        #     collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
-                        # elif split_header[4] == "2025-01-01":
-                        #     collection_dates.append("2025")
-                        # else: 
-                        collection_dates.append(split_header[-1])
-                        # collection_dates.append(split_header[-1].split("_")[-1])
-                        if num < len(lines): # If we're not at the last line
-                            # for i, l in enumerate(lines[num + 1:]):
-                            i = num
-                            sequence = ""
-                            # print(lines[i])
-                            # print(lines[i + 1])
-                            while i < len(lines) - 1 and lines[i + 1][0] != ">": # While the next line is part of a sequence
-                                sequence = sequence + lines[i + 1].strip()
-                                i += 1
-                            sequences.append(sequence) # Add next line to sequences
-                    except:
-                        headers.remove(header)
-                        identifiers.remove(identifier)
-                        print(header)
-                        continue
-        f.close()
+#     fasta = pd.DataFrame()
+#     headers = []
+#     isolate_ids = []
+#     isolate_names = []
+#     subtypes = []
+#     segments = []
+#     collection_dates = []
+#     sequences = []
+#     # host_types = []
+#     species = []
+#     identifiers = []
+#     locations = []
+#     # genotypes = []
+#     with open(file_name) as f:
+#         lines = f.readlines()
+#         for num, line in enumerate(lines):
+#             # print(line)
+#             if line[0] == ">": # If it's a header
+#                 if line[1:].strip() not in headers: # And the previous line is not a header we've seen before
+#                     header = line[1:].strip() # Remove the ">"
+#                     # print(header)
+#                     try:
+#                         split_header = header.split("|")
+#                         if len(header.split("|")) > 4:
+#                             identifier = header.split("|")[0]
+#                             identifiers.append(identifier)
+#                             split_first_header = split_header[1].split("/")
+#                         # else:
+#                         #     identifiers.append("unknown")
+#                         #     split_first_header = split_header[0].split("/")
+#                         # print(split_first_header)
+#                         # print(split_header)
+#                         headers.append(header) 
+#                         isolate_ids.append(split_first_header[-2])
+#                         locations.append(split_first_header[-3])
+#                         isolate_names.append(split_header[-4]) # We'll need to extract data from this too
+#                         # print(split_header[2].split("_")[-1])
+#                         subtypes.append(split_header[-3].split("_")[-1])  # Get only H5N1
+#                         # genotypes.append(split_header[-1])
+#                         segments.append(split_header[-2]) # .split("|")[-1])
+#                         # host_types.append(split_header[-2])
+#                         species.append(split_first_header[1])
+#                         # if split_header[4] == "2024-01-01":
+#                         #     collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
+#                         # elif split_header[4] == "2025-01-01":
+#                         #     collection_dates.append("2025")
+#                         # else: 
+#                         collection_dates.append(split_header[-1])
+#                         # collection_dates.append(split_header[-1].split("_")[-1])
+#                         if num < len(lines): # If we're not at the last line
+#                             # for i, l in enumerate(lines[num + 1:]):
+#                             i = num
+#                             sequence = ""
+#                             # print(lines[i])
+#                             # print(lines[i + 1])
+#                             while i < len(lines) - 1 and lines[i + 1][0] != ">": # While the next line is part of a sequence
+#                                 sequence = sequence + lines[i + 1].strip()
+#                                 i += 1
+#                             sequences.append(sequence) # Add next line to sequences
+#                     except:
+#                         headers.remove(header)
+#                         identifiers.remove(identifier)
+#                         print(header)
+#                         continue
+#         f.close()
 
     
-    # Create columns for data frame 
-    fasta["Header"] = headers
-    fasta["Isolate_Id"] = isolate_ids
-    fasta["Isolate_Name"] = isolate_names
-    fasta["Subtype"] = subtypes
-    fasta["Segment"] = segments
-    fasta["Location"] = locations
-    # Geo_Location is more complicated
-    try:
-        fasta["Geo_Location"] = fasta["Location"].apply( # lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
+#     # Create columns for data frame 
+#     fasta["Header"] = headers
+#     fasta["Isolate_Id"] = isolate_ids
+#     fasta["Isolate_Name"] = isolate_names
+#     fasta["Subtype"] = subtypes
+#     fasta["Segment"] = segments
+#     fasta["Location"] = locations
+#     # Geo_Location is more complicated
+#     try:
+#         fasta["Geo_Location"] = fasta["Location"].apply( # lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
 
-                                                    lambda x: 
-                                                    # If "x" has the state abbreviation (e.g. "MD")
-                                                    state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0] 
-                                                    + "-" + 
-                                                    x.split(" ")[-1]
-                                                    if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
-                                                    # If "x" has the full state name (e.g. "Maryland")
-                                                    else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0]
-                                                    + "-" + 
-                                                    state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Abbreviation'].iloc[0] 
-                                                    if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
-                                                    # If "x" has neither the state abbreviation nor the full state name nor is "USA"
-                                                    else 
-                                                    x
-                                                    )
-        fasta["Geo_Location"] = fasta["Geo_Location"].apply(lambda x: x.split("-")[0] if x.split("-")[-1] == "" or x.split("-")[-1] == x.split("-")[0] else x)
-    except:
-        print("Geo Location not found.")
-        fasta["Geo_Location"] = fasta["Location"]
-    fasta["Date Collected"] = collection_dates
-    fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
-    fasta["Species"] = species
-    # fasta["Host_Type"] = host_types
-    # fasta["Genotype"] = genotypes
-    fasta["Sequence"] = sequences
-    # if len(identifiers) == len(fasta):
-    fasta["Identifier"] = identifiers
+#                                                     lambda x: 
+#                                                     # If "x" has the state abbreviation (e.g. "MD")
+#                                                     state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0] 
+#                                                     + "-" + 
+#                                                     x.split(" ")[-1]
+#                                                     if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+#                                                     # If "x" has the full state name (e.g. "Maryland")
+#                                                     else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0]
+#                                                     + "-" + 
+#                                                     state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Abbreviation'].iloc[0] 
+#                                                     if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+#                                                     # If "x" has neither the state abbreviation nor the full state name nor is "USA"
+#                                                     else 
+#                                                     x
+#                                                     )
+#         fasta["Geo_Location"] = fasta["Geo_Location"].apply(lambda x: x.split("-")[0] if x.split("-")[-1] == "" or x.split("-")[-1] == x.split("-")[0] else x)
+#     except:
+#         print("Geo Location not found.")
+#         fasta["Geo_Location"] = fasta["Location"]
+#     fasta["Date Collected"] = collection_dates
+#     fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
+#     fasta["Species"] = species
+#     # fasta["Host_Type"] = host_types
+#     # fasta["Genotype"] = genotypes
+#     fasta["Sequence"] = sequences
+#     # if len(identifiers) == len(fasta):
+#     fasta["Identifier"] = identifiers
         
-    return fasta
+#     return fasta
 
 # Function to get each unique animal listed so we can sort them
 
@@ -1001,62 +1001,62 @@ def fix_animals(fasta, animals_ref):
 
 # Separate FASTA files into 8 different files based on segment
 
-# Function to get metadata
-def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
+# # Function to get metadata
+# def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
 
-    fasta = fix_animals(fasta, animals_df) # Fix animals first
+#     fasta = fix_animals(fasta, animals_df) # Fix animals first
 
-    unique_segments = list(set(fasta["Segment"])) # Get list of segments
+#     unique_segments = list(set(fasta["Segment"])) # Get list of segments
 
-    # “>EPI_ID|Isolate_name|subtype|collection_date|host_type|genotype”
+#     # “>EPI_ID|Isolate_name|subtype|collection_date|host_type|genotype”
 
-    segment_fastas = [] # Get a list of fastas, separated by segment
-    for genotype in genotypes: # .keys(): # For each genotype
-        print(genotype)
-        for seg in unique_segments: # For each segment
+#     segment_fastas = [] # Get a list of fastas, separated by segment
+#     for genotype in genotypes: # .keys(): # For each genotype
+#         print(genotype)
+#         for seg in unique_segments: # For each segment
 
-            xls = metadata[metadata["Genotype"].str.contains(genotype)] # Get only the metadata corresponding to that genotype
+#             xls = metadata[metadata["Genotype"].str.contains(genotype)] # Get only the metadata corresponding to that genotype
 
-            fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
+#             fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
 
-            # break 
+#             # break 
 
-            # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
-            fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
+#             # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
+#             fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
 
-            fasta_seg["Genotype"] = genotype
+#             fasta_seg["Genotype"] = genotype
 
-            fasta_seg = fasta_seg.fillna("")
+#             fasta_seg = fasta_seg.fillna("")
 
-            # Rename sequences 
-            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
-            fasta_seg["New_Name"] = new_name
-            # print(fasta_seg["New_Name"])
+#             # Rename sequences 
+#             new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
+#             fasta_seg["New_Name"] = new_name
+#             # print(fasta_seg["New_Name"])
 
-            segment_fastas.append(fasta_seg)
-            # print(fasta_seg)
+#             segment_fastas.append(fasta_seg)
+#             # print(fasta_seg)
 
-    if "Unassigned" in genotypes: # if we care about the unassigned sequences
-        # Unassigned genotypes
-        for seg in unique_segments:
-            xls = metadata[metadata["Genotype"].str.contains("Not")] # Get only the metadata corresponding to that genotype
+#     if "Unassigned" in genotypes: # if we care about the unassigned sequences
+#         # Unassigned genotypes
+#         for seg in unique_segments:
+#             xls = metadata[metadata["Genotype"].str.contains("Not")] # Get only the metadata corresponding to that genotype
 
-            fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
-            # print(fasta_seg_pre)
+#             fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
+#             # print(fasta_seg_pre)
 
-            # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
-            fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
+#             # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
+#             fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
 
-            fasta_seg["Genotype"] = "Unassigned"
+#             fasta_seg["Genotype"] = "Unassigned"
 
-            # Rename sequences 
-            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
-            fasta_seg["New_Name"] = new_name
-            # print(fasta_seg["New_Name"])
+#             # Rename sequences 
+#             new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name"] + "|" + fasta_seg["Subtype"] + "|" + fasta_seg["Geo_Location"] + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + "|" + fasta_seg["Host_Type"] + "|" + fasta_seg["Genotype"] + "\n"
+#             fasta_seg["New_Name"] = new_name
+#             # print(fasta_seg["New_Name"])
 
-            segment_fastas.append(fasta_seg)
+#             segment_fastas.append(fasta_seg)
 
-    return segment_fastas, unique_segments
+#     return segment_fastas, unique_segments
 
 def partial_isolate(id):
 
@@ -1104,3 +1104,184 @@ def metadata_from_fasta(file_name):
     except:
         print(fasta_df)
     return fasta_df
+
+# Function to get metadata
+def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fasta, d11_fasta):
+
+    fasta = fix_animals(fasta, animals_df) # Fix animals first
+
+    unique_segments = list(set(fasta["Segment"])) # Get list of segments
+
+    # “>EPI_ID|Isolate_name|subtype|collection_date|host_type|genotype”
+
+    segment_fastas = [] # Get a list of fastas, separated by segment
+    for genotype in genotypes: # .keys(): # For each genotype
+        print(genotype)
+        for seg in unique_segments: # For each segment
+
+            xls = metadata # [metadata["Genotype"].apply(lambda x: x.split(" ")[0]) == genotype] # Get only the metadata corresponding to that genotype
+            xls = xls.rename(columns={"Isolate_Id":"Identifier"})
+            print(xls)
+            # print("XLS: ", metadata["Genotype"])
+            # print(xls["Clade"])
+
+            # fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
+            fasta_seg_pre = fasta.merge(xls, how="left", on="Identifier")
+            print(fasta_seg_pre.columns)
+            # break 
+
+            # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
+            fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
+
+            fasta_seg["Genotype"] = genotype
+
+            # Rename sequences 
+            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name_x"] + "|" + fasta_seg["Subtype_x"] + "|" + fasta_seg["Location"].apply(lambda x: x.split(" / ")[-1]) + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + fasta_seg["Host_Type"] #.apply(lambda x: "" if x != "human" else "|human")
+            fasta_seg["full_header"] = new_name
+            # print(fasta_seg["New_Name"])
+
+            segment_fastas.append(fasta_seg)
+            print(fasta_seg)
+
+            segment_fastas.append(fasta_seg)
+
+    if "Unassigned" in genotypes: # if we care about the unassigned sequences
+        # Unassigned genotypes
+        for seg in unique_segments:
+            xls = metadata[metadata["Genotype"].str.contains("Not")] # Get only the metadata corresponding to that genotype
+
+            xls = xls.rename(columns={"Isolate_Id":"Identifier"})
+            print(xls)
+            # print("XLS: ", metadata["Genotype"])
+            # print(xls["Clade"])
+
+            # fasta_seg_pre = fasta[fasta["Identifier"].isin(xls['Isolate_Id'])] # Get only the identifiers (Isolate_Id) that are left after metadata is filtered for genotype
+            fasta_seg_pre = fasta.merge(xls, how="left", on="Identifier")
+            print(fasta_seg_pre.columns)
+            # break 
+
+            # fasta_seg = genotype_fastas[fasta_gen][genotype_fastas[fasta_gen]["Segment"] == seg]
+            fasta_seg = fasta_seg_pre[fasta_seg_pre["Segment"] == seg]
+
+            fasta_seg["Genotype"] = "Unassigned"
+
+            # Rename sequences 
+            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name_x"] + "|" + fasta_seg["Subtype_x"] + "|" + fasta_seg["Location"].apply(lambda x: x.split(" / ")[-1]) + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + fasta_seg["Host_Type"] #.apply(lambda x: "" if x != "human" else "|human")
+            fasta_seg["full_header"] = new_name
+            # print(fasta_seg["New_Name"])
+
+            segment_fastas.append(fasta_seg)
+            print(fasta_seg)
+
+            segment_fastas.append(fasta_seg)
+
+    return segment_fastas, unique_segments
+
+def fasta_df(file_name, state_ref):
+    fasta = pd.DataFrame()
+    headers = []
+    isolate_ids = []
+    isolate_names = []
+    subtypes = []
+    segments = []
+    collection_dates = []
+    sequences = []
+    # host_types = []
+    species = []
+    identifiers = []
+    locations = []
+    # genotypes = []
+    with open(file_name) as f:
+        lines = f.readlines()
+        for num, line in enumerate(lines):
+            # print(line)
+            if line[0] == ">": # If it's a header
+                if line[1:].strip() not in headers: # And the previous line is not a header we've seen before
+                    header = line[1:].strip() # Remove the ">"
+                    # print(header)
+                    try:
+                        split_header = header.split("|")
+                        if len(header.split("|")) > 4:
+                            identifier = header.split("|")[0]
+                            identifiers.append(identifier)
+                            split_first_header = split_header[1].split("/")
+                        # else:
+                        #     identifiers.append("unknown")
+                        #     split_first_header = split_header[0].split("/")
+                        # print(split_first_header)
+                        # print(split_header)
+                        headers.append(header) 
+                        isolate_ids.append(split_first_header[-2]) # if "Catalonia" not in split_first_header[1] and "Navarra" not in split_first_header[1] else split_first_header[2])
+                        locations.append(split_first_header[-3])
+                        isolate_names.append(split_header[-4]) # We'll need to extract data from this too
+                        # print(split_header[2].split("_")[-1])
+                        subtypes.append(split_header[-3].split("_")[-1])  # Get only H5N1
+                        # genotypes.append(split_header[-1])
+                        segments.append(split_header[-2]) # .split("|")[-1])
+                        # host_types.append(split_header[-2])
+                        species.append(split_first_header[1])
+                        # if split_header[4] == "2024-01-01":
+                        #     collection_dates.append("2024") # No samples were collected 1/1/2024, these are all unknown 
+                        # elif split_header[4] == "2025-01-01":
+                        #     collection_dates.append("2025")
+                        # else: 
+                        collection_dates.append(split_header[-1])
+                        # collection_dates.append(split_header[-1].split("_")[-1])
+                        if num < len(lines): # If we're not at the last line
+                            # for i, l in enumerate(lines[num + 1:]):
+                            i = num
+                            sequence = ""
+                            # print(lines[i])
+                            # print(lines[i + 1])
+                            while i < len(lines) - 1 and lines[i + 1][0] != ">": # While the next line is part of a sequence
+                                sequence = sequence + lines[i + 1].strip()
+                                i += 1
+                            sequences.append(sequence) # Add next line to sequences
+                    except:
+                        headers.remove(header)
+                        identifiers.remove(identifier)
+                        print(header)
+                        continue
+        f.close()
+
+    
+    # Create columns for data frame 
+    fasta["Header"] = headers
+    fasta["Isolate_Id"] = isolate_ids
+    fasta["Isolate_Name"] = isolate_names
+    fasta["Subtype"] = subtypes
+    fasta["Segment"] = segments
+    fasta["Location_Header"] = locations
+    # Geo_Location is more complicated
+    try:
+        fasta["Geo_Location"] = fasta["Location_Header"].apply( # lambda x: state_ref.loc[state_ref["Abbreviation"] == x.split("/")[2], 'Country'].iloc[0] + "-" + x.split("/")[2] if x.split("/")[2] in state_ref["Abbreviation"].values else state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Country'].iloc[0] + "-" + state_ref.loc[state_ref["State"] == x.split("/")[2].replace("_", " "), 'Abbreviation'].iloc[0] if x.split("/")[2].replace("_", " ") in state_ref["State"].values else x.split("/")[2].replace(": ", "-"))
+
+                                                    lambda x: 
+                                                    # If "x" has the state abbreviation (e.g. "MD")
+                                                    state_ref.loc[state_ref["Abbreviation"].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0] 
+                                                    + "-" + 
+                                                    x.split(" ")[-1]
+                                                    if state_ref["Abbreviation"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+                                                    # If "x" has the full state name (e.g. "Maryland")
+                                                    else state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Country'].iloc[0]
+                                                    + "-" + 
+                                                    state_ref.loc[state_ref['State'].str.contains('|'.join(x.replace(": ", ",").replace(" ", "_").split(',')), regex=True), 'Abbreviation'].iloc[0] 
+                                                    if state_ref["State"].str.contains("|".join((x.replace(": ", ",").replace(" ", "_").split(','))), regex=True).any()
+                                                    # If "x" has neither the state abbreviation nor the full state name nor is "USA"
+                                                    else 
+                                                    x
+                                                    )
+        fasta["Geo_Location"] = fasta["Geo_Location"].apply(lambda x: x.split("-")[0] if x.split("-")[-1] == "" or x.split("-")[-1] == x.split("-")[0] else x)
+    except:
+        print("Geo Location not found.")
+        fasta["Geo_Location"] = fasta["Location_Header"]
+    fasta["Date Collected"] = collection_dates
+    fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
+    fasta["Species"] = species
+    # fasta["Host_Type"] = host_types
+    # fasta["Genotype"] = genotypes
+    fasta["Sequence"] = sequences
+    # if len(identifiers) == len(fasta):
+    fasta["Identifier"] = identifiers
+        
+    return fasta
