@@ -1136,7 +1136,7 @@ def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fast
             fasta_seg["Genotype"] = genotype
 
             # Rename sequences 
-            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name_x"] + "|" + fasta_seg["Subtype_x"] + "|" + fasta_seg["Location"].apply(lambda x: x.split(" / ")[-1]) + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + fasta_seg["Host_Type"] #.apply(lambda x: "" if x != "human" else "|human")
+            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name_x"] + "|" + fasta_seg["Subtype_y"] + "|" + fasta_seg["Location"].apply(lambda x: x.split(" / ")[-1]) + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + fasta_seg["Host_Type"] #.apply(lambda x: "" if x != "human" else "|human")
             fasta_seg["full_header"] = new_name
             # print(fasta_seg["New_Name"])
 
@@ -1166,7 +1166,7 @@ def separate_fasta_by_segs(metadata, fasta, animals_df, genotypes): #, b313_fast
             fasta_seg["Genotype"] = "Unassigned"
 
             # Rename sequences 
-            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name_x"] + "|" + fasta_seg["Subtype_x"] + "|" + fasta_seg["Location"].apply(lambda x: x.split(" / ")[-1]) + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + fasta_seg["Host_Type"] #.apply(lambda x: "" if x != "human" else "|human")
+            new_name = ">" + fasta_seg["Identifier"] + "|" + fasta_seg["Isolate_Name_x"] + "|" + fasta_seg["Subtype_y"] + "|" + fasta_seg["Location"].apply(lambda x: x.split(" / ")[-1]) + "|" + fasta_seg["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x) + fasta_seg["Host_Type"] #.apply(lambda x: "" if x != "human" else "|human")
             fasta_seg["full_header"] = new_name
             # print(fasta_seg["New_Name"])
 
