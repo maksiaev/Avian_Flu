@@ -1317,12 +1317,14 @@ def fasta_df(file_name, state_ref):
         print("Geo Location not found.")
         fasta["Geo_Location"] = fasta["Location_Header"]
     fasta["Date Collected"] = collection_dates
-    fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
     fasta["Species"] = species
     # fasta["Host_Type"] = host_types
     # fasta["Genotype"] = genotypes
     fasta["Sequence"] = sequences
     # if len(identifiers) == len(fasta):
     fasta["Identifier"] = identifiers
+    fasta = fasta[~fasta["Date Collected"].str.contains("placed_under_publishing_embargo")]
+    fasta["Date Collected"] = fasta["Date Collected"].apply(lambda x: str(dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).year) if dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).month == dateutil.parser.parse("2000-01-01").month and dateutil.parser.parse(x, default=dateutil.parser.parse("2000-01-01")).day == dateutil.parser.parse("2000-01-01").day else x)
+    
         
     return fasta
