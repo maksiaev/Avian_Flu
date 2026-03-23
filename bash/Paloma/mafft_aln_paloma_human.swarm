@@ -1,0 +1,2 @@
+mafft --thread 4 paloma_human_euro_seasonal_h1n1_01-01-1977--12-31-2008.fasta > paloma_human_euro_seasonal_h1n1_01-01-1977--12-31-2008_aln.fasta
+mafft --thread 4 H1_Paloma_wLineage_wDatesAdded_v8.fasta > H1_Paloma_wLineage_wDatesAdded_v8_aln.fasta

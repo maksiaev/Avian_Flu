@@ -6,7 +6,7 @@
 ######################
 
 module load iqtree
-iqtree2 -s subsampled_europe_human+swine_pdmOnly_2009-2026_aln_trim_downsampled.fasta -m GTR+G -bb 1000 -nt AUTO
+iqtree2 -s H1_Paloma_wLineage_wDatesAdded_v8_aln_trim.fasta -m GTR+G -bb 1000 -nt AUTO
 
 
 ######################
