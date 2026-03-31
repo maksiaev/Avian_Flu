@@ -1,2 +1,0 @@
-mafft --thread 4 H3_paloma_human_euro_01-01-2000--12-31-2025.fasta > H3_paloma_human_euro_01-01-2000--12-31-2025_aln.fasta
-mafft --thread 4 N2_paloma_human_euro_h1n1_01-01-1976--12-31-2025.fasta > N2_paloma_human_euro_h1n1_01-01-1976--12-31-2025_aln.fasta
