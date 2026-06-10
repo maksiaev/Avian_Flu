@@ -1062,7 +1062,7 @@ def partial_isolate(id):
 
     partial = id.replace("_", "-") # [-1] # If 25_, get the last bit
     partial = partial.replace("-original", "") # If -original suffix, remove
-    partial = partial.replace("G", "-0") # If 25G, fix
+    partial = re.sub(".*G", "", partial) # partial.replace("G", "-") # If 25G, fix
     digits = partial.split("-")
     # Build partial isolates
     isolate = ""
