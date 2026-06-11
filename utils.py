@@ -1059,7 +1059,7 @@ def fix_animals(fasta, animals_ref):
 #     return segment_fastas, unique_segments
 
 def partial_isolate(id):
-
+ 
     partial = id.replace("_", "-") # [-1] # If 25_, get the last bit
     partial = partial.replace("-original", "") # If -original suffix, remove
     partial = re.sub(".*G", "", partial) # partial.replace("G", "-") # If 25G, fix
