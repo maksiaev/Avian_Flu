@@ -1337,3 +1337,65 @@ def fasta_df(file_name, state_ref):
     
         
     return fasta
+
+def geo_location_normalize(geolocation: str) -> str:
+
+    geolocation = geolocation.replace(":", ",") # We will need to split on commas later; e.g. USA: MD -> USA, MD
+
+    country = geolocation.split(",")[0] # Get the first part of the geolocation, aka the country 
+
+    state = geolocation.split(",")[-1] # Get the last part of the geolocation, aka the state
+
+    state = state.strip().replace(" ", "_") # Remove leading and trailing whitespace, make sure that all internal spaces are underscored instead
+
+    country = country.strip().replace(" ", "_") # Remove leading and trailing whitespace, make sure that all internal spaces are underscored instead
+
+    country_state = country + "-" + state # Log needed
+
+    return country_state 
+
+# Format: USA-[state abbreviation], e.g. USA-MD
+def geo_location_get(metadata: pd.DataFrame, state_ref_file: str = "states_ref.csv") -> pd.DataFrame:
+
+    state_ref = pd.read_csv(state_ref_file)
+
+    # Normalize the locations
+
+    # metadata["name_state_genbank"] = metadata["genbank_name"].apply(lambda x: x.split("/")[2] if x == x else x)
+
+    metadata["Geo_Location_Normalized"] = metadata["Geo_Location"].apply(geo_location_normalize)
+
+    metadata["Geo_Location_Country"] = metadata["Geo_Location_Normalized"].apply(lambda x: x.split("-")[0])
+
+    # Get country
+    metadata["Geo_Location_Country"] = metadata["Geo_Location_Country"].apply(lambda x: state_ref.loc[state_ref["Abbreviation"].str.contains(x), 'Country'].iloc[0]
+                                                                              or state_ref.loc[state_ref["State"].str.contains(x), 'Country'].iloc[0]
+                                                                              if len(state_ref.loc[state_ref["Abbreviation"].str.contains(x), 'Country']) > 0
+                                                                              or len(state_ref.loc[state_ref["State"].str.contains(x), 'Country'].iloc[0]) > 0
+                                                                              else x)
+
+    # Get state
+    metadata["Geo_Location_State"] = metadata["Geo_Location_Normalized"].apply(lambda x: x.split("-")[-1])
+
+    try:    
+        metadata["Geo_Location_State"] = metadata["Geo_Location_State"].apply(lambda x: 
+        # If "x" is the abbreviated state (e.g. "MD")
+        state_ref[state_ref['Abbreviation'].str.contains(x)]['Abbreviation'].values[0] # .iloc[0]
+        if state_ref["Abbreviation"].str.contains(x).any()
+        # If "x" is the state name (e.g. "Maryland")
+        else state_ref[state_ref['State'].str.contains(x)]['Abbreviation'].values[0] # .iloc[0] 
+        if state_ref["State"].str.contains(x).any() 
+        # If "x" has neither the state abbreviation nor the full state name
+        else x)
+    except:
+        print("Could not find states in reference.")
+
+    metadata["Geo_Location_New"] = metadata["Geo_Location_Country"] + "-" + metadata["Geo_Location_State"] 
+
+    # If USA-, delete -
+    metadata["Geo_Location_New"] = metadata["Geo_Location_New"].apply(lambda x: x.split("-")[0] 
+    if x.split("-")[-1] == "" or x.split("-")[-1] == x.split("-")[0] 
+    else x)
+
+    # Log metadata
+    return metadata
