@@ -422,7 +422,7 @@ def df_from_fasta(file_name):
 
 def df_to_fasta(fasta, file_name, output_path):
 
-    output_file = open(output_path + file_name, "a")
+    output_file = open(output_path / (file_name), "a")
 
     for index, row in fasta.iterrows():
         name = fasta.loc[index, "full_header"]
