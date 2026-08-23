@@ -6,6 +6,17 @@ This repository contains notebooks and scripts related to the Nelson (Virus Evol
 
 Investigate outbreaks and conduct phylodynamic analyses of avian influenza.
 
+## Data Management & Computational Work
+
+This project involves integrating diverse genomic and metadata
+sources into structured research datasets. Key data-management tasks
+include:
+
+- Integrating sequence data and metadata from multiple sources
+- Deduplicating the same sequences appearing in multiple sources
+- Standardizing metadata across datasets
+- Documenting workflows for reproducibility 
+
 ## Authorship
 All code in this repository was written by Alexander Maksiaev, with some exceptions:
 * [Tree-relabeling script](./metadata-fixing/tree_relabel_keep_bootstrap_aim.py): Alvin Crespo-Bellido
@@ -42,7 +53,7 @@ Specific instructions on how to use this pipeline are detailed in [pipeline_docu
 
 ### metadata_fixing
 
-One-off scripts designed to update incorrect or out-dated metadata from the avian flu pipeline.
+Scripts for correcting and updating incorrect or outdated metadata identified in the avian influenza pipeline.
 
 ### avian-flu-cats
 
